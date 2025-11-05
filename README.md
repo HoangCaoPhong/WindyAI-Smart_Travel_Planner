@@ -1,8 +1,9 @@
-## (Eng/Vie)
 # 🚀 SMART TRAVEL OPTIMIZATION SYSTEM - VNUHCM-University of Science CT PROJECT
 
 ## Project Focus:
 > **Core Objective:** To develop an intelligent system for optimizing a single-day travel itinerary in Ho Chi Minh City.
+>
+> **CT Focus:** Addressing the **Traveling Salesperson Problem (TSP) with Constraints** using **Optimization Algorithms** (CT Step 4) to minimize time and cost within defined limits.
 
 ---
 
@@ -23,8 +24,8 @@
 | Category | Tool / Framework | Core Functionality |
 | :--- | :--- | :--- |
 | **Core Logic/AI** | Python 3.x, NumPy, Pandas | Implementation of the optimization Solver module. |
-| **Interface/Demo** | Streamlit (or Flask Microframework) | Deployment of the **Small Simulation** prototype (CT Step 6). |
-| **Data/API** | Google Maps/OpenStreetMap API | Generation of the Cost/Time Matrix (CT Step 3). |
+| **Interface/Demo** | Streamlit (or Flask Microframework) | Deployment of the **Small Simulation** prototype. |
+| **Data/API** | Google Maps/OpenStreetMap API | Generation of the Cost/Time Matrix. |
 | **Version Control** | Git & GitHub | Professional collaborative development workflow. |
 
 ---
@@ -44,7 +45,7 @@ Follow these steps to run the project's Small Simulation locally:
     ```
 3.  **Run Local Simulation:** Launch the interactive demonstration interface.
     ```bash
-    streamlit run app.py  # Or specify the main application file
+    streamlit run app.py  # Or specify the main application file
     ```
 
 ---
@@ -55,16 +56,15 @@ Follow these steps to run the project's Small Simulation locally:
 
 ---
 
----
+### 🇻🇳 Phiên bản Tiếng Việt (Đã Sửa Lỗi Cú Pháp)
 
-## 🇻🇳 Phiên bản Tiếng Việt
 ```markdown
 # 🚀 HỆ THỐNG TỐI ƯU HÓA DU LỊCH THÔNG MINH - DỰ ÁN CT VNUHCM-US
 
 ## Trọng tâm Dự án:
 > **Mục tiêu Cốt lõi:** Phát triển hệ thống thông minh nhằm tối ưu hóa lịch trình du lịch trong vòng một ngày tại TP.HCM.
 >
-> **Trọng tâm Tư duy Tính toán (CT):** Tập trung giải quyết **Bài toán Người bán hàng có ràng buộc (TSP with Constraints)** bằng các **Thuật toán Tối ưu** tiên tiến (CT Step 4) để giảm thiểu thời gian di chuyển và tổng chi phí trong phạm vi ngân sách và thời gian cho phép.
+> **Trọng tâm CT:** Giải quyết **Bài toán Người bán hàng có ràng buộc (TSP with Constraints)** bằng **Thuật toán Tối ưu** (CT Step 4).
 
 ---
 
@@ -85,8 +85,8 @@ Follow these steps to run the project's Small Simulation locally:
 | Hạng mục | Công cụ được sử dụng | Chức năng Cốt lõi |
 | :--- | :--- | :--- |
 | **Logic Cốt lõi/AI** | Python 3.x, NumPy, Pandas | Triển khai module Thuật toán Tối ưu (Solver). |
-| **Giao diện/Demo** | Streamlit (hoặc Flask đơn giản) | Triển khai **Nguyên mẫu Mô phỏng Nhỏ** (CT Step 6). |
-| **Dữ liệu/API** | Google Maps/OpenStreetMap API | Xây dựng Ma trận Chi phí/Thời gian (CT Step 3). |
+| **Giao diện/Demo** | Streamlit (hoặc Flask đơn giản) | Triển khai **Nguyên mẫu Mô phỏng Nhỏ** |
+| **Dữ liệu/API** | Google Maps/OpenStreetMap API | Xây dựng Ma trận Chi phí/Thời gian. |
 | **Quản lý Phiên bản** | Git & GitHub | Áp dụng quy trình phát triển hợp tác chuyên nghiệp. |
 
 ---
@@ -106,7 +106,7 @@ Thực hiện các bước sau để chạy Mô phỏng Nhỏ (Small Simulation)
     ```
 3.  **Chạy Mô phỏng Local:** Khởi chạy giao diện trình diễn tương tác.
     ```bash
-    streamlit run app.py  # Hoặc chỉ định file ứng dụng chính
+    streamlit run app.py  # Hoặc chỉ định file ứng dụng chính
     ```
 
 ---
