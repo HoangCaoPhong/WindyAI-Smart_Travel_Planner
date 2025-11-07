@@ -1,13 +1,19 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-from auth import render_login_page
-from page_dashboard import render_dashboard
-from page_discover import render_discover_page
-from page_home import render_home_page, render_about_page, render_features_page
-from page_recognize import render_recognition_page
-from page_profile import render_profile_page
-from db_utils import init_db
-from constants import PAGE_TITLE, PAGE_LAYOUT, PRIMARY_COLOR, BACKGROUND_COLOR
+import sys
+import os
+
+# Add src directory to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+
+from src.utils.auth import render_login_page
+from src.pages.page_dashboard import render_dashboard
+from src.pages.page_discover import render_discover_page
+from src.pages.page_home import render_home_page, render_about_page, render_features_page
+from src.pages.page_recognize import render_recognition_page
+from src.pages.page_profile import render_profile_page
+from src.utils.db_utils import init_db
+from src.utils.constants import PAGE_TITLE, PAGE_LAYOUT, PRIMARY_COLOR, BACKGROUND_COLOR
 
 # --- Cấu hình Trang & Theme ---
 st.set_page_config(
@@ -16,7 +22,8 @@ st.set_page_config(
 )
 
 # Apply custom CSS
-with open("style.css") as f:
+css_path = os.path.join(os.path.dirname(__file__), "static", "css", "style.css")
+with open(css_path) as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Ensure database is initialized on startup
