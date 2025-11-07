@@ -47,8 +47,9 @@ if not st.session_state['logged_in']:
         icons=["house", "info-circle", "star", "box-arrow-in-right"],
         orientation="horizontal",
         styles={
-            "container": {"padding": "0!important", "background-color": BACKGROUND_COLOR},
-            "nav-link-selected": {"background-color": PRIMARY_COLOR},
+            "container": {"padding": "0!important", "background-color": "#E8F1FA"},
+            "nav-link": {"color": "#000000", "font-weight": "500"},
+            "nav-link-selected": {"background-color": PRIMARY_COLOR, "color": "#FFFFFF"},
         }
     )
     
@@ -69,8 +70,9 @@ else:
         icons=["speedometer2", "search", "image", "person-circle", "box-arrow-left"],
         orientation="horizontal",
         styles={
-            "container": {"padding": "0!important", "background-color": BACKGROUND_COLOR},
-            "nav-link-selected": {"background-color": PRIMARY_COLOR},
+            "container": {"padding": "0!important", "background-color": "#E8F1FA"},
+            "nav-link": {"color": "#000000", "font-weight": "500"},
+            "nav-link-selected": {"background-color": PRIMARY_COLOR, "color": "#FFFFFF"},
         }
     )
 

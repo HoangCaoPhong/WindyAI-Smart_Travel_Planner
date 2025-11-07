@@ -83,18 +83,24 @@
 
 html, body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    color: var(--gray-800);
-    background-color: var(--gray-50);
+    color: #000000;
+    background-color: #FFFFFF;
     line-height: 1.6;
 }
 
 /* === Streamlit Overrides === */
+
+/* Main app background */
+.stApp {
+    background-color: #FFFFFF;
+}
 
 /* Remove default Streamlit padding */
 .main .block-container {
     padding-top: 2rem;
     padding-bottom: 2rem;
     max-width: 1200px;
+    background-color: #FFFFFF;
 }
 
 /* Hide Streamlit branding */
@@ -104,7 +110,7 @@ header {visibility: hidden;}
 
 /* === Typography === */
 h1, h2, h3, h4, h5, h6 {
-    color: var(--gray-900);
+    color: #000000;
     font-weight: 600;
     margin-bottom: var(--spacing-md);
 }
@@ -126,17 +132,18 @@ h3 {
 
 /* === Card Styles === */
 [data-testid="stVerticalBlock"] > [data-testid="stVerticalBlock"] {
-    background: var(--white);
+    background: #FFFFFF;
     border-radius: var(--radius-lg);
     padding: var(--spacing-lg);
     box-shadow: var(--shadow-md);
     transition: all 0.3s ease;
-    border: 1px solid var(--gray-200);
+    border: 2px solid #E0E0E0;
 }
 
 [data-testid="stVerticalBlock"] > [data-testid="stVerticalBlock"]:hover {
     box-shadow: var(--shadow-lg);
     transform: translateY(-2px);
+    border-color: #BDBDBD;
 }
 
 /* === Buttons === */
@@ -182,10 +189,12 @@ h3 {
 .stSelectbox > div > div > div,
 .stMultiselect > div > div > div {
     border-radius: var(--radius-md);
-    border: 2px solid var(--gray-300);
+    border: 2px solid #BDBDBD;
     padding: 10px 14px;
     font-size: 1rem;
     transition: all 0.3s ease;
+    background-color: #FFFFFF;
+    color: #000000;
 }
 
 .stTextInput > div > div > input:focus,
@@ -193,6 +202,15 @@ h3 {
     border-color: var(--primary-blue);
     box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
     outline: none;
+}
+
+/* Input labels */
+.stTextInput label,
+.stTextArea label,
+.stSelectbox label,
+.stMultiselect label {
+    color: #000000 !important;
+    font-weight: 500;
 }
 
 /* === Cards for Content === */
@@ -269,7 +287,7 @@ nav[data-testid="stHorizontalBlock"] {
 /* === Tabs === */
 .stTabs [data-baseweb="tab-list"] {
     gap: var(--spacing-md);
-    background: var(--gray-100);
+    background: #E0E0E0;
     border-radius: var(--radius-lg);
     padding: var(--spacing-sm);
 }
@@ -279,10 +297,12 @@ nav[data-testid="stHorizontalBlock"] {
     padding: 10px 20px;
     font-weight: 500;
     transition: all 0.3s ease;
+    color: #000000;
+    background: #FFFFFF;
 }
 
 .stTabs [data-baseweb="tab"]:hover {
-    background: var(--gray-200);
+    background: #F5F5F5;
 }
 
 .stTabs [aria-selected="true"] {
@@ -469,4 +489,33 @@ img {
 
 .slide-in {
     animation: slideIn 0.5s ease-out;
+}
+
+/* === Login/Register Forms === */
+[data-testid="stForm"] {
+    background: #FFFFFF !important;
+    border: 3px solid #1877F2 !important;
+    border-radius: var(--radius-lg) !important;
+    padding: var(--spacing-xl) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-testid="stForm"] h3,
+[data-testid="stForm"] label,
+[data-testid="stForm"] p {
+    color: #000000 !important;
+}
+
+/* Form title within tabs */
+.stTabs [data-testid="stVerticalBlock"] h3 {
+    color: #000000 !important;
+    font-weight: 600;
+}
+
+/* Tab content area */
+.stTabs [data-testid="stTabContent"] {
+    background: #F9F9F9;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    margin-top: var(--spacing-md);
 }
