@@ -44,43 +44,104 @@ st.markdown("""
             background-color: #FFFFFF !important;
         }
         
-        /* Target the parent container of option-menu to remove black bars */
-        .element-container:has(div.menu),
-        div[data-testid="column"]:has(div.menu),
-        div[data-testid="stVerticalBlock"]:has(div.menu) {
+        /* === COMPLETE FIX FOR BLACK BARS === */
+        
+        /* Root cause: The navigation menu doesn't extend to full viewport width
+           The black bars are actually the .stApp background showing through */
+        
+        /* Step 1: Make the entire app background white - NO BLACK ANYWHERE */
+        body, html, .stApp, 
+        [data-testid="stAppViewContainer"],
+        [data-testid="stDecoration"] {
             background-color: #FFFFFF !important;
-            padding: 0 !important;
-            margin: 0 !important;
         }
         
-        /* Force streamlit-option-menu parent background white */
+    /* Step 2: Make the navigation menu TRULY full width by breaking out of container */
+    /* Target the element-container that contains the streamlit_option_menu iframe */
+    .main .block-container > div:has(iframe[title*="streamlit_option_menu"]) {
+        width: 100vw !important;
+        position: relative;
+        left: 50% !important;
+        right: 50% !important;
+        margin-left: -50vw !important;
+        margin-right: -50vw !important;
+        padding: 0 !important;
+        background-color: #E8F1FA !important;
+    }
+    
+    /* The vertical block containing the iframe */
+    [data-testid="stVerticalBlock"]:has(iframe[title*="streamlit_option_menu"]) {
+        width: 100% !important;
+        padding: 0 !important;
+        background-color: #E8F1FA !important;
+    }
+    
+    /* The element-container with the iframe */
+    .element-container:has(iframe[title*="streamlit_option_menu"]) {
+        width: 100% !important;
+        background-color: #E8F1FA !important;
+        padding: 0.5rem 0 !important;
+    }
+    
+    /* The iframe itself should be centered and scaled up 1.5x */
+    iframe[title*="streamlit_option_menu"] {
+        display: block !important;
+        margin: 0 auto !important;
+        max-width: 1200px !important;
+        transform: scale(1.5) !important;
+        transform-origin: center center !important;
+        height: 93px !important;
+    }
+    
+    /* Adjust container to accommodate scaled iframe - minimal padding */
+    .element-container:has(iframe[title*="streamlit_option_menu"]) {
+        padding: 0.5rem 0 !important;
+        min-height: auto !important;
+        overflow: visible !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-bottom: 0 !important;
+    }
+    
+    [data-testid="stVerticalBlock"]:has(iframe[title*="streamlit_option_menu"]) {
+        padding: 0 !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* Remove any border/divider lines near nav */
+    .main .block-container > div:has(iframe[title*="streamlit_option_menu"]) + * {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    
+        /* Step 3: Keep other content centered with proper width */
+        .main .block-container {
+            max-width: 1200px;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        
+        /* Step 4: Ensure no other element tries to be full width unless intended */
         .element-container {
-            background-color: #FFFFFF !important;
-        }
-        
-        /* Override any remaining black backgrounds */
-        * {
-            scrollbar-color: #888 #f1f1f1;
-        }
-        
-        /* Ensure no dark theme classes apply */
-        [data-theme="dark"] {
-            display: none !important;
-        }
-        
-        /* Force menu wrapper background */
-        .menu, .menu * {
             background-color: transparent !important;
         }
         
-        .menu .container-xxl {
-            background-color: #E8F1FA !important;
+        [data-testid="stVerticalBlock"] {
+            background-color: transparent !important;
         }
         
-        /* Navigation full width fix */
+        /* Remove extra spacing after navigation */
         .main .block-container {
-            padding-left: 1rem !important;
-            padding-right: 1rem !important;
+            padding-top: 0 !important;
+        }
+        
+        /* Hide any horizontal lines/dividers */
+        hr {
+            display: none !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -88,10 +149,22 @@ st.markdown("""
 # Ensure database is initialized on startup
 init_db()
 
-# --- Khởi tạo Session State ---
-# Note: Streamlit session state is cleared on page refresh
-# This is normal behavior - users need to re-login after refresh
-# To persist login, we would need a proper backend with JWT tokens
+# --- Khởi tạo Session State với Flask backend ---
+import requests as req
+
+# Try to restore session from Flask backend
+if 'session_checked' not in st.session_state:
+    try:
+        response = req.get('http://localhost:5000/api/session', timeout=1)
+        if response.ok:
+            data = response.json()
+            st.session_state['logged_in'] = data.get('logged_in', False)
+            st.session_state['username'] = data.get('username', '')
+            st.session_state['user_id'] = data.get('user_id', None)
+    except:
+        # Flask backend not running, use default values
+        pass
+    st.session_state['session_checked'] = True
 
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
@@ -99,6 +172,20 @@ if 'username' not in st.session_state:
     st.session_state['username'] = ""
 if 'user_id' not in st.session_state:
     st.session_state['user_id'] = None
+
+# Sync session to Flask backend whenever it changes
+def sync_session_to_backend():
+    """Sync Streamlit session to Flask backend"""
+    try:
+        req.post('http://localhost:5000/api/session', 
+                json={
+                    'logged_in': st.session_state.get('logged_in', False),
+                    'username': st.session_state.get('username', ''),
+                    'user_id': st.session_state.get('user_id', None)
+                },
+                timeout=1)
+    except:
+        pass  # Backend not available
 
 # --- A. LOGIC ĐIỀU HƯỚNG (PHẦN CHÍNH) ---
 
@@ -149,6 +236,12 @@ else:
     elif selected == "Hồ sơ":
         render_profile_page()
     elif selected == "Đăng xuất":
+        # Clear Flask backend session
+        try:
+            req.delete('http://localhost:5000/api/session', timeout=1)
+        except:
+            pass
+        
         st.session_state.clear()
         st.session_state['logged_in'] = False
         st.rerun()

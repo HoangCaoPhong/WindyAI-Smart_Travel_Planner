@@ -129,6 +129,20 @@ def render_login_page():
                         st.session_state['logged_in'] = True
                         st.session_state['username'] = result.get("username", "")  # type: ignore
                         st.session_state['user_id'] = result.get("id", None)  # type: ignore
+                        
+                        # Sync to Flask backend
+                        try:
+                            import requests as req
+                            req.post('http://localhost:5000/api/session', 
+                                    json={
+                                        'logged_in': True,
+                                        'username': result.get("username", ""),
+                                        'user_id': result.get("id", None)
+                                    },
+                                    timeout=1)
+                        except:
+                            pass  # Backend not available
+                        
                         st.success(SUCCESS_LOGIN)
                         st.rerun()
                     else:
