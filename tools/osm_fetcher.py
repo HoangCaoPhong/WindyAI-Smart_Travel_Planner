@@ -1,4 +1,11 @@
 import requests, time
+# Chức năng:
+# +Gọi API Overpass (OpenStreetMap)
+# +Query POIs theo bounding box
+# +Lọc theo categories
+# +Trả list POIs
+
+#Đây là module lấy dữ liệu thật từ OSM.
 
 OVERPASS_URL = "https://overpass-api.de/api/interpreter"
 
