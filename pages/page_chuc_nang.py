@@ -13,6 +13,13 @@ except ImportError:
     ALGO_AVAILABLE = False
     st.warning("⚠️ Không tìm thấy module thuật toán. Sử dụng chế độ demo.")
 
+# Import algo2 modules
+try:
+    from core.routing import get_directions
+    ROUTING_AVAILABLE = True
+except ImportError:
+    ROUTING_AVAILABLE = False
+
 
 def page_chuc_nang():
     """Hiển thị nội dung trang chức năng với 4 nút lựa chọn."""
@@ -357,40 +364,90 @@ def render_tao_danh_sach_goi_y():
 
 
 def render_tim_duong_di():
-    """Render phần Tìm đường đi"""
+    """Render phần Tìm đường đi - TÍCH HỢP ALGO2"""
     st.markdown("### 🚗 Tìm đường đi")
     st.markdown(
-        "<p class='feature-muted'>Tìm đường đi tối ưu giữa các địa điểm.</p>",
+        "<p class='feature-muted'>Tìm đường đi tối ưu giữa các địa điểm với OpenStreetMap.</p>",
         unsafe_allow_html=True,
     )
+    
     with st.form("route_form"):
-        start_point = st.text_input("Điểm bắt đầu", value="Quận 1")
-        end_point = st.text_input("Điểm kết thúc", value="Nhà thờ Đức Bà")
-        col1, col2 = st.columns(2)
-        with col1:
-            mode = st.selectbox(
-                "Phương tiện",
-                ["Xe máy", "Ô tô", "Đi bộ", "Phương tiện công cộng"],
-            )
-        with col2:
-            max_time = st.number_input(
-                "Thời gian tối đa (phút)",
-                min_value=10,
-                value=45,
-                step=5,
-            )
+        start_point = st.text_input(
+            "📍 Điểm bắt đầu", 
+            value="Dinh Độc Lập, TPHCM",
+            help="Nhập địa chỉ đầy đủ để có kết quả chính xác"
+        )
+        end_point = st.text_input(
+            "🎯 Điểm kết thúc", 
+            value="Chợ Bến Thành, TPHCM",
+            help="Nhập địa chỉ đầy đủ để có kết quả chính xác"
+        )
+        
+        mode = st.selectbox(
+            "🚦 Phương tiện",
+            ["Ô tô", "Xe máy"],
+            help="Ô tô dùng đường lớn, Xe máy có thể đi đường hẹp"
+        )
+        
         c1, c2, c3 = st.columns([2, 1, 2])
         with c2:
-            find_route = st.form_submit_button("Tìm đường!")
+            find_route = st.form_submit_button("🗺️ Tìm đường!", use_container_width=True)
     
     if find_route:
         st.markdown("---")
-        st.markdown("#### 📍 Kết quả")
-        st.write(f"- **Từ:** {start_point}")
-        st.write(f"- **Đến:** {end_point}")
-        st.write(f"- **Phương tiện:** {mode}")
-        st.write(f"- **Thời gian ước tính:** ~{max_time} phút")
-        st.info("💡 Phiên bản đầy đủ có thể tích hợp API bản đồ (Google Maps, OpenStreetMap).")
+        
+        if not ROUTING_AVAILABLE:
+            st.warning("⚠️ Module routing chưa được cài đặt. Sử dụng chế độ demo.")
+            st.markdown("#### 📍 Kết quả (Demo)")
+            st.write(f"- **Từ:** {start_point}")
+            st.write(f"- **Đến:** {end_point}")
+            st.write(f"- **Phương tiện:** {mode}")
+            st.info("💡 Cài đặt `requests` để sử dụng tính năng thực tế.")
+        else:
+            # Chuyển đổi tên phương tiện
+            vehicle_type = "driving" if mode == "Ô tô" else "bike"
+            vehicle_icon = "🚗" if mode == "Ô tô" else "🏍️"
+            
+            with st.spinner(f"🔍 Đang tìm đường cho {vehicle_icon} {mode}..."):
+                result = get_directions(start_point, end_point, vehicle_type)
+            
+            if not result:
+                st.error("❌ Không tìm thấy đường đi. Vui lòng kiểm tra lại địa chỉ.")
+            else:
+                st.success(f"✅ Tìm thấy lộ trình {vehicle_icon} {mode}!")
+                
+                # Hiển thị thông tin tổng quan
+                st.markdown("#### 📊 Thông tin tổng quan")
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("📏 Quãng đường", f"{result['route']['distance_km']:.1f} km")
+                with col2:
+                    st.metric("⏱️ Thời gian", f"{result['route']['duration_min']:.0f} phút")
+                with col3:
+                    hours = result['route']['duration_min'] / 60
+                    st.metric("🕐 Giờ", f"{hours:.1f}h")
+                
+                # Hiển thị địa chỉ đầy đủ
+                with st.expander("📍 Xem địa chỉ chi tiết"):
+                    st.write(f"**Điểm bắt đầu:** {result['start']['name']}")
+                    st.write(f"**Điểm kết thúc:** {result['end']['name']}")
+                
+                # Hiển thị chỉ dẫn từng bước
+                st.markdown("#### 🛣️ Chỉ dẫn đường đi")
+                steps = result['route']['steps']
+                
+                for i, step in enumerate(steps, 1):
+                    instruction = step['instruction']
+                    street = step['street']
+                    distance_m = step['distance_m']
+                    
+                    if street:
+                        st.write(f"**{i}.** {instruction} vào **{street}** ({distance_m:.0f}m)")
+                    else:
+                        st.write(f"**{i}.** {instruction} ({distance_m:.0f}m)")
+                
+                st.success(f"✅ Đã đến đích! Tổng quãng đường: {result['route']['distance_km']:.1f} km")
+                st.info(f"💡 Lưu ý: Thời gian và quãng đường có thể thay đổi tùy điều kiện giao thông thực tế.")
 
 
 def render_nhan_dien_anh():
