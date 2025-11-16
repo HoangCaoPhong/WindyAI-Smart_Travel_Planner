@@ -1,5 +1,3 @@
-# run_demo.py
-# run_demo.py
 from core.solver_route import load_pois, plan_route
 
 pois = load_pois("data/pois_hcm.csv")

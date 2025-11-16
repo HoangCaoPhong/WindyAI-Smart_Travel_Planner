@@ -1,6 +1,6 @@
 #core/config.py — Cấu hình chung
+#Chứa tham số cố định cho thuật toán:
 
-# core/config.py
 SPEEDS_KMH = {"walking": 5.0, "motorbike": 25.0, "taxi": 35.0}
 COST_PER_KM = {"walking": 0.0, "motorbike": 2000.0, "taxi": 12000.0}
 

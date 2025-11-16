@@ -1,13 +1,39 @@
 ```mermaid
 flowchart TD
-    A[Start: User Input] --> B[Load POI Data & Build Matrix]
-    B --> C[Filter by Radius, Open/Close, Budget]
-    C --> D[Compute Preference & Rating Scores]
-    D --> E[Greedy + Lookahead Selection]
-    E --> F{Feasible POI Found?}
-    F -- Yes --> G[Add to Route, Update Time & Budget]
-    G --> E
-    F -- No --> H["Apply Local Optimization: 2-opt or insertion"]
-    H --> I[Format Itinerary JSON + Summary]
-    I --> J[Output / API Response]
-    J --> K[End]
+
+    A([Start]) --> B[Load POIs dataset]
+
+    B --> C[Nhận input người dùng]
+
+    C --> D[Khởi tạo biến: CurrentTime, CurrentLoc, Visited, Route]
+
+    D --> E{Còn POI chưa thăm và còn thời gian?}
+
+    E -->|Không| Z([Kết thúc - trả về lộ trình])
+    E -->|Có| F[Tạo danh sách Candidates]
+
+    F --> G[Lặp qua từng POI chưa thăm]
+    G --> H[Lặp qua các phương tiện]
+
+    H --> I[Tính TravelTime & TravelCost]
+    I --> J[Tính ArriveTime & FinishTime]
+
+    J --> K{POI hợp lệ?}
+
+    K -->|Không| G
+    K -->|Có| L[Tính Score]
+
+    L --> M[Thêm vào Candidates]
+    M --> G
+
+    G --> N{Candidates rỗng?}
+
+    N -->|Có| Z
+    N -->|Không| O[Chọn POI có Score thấp nhất]
+
+    O --> P[Cập nhật Route và Visited]
+    P --> Q[Cập nhật CurrentTime, CurrentLoc, BudgetLeft]
+
+    Q --> E
+
+```
