@@ -285,9 +285,21 @@ def render_tao_danh_sach_goi_y():
                     if ALGO_AVAILABLE:
                         with st.spinner("🔄 Đang tính toán lộ trình tối ưu bằng AI..."):
                             try:
-                                # Load POIs - Sử dụng dataset mở rộng (177 POIs)
-                                csv_path = os.path.join(os.path.dirname(__file__), "..", "data", "pois_hcm_extended.csv")
-                                pois = load_pois(csv_path)
+                                # Load POIs - Dataset lớn với filter (4,601 POIs)
+                                csv_path = os.path.join(os.path.dirname(__file__), "..", "data", "pois_hcm_large.csv")
+                                
+                                # Filter POIs: chỉ lấy tourism-related, rating >= 3.8, tối đa 500 POIs
+                                tourism_tags = [
+                                    "food", "restaurant", "cafe", "park", "nature", 
+                                    "museum", "history", "entertainment", "shopping", 
+                                    "landmark", "religious", "culture", "nightlife"
+                                ]
+                                pois = load_pois(
+                                    csv_path, 
+                                    filter_tags=tourism_tags,
+                                    min_rating=3.8,
+                                    max_pois=500  # Giới hạn để thuật toán chạy nhanh
+                                )
                                 
                                 # Call algorithm
                                 route = plan_route(

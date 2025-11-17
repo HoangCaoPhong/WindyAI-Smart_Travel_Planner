@@ -8,11 +8,45 @@ from .scorer import score_candidate
 from .config import DEFAULT_BUDGET, DEFAULT_TIME_WINDOW, DEFAULT_START
 
 # ---------- Load POIs ----------
-def load_pois(csv_path):
+def load_pois(csv_path, filter_tags=None, min_rating=None, max_pois=None):
+    """
+    Load POIs từ CSV với các filter options
+    
+    Args:
+        csv_path: Đường dẫn đến file CSV
+        filter_tags: List các tags cần filter (e.g., ['food', 'park', 'museum'])
+        min_rating: Rating tối thiểu (e.g., 4.0)
+        max_pois: Giới hạn số lượng POIs (lấy random nếu vượt quá)
+    
+    Returns:
+        List of POI dictionaries
+    """
     df = pd.read_csv(csv_path)
+    
+    # Filter by rating nếu cần
+    if min_rating is not None:
+        df = df[df["rating"] >= min_rating]
+    
+    # Filter by tags nếu cần
+    if filter_tags:
+        # Chọn POIs có ít nhất 1 tag match
+        def has_matching_tag(tags_str):
+            if not isinstance(tags_str, str):
+                return False
+            tags = tags_str.split(";")
+            return any(tag in filter_tags for tag in tags)
+        
+        df = df[df["tags"].apply(has_matching_tag)]
+    
+    # Giới hạn số lượng nếu cần
+    if max_pois and len(df) > max_pois:
+        df = df.sample(n=max_pois, random_state=42)
+    
+    # Convert to dict
     pois = df.to_dict("records")
     for p in pois:
         p["tags"] = p["tags"].split(";") if isinstance(p["tags"], str) else []
+    
     return pois
 
 # ---------- Planner ----------
