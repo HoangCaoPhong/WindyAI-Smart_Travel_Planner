@@ -1,0 +1,178 @@
+id,name,lat,lon,tags,rating,visit_duration_min,entry_fee,open_hour,close_hour
+1,Bánh Canh Hoàng Ty,10.7917311,106.6915979,food;restaurant,4.9,90,0,10,22
+2,Chùa Giác Vương,10.8607493,106.6214292,religious;culture,4.9,60,0,8,18
+3,Công Viên Văn Hóa Láng Le Bàu Cò,10.7780338,106.5159583,park;nature;relaxation,4.9,45,0,8,18
+4,Cầu Đi Bộ Số 7,10.7458291,106.6543332,entertainment;attraction,4.9,60,0,0,23
+5,Lăng Lê Văn Duyệt,10.8030815,106.706623,history;landmark,4.9,60,0,8,18
+6,Nhà Hàng Au Tresor,10.772698,106.7048299,food;restaurant,4.9,90,0,10,22
+7,Nhà Hàng Crazy Buffalo,10.767375,106.6941425,food;restaurant,4.9,90,0,10,22
+8,Nhà Hàng Honeymoon,10.7602951,106.6991702,food;restaurant,4.9,90,0,10,22
+9,Nhà Hàng Hồ Tây,10.784324,106.697355,food;restaurant,4.9,90,0,10,22
+10,Nhà Hàng Jaspas,10.778168,106.7037041,food;restaurant,4.9,90,0,10,22
+11,Nhà Thờ Củ Chi,10.9689302,106.4864335,history;landmark,4.9,60,0,8,18
+12,Quán Ăn Gia Đình,10.8029924,106.6995844,food;restaurant,4.9,90,0,10,22
+13,Trung Tâm Mua Sắm Russian,10.7617399,106.6950862,shopping;modern,4.9,120,0,8,18
+14,Tượng Đài Trần Văn Ơn,10.7767077,106.6994163,history;landmark,4.9,60,0,8,18
+15,Bảo Tàng FITO,10.7762825,106.6719677,history;museum;culture,4.8,90,60000,8,18
+16,Chợ Đêm Man Thiện,10.8500849,106.7963248,shopping;modern,4.8,120,0,8,18
+17,Công Viên Sala,10.7712694,106.7250457,park;nature;relaxation,4.8,45,0,8,18
+18,Công ty Sửa chữa & Mua bán Xe nâng Hoàng Gia tại Bình Dương,10.9230601,106.7686184,park;nature;relaxation,4.8,45,0,0,23
+19,Công viên nội khu S2,10.8381351,106.8322977,park;nature;relaxation,4.8,45,0,8,18
+20,Cửa Hàng Xôi Chè Bùi Thị Xuân,10.7675882,106.6863944,food;restaurant,4.8,90,0,10,22
+21,Khu di tích Hố Lang,10.9571087,106.7493053,park;nature;relaxation,4.8,45,0,8,18
+22,Khánh Vân Nam Viện Đạo Quán,10.7573682,106.6507522,religious;culture,4.8,60,0,8,18
+23,Nhà Hàng Bờ Sông,10.789502,106.711158,food;restaurant,4.8,90,0,10,22
+24,Quán Ăn 7777,10.8184173,106.7047992,food;restaurant,4.8,90,0,10,22
+25,Tank 390,10.7781576,106.6955462,history;landmark,4.8,60,0,8,18
+26,Vincom Quận 2,10.7882994,106.7657527,shopping;modern,4.8,120,0,8,18
+27,アオザイ博物館入口,10.8115266,106.8515004,history;museum;culture,4.8,90,60000,8,18
+28,Bia Tưởng Niệm Trận Đánh Tòa Đại Sứ Mỹ,10.7829668,106.7008278,history;landmark,4.7,60,0,8,18
+29,Bảo Tàng Tư Nhân Đức Minh,10.8408403,106.765554,history;museum;culture,4.7,90,50000,8,18
+30,Công viên Bình Phú,10.7435177,106.6310353,park;nature;relaxation,4.7,45,0,8,18
+31,Công viên nội khu S1,10.8375246,106.8308003,park;nature;relaxation,4.7,45,0,8,18
+32,Elephants Statue,10.7902787,106.6994063,entertainment;attraction,4.7,60,0,8,18
+33,Entrance to Russian Clothes Market,10.7611115,106.6955947,entertainment;attraction,4.7,60,0,8,18
+34,Euvipharm Pharmaceutical J.S.C,10.7967892,106.4917898,viewpoint;modern,4.7,60,0,8,18
+35,Nghĩa Dũng Đài,10.8894284,106.8097193,history;landmark,4.7,60,0,8,18
+36,Nhà Hàng Đồ Ăn Việt Nam Aroma,10.7684684,106.6938884,food;restaurant,4.7,90,0,10,22
+37,Station Mall,10.8011701,106.7331602,shopping;modern,4.7,120,0,8,18
+38,THÀNH PHỐ TÂN AN,10.5457337,106.405184,history;museum;culture,4.7,90,50000,8,18
+39,Tân Cảng,10.8005534,106.7246028,food;restaurant,4.7,90,0,10,22
+40,Tượng An Dương Vương,10.7598529,106.668921,history;landmark,4.7,60,0,8,18
+41,Tượng Đài Tượng Niệm - Công Viên Văn Lang,10.7563781,106.6672711,history;landmark,4.7,60,0,8,18
+42,Various Cannons,10.7762451,106.7069417,entertainment;attraction,4.7,60,0,0,23
+43,Vân Đường Phủ (Nhà cụ Vương Hồng Sển),10.8052246,106.6992364,history;museum;culture,4.7,90,50000,8,18
+44,Chùa Nguyên Thỉ,10.5394138,106.4190254,religious;culture,4.6,60,0,8,18
+45,Chùa Phong Linh,10.8347849,106.782939,religious;culture,4.6,60,0,8,18
+46,Công viên bờ sông Sài Gòn,10.7716671,106.7097359,entertainment;attraction,4.6,60,0,8,18
+47,Dốc Shakespeare,10.8797549,106.7978144,viewpoint;modern,4.6,60,0,8,18
+48,F5E Fighter Aircraft,10.7785264,106.6950399,history;landmark,4.6,60,0,8,18
+49,Gigamall Thủ Đức,10.8276722,106.721539,shopping;modern,4.6,120,0,8,18
+50,Hiền tài là nguyên khí quốc gia,10.7858804,106.7026508,history;landmark,4.6,60,0,8,18
+51,Nhà Hàng Alibaba,10.7743953,106.7040996,food;restaurant,4.6,90,0,10,22
+52,Nhà Hàng Cao Xanh,10.5407942,106.4037972,food;restaurant,4.6,90,0,10,22
+53,Nhà Hàng Cung Đình Rex,10.7754972,106.7007063,food;restaurant,4.6,90,0,10,22
+54,Nhà Hàng Hải Cảng,10.7662887,106.7077614,food;restaurant,4.6,90,0,10,22
+55,Nhà Hàng Pizza Fixme,10.7680337,106.6938158,food;restaurant,4.6,90,0,10,22
+56,Nhà Hàng Ấn Độ Curry Rice,10.7762829,106.7042247,food;restaurant,4.6,90,0,10,22
+57,Nhà Ngoại Riô,10.6327743,106.6733364,viewpoint;modern,4.6,60,0,8,18
+58,Parc Spring,10.7912739,106.7714492,park;nature;relaxation,4.6,45,0,0,23
+59,STELLAR 9 LAKE,10.8752974,106.8217369,park;nature;relaxation,4.6,45,0,8,18
+60,Saigon Skydeck,10.7717177,106.7045283,viewpoint;modern,4.6,60,0,8,18
+61,Steam locomotive,10.7821115,106.6781851,history;landmark,4.6,60,0,8,18
+62,Street Market with Pho,10.7720792,106.6976304,entertainment;attraction,4.6,60,0,8,18
+63,Tank 843,10.7782067,106.6958361,history;landmark,4.6,60,0,8,18
+64,Trung Tâm Mua Sắm Nguyễn Kim Gò Vấp,10.8298519,106.6778983,shopping;modern,4.6,120,0,8,18
+65,Trung Tâm Mua Sắm Nowzone - Nguyễn Văn Cừ,10.764339,106.6824266,shopping;modern,4.6,120,0,8,18
+66,Đài Tưởng Niệm Liệt Sĩ Quận 8,10.7065514,106.6270767,history;landmark,4.6,60,0,8,18
+67,Đền Thờ Nguyễn Hữu Thọ,10.6441263,106.4864156,history;museum;culture,4.6,90,40000,8,18
+68,đất c Phương,10.6265838,106.6432797,viewpoint;modern,4.6,60,0,8,18
+69,គុយទាវ Hong Phat,10.7714656,106.6833353,entertainment;attraction,4.6,60,0,8,18
+70,Chùa Từ Vân,10.5232076,106.4514825,religious;culture,4.5,60,0,8,18
+71,Công Viên Ven Sông An Phú Hưng,10.7362462,106.7099951,entertainment;attraction,4.5,60,0,8,18
+72,Công viên Làng Hoa Gò Vấp,10.8420884,106.6565352,park;nature;relaxation,4.5,45,0,8,18
+73,Công viên nội bộ chung cư Hòa Bình,10.7670592,106.6610774,park;nature;relaxation,4.5,45,0,0,23
+74,LOTTE Mart Cộng Hòa,10.800858,106.6529899,shopping;modern,4.5,120,0,8,18
+75,Liên Đoàn Truyền Giáo Phúc Âm Việt Nam,10.7703006,106.7048954,religious;culture,4.5,60,0,8,18
+76,Miếu Ngũ Hành,10.7547059,106.6911981,religious;culture,4.5,60,0,8,18
+77,Nhà Hàng BBQ Chicken,10.768208,106.6841501,food;restaurant,4.5,90,0,10,22
+78,Nhà Hàng Bornga,10.7788067,106.7020073,food;restaurant,4.5,90,0,10,22
+79,Nhà Hàng Pháp Hoa,10.767809,106.688677,food;restaurant,4.5,90,0,10,22
+80,Nhà Hàng Shri Lounge,10.7826304,106.6972822,food;restaurant,4.5,90,0,10,22
+81,Nhà Hàng Tiệc Cưới 108 Nguyễn Du,10.7754764,106.6956779,food;restaurant,4.5,90,0,10,22
+82,Nhà Hàng Đầm Tôm,10.835471,106.765147,food;restaurant,4.5,90,0,10,22
+83,Phòng Truyền thống Thành Đoàn,10.7820744,106.6977069,history;museum;culture,4.5,90,30000,8,18
+84,Phở 24,10.7718553,106.6975823,food;restaurant,4.5,90,0,10,22
+85,Quán Ăn Hoàng Ký 1,10.755919,106.676499,food;restaurant,4.5,90,0,10,22
+86,Snow Town,10.7739837,106.762328,entertainment;attraction,4.5,60,0,8,18
+87,The Garden Mall,10.7542634,106.6553654,shopping;modern,4.5,120,0,8,18
+88,Topping Beef,10.7797991,106.6949139,food;restaurant,4.5,90,0,10,22
+89,Tượng Bồ Tát Thích Quảng Đức,10.7754475,106.6867547,history;landmark,4.5,60,0,8,18
+90,Tượng Trận Đánh Cư Xá Brink,10.7776112,106.7037257,history;landmark,4.5,60,0,8,18
+91,Bia Liệt Sĩ,10.8323241,106.5705214,history;landmark,4.4,60,0,8,18
+92,Bảo Tàng Địa Chất,10.7849957,106.7076753,history;museum;culture,4.4,90,70000,8,18
+93,Cà Phê Điêu Thuyền,10.8439776,106.6553312,entertainment;attraction,4.4,60,0,8,18
+94,Công Viên Bình Qưới,10.831063,106.744718,park;nature;relaxation,4.4,45,0,8,18
+95,Khu Di Tích Dân Công Hỏa Tuyến,10.8392898,106.5506255,history;museum;culture,4.4,90,70000,8,18
+96,Miếu Năm Bà Ngũ Hành Tao Đàn,10.7736968,106.6941856,religious;culture,4.4,60,0,8,18
+97,Nhà Hàng Hai Lúa Sài Gòn,10.7807008,106.7067111,food;restaurant,4.4,90,0,10,22
+98,Nhà Hàng Halal Sai Gon,10.7760297,106.7047293,food;restaurant,4.4,90,0,10,22
+99,Nhà cổ Trần Văn,10.9781704,106.6511271,entertainment;attraction,4.4,60,0,8,18
+100,Parkson Hùng Vương,10.7557757,106.6629025,shopping;modern,4.4,120,0,8,18
+101,Phở Bắc Hải,10.7838752,106.6992161,food;restaurant,4.4,90,0,10,22
+102,Quán Cơm Gà Xối Mỡ,10.786308,106.671644,food;restaurant,4.4,90,0,10,22
+103,Saigon Mall Cao Thắng,10.7692463,106.6829983,shopping;modern,4.4,120,0,8,18
+104,Sân bóng đá Hồng Nguyên Phát,10.5370779,106.6830286,park;nature;relaxation,4.4,45,0,8,18
+105,Thiên Hậu Tự,10.5355751,106.4134871,religious;culture,4.4,60,0,8,18
+106,Tịnh Xá Ngọc Tâm,10.5309075,106.4290188,religious;culture,4.4,60,0,8,18
+107,Chùa Đại Giác,10.7976519,106.6725295,religious;culture,4.3,60,0,8,18
+108,Công Viên Dương 4,10.7361566,106.6705626,park;nature;relaxation,4.3,45,0,8,18
+109,Công viên Ánh sáng,10.8397256,106.8456869,park;nature;relaxation,4.3,45,0,8,18
+110,Cầu vượt Sóng Thần,10.8758821,106.7511198,viewpoint;modern,4.3,60,0,8,18
+111,Di tích Lịch sử Ngã ba Giồng,10.8685215,106.5604153,park;nature;relaxation,4.3,45,0,8,18
+112,Disco Travel - Du lịch Quốc Tế Khám Phá,10.8151663,106.6734822,entertainment;attraction,4.3,60,0,8,18
+113,Hòa Khánh Nam,10.8487302,106.4168393,history;museum;culture,4.3,90,60000,8,18
+114,Hòa Khánh Đông,10.8759072,106.4014433,history;museum;culture,4.3,90,60000,8,18
+115,Hội quán 99,10.904278,106.70301,entertainment;attraction,4.3,60,0,8,18
+116,Hồ Con Rùa,10.782588,106.6958888,history;landmark,4.3,60,0,8,18
+117,Nhà Hàng Khách Sạn Mỹ Đình,10.5375242,106.4058578,food;restaurant,4.3,90,0,10,22
+118,Nhà Hàng Lẩu Cua,10.8184378,106.6990062,food;restaurant,4.3,90,0,0,23
+119,Nhà Hàng Rơm BBQ,10.7736789,106.6992615,food;restaurant,4.3,90,0,10,22
+120,Quán Phở 2000,10.7718157,106.697747,food;restaurant,4.3,90,0,10,22
+121,Sculpture Garden,10.7747342,106.6938172,entertainment;attraction,4.3,60,0,8,18
+122,Secret Weapon Bunker Museum - Tet Offensive,10.7720281,106.6860762,history;museum;culture,4.3,90,60000,8,18
+123,Street Food Ghetto,10.7676116,106.6781032,entertainment;attraction,4.3,60,0,8,18
+124,Vincom Plus Nam Long Quận 7,10.743815,106.7325841,shopping;modern,4.3,120,0,8,18
+125,Đài Kỷ Niệm Thích Quảng Đức,10.774988,106.6866162,history;landmark,4.3,60,0,8,18
+126,Bia Liệt Sĩ Xã Vĩnh Lộc A,10.8135971,106.5777689,history;landmark,4.2,60,0,8,18
+127,BĐS Đại Phú Tín,10.9746023,106.6784183,viewpoint;modern,4.2,60,0,8,18
+128,Bảo Tàng TMA,10.8558846,106.6314853,history;museum;culture,4.2,90,50000,8,18
+129,Bảo Tàng Áo Dài,10.8097524,106.8497582,history;museum;culture,4.2,90,50000,8,18
+130,Chùa Huê Nghiêm Giảng,10.8002349,106.6898763,religious;culture,4.2,60,0,8,18
+131,Công ty Tân minh,10.959635,106.7261711,history;landmark,4.2,60,0,8,18
+132,"Công viên Gò Sao , Thạnh Xuân, Quận 12",10.864995,106.6656948,park;nature;relaxation,4.2,45,0,8,18
+133,Công viên Hoa hồng,10.766783,106.6597925,park;nature;relaxation,4.2,45,0,8,18
+134,Cảng cát lái,10.7638189,106.7934577,viewpoint;modern,4.2,60,0,8,18
+135,Nhà Hàng Cham Charm,10.7245881,106.7197193,food;restaurant,4.2,90,0,10,22
+136,Nhà Hàng Đồ Chay,10.8062565,106.6949559,food;restaurant,4.2,90,0,10,22
+137,Nhà Thờ Vĩnh Hiệp,10.8413788,106.6435409,religious;culture,4.2,60,0,8,18
+138,Pháo đài Bình Đông,10.7290793,106.6409841,history;museum;culture,4.2,90,50000,8,18
+139,Phố Thương Mại,10.8449583,106.8377232,shopping;modern,4.2,120,0,8,18
+140,Tanaka Tei,10.8007878,106.6434633,history;museum;culture,4.2,90,50000,8,18
+141,Thiên Quang Ni Tự,10.8852917,106.7868368,religious;culture,4.2,60,0,8,18
+142,Võ Văn Tần,10.8255033,106.4574649,history;landmark,4.2,60,0,8,18
+143,CBES Mini Museum,10.7925945,106.7718011,history;museum;culture,4.1,90,40000,8,18
+144,Chùa Giác Lâm,10.7789121,106.6492197,religious;culture,4.1,60,0,8,18
+145,Chùa Hưng Long,10.7819294,106.6510647,religious;culture,4.1,60,0,8,18
+146,Công viên Chung cư Phú An,10.8652789,106.6567666,park;nature;relaxation,4.1,45,0,8,18
+147,Công viên Dạ Nam,10.7489187,106.6835781,park;nature;relaxation,4.1,45,0,8,18
+148,Công viên thập cẩm effen,10.9008132,106.4616575,history;museum;culture,4.1,90,40000,8,18
+149,Fresh Produce Street Market,10.7637304,106.6956337,entertainment;attraction,4.1,60,0,8,18
+150,Hindu Temple,10.7728028,106.6956161,entertainment;attraction,4.1,60,0,8,18
+151,Hội quán Tam Sơn,10.7525739,106.6617227,religious;culture,4.1,60,0,8,18
+152,Khu Du Lịch Bình Qưới,10.8294989,106.7392535,entertainment;attraction,4.1,60,0,8,18
+153,Lăng Trương Vĩnh Ký,10.7556868,106.6815644,history;landmark,4.1,60,0,8,18
+154,Nhà Hàng Riverside Saigon,10.7728736,106.7062835,food;restaurant,4.1,90,0,10,22
+155,Street Art Street (partially demolished),10.780298,106.705046,entertainment;attraction,4.1,60,0,8,18
+156,Địa Đạo Phú Thọ Hòa,10.7842199,106.6312668,entertainment;attraction,4.1,60,0,8,18
+157,마누라집,10.749074,106.7297303,history;landmark,4.1,60,0,8,18
+158,Bún Bò Huế Gia Hội,10.78415,106.6975046,food;restaurant,4.0,90,0,10,22
+159,Cactus-Garden,10.774699,106.692279,entertainment;attraction,4.0,60,0,8,18
+160,Chùa Châu Long,10.5106628,106.4704466,religious;culture,4.0,60,0,8,18
+161,Chùa Phước Hòa,10.7683847,106.6813131,religious;culture,4.0,60,0,8,18
+162,Chùa Quan Âm,10.5369049,106.411009,religious;culture,4.0,60,0,8,18
+163,Công Viên Chung cư Sunview Town,10.865904,106.7285126,park;nature;relaxation,4.0,45,0,8,18
+164,Công viên Phúc An Khang,10.7269751,106.6476137,park;nature;relaxation,4.0,45,0,8,18
+165,Công viên Phần mềm Quang Trung,10.8537839,106.6283152,park;nature;relaxation,4.0,45,0,8,18
+166,Cầu Phú Cường,10.9809923,106.6433233,viewpoint;modern,4.0,60,0,8,18
+167,Nhà Hàng Bên Sông,10.7199051,106.7117175,food;restaurant,4.0,90,0,10,22
+168,Nhà Hàng Lion Beer,10.776619,106.7039069,food;restaurant,4.0,90,0,10,22
+169,Nhà Hàng Ngon,10.7773464,106.6996325,food;restaurant,4.0,90,0,10,22
+170,Nhà Hàng Nướng Barbecue Garden,10.7748184,106.6992492,food;restaurant,4.0,90,0,10,22
+171,Nhà Hàng Tiệc Cưới Ngọc Trâm,10.8491522,106.6365739,food;restaurant,4.0,90,0,10,22
+172,Nhà Hàng Vietnamese Kitchen,10.7666137,106.6922676,food;restaurant,4.0,90,0,10,22
+173,Nhà Hàng Wrap&Roll,10.7732882,106.7040253,food;restaurant,4.0,90,0,10,22
+174,Nhà Thiếu Nhi Quận 1,10.7849924,106.698682,history;museum;culture,4.0,90,30000,8,18
+175,Trung tâm mua sắm Sài Gòn Garden,10.7733608,106.7038659,shopping;modern,4.0,120,0,8,18
+176,Tượng Đức Bà Hòa Bình,10.7792301,106.6996004,history;landmark,4.0,60,0,8,18
+177,Tượng đài Chiến thắng Long An,10.5594009,106.4174221,park;nature;relaxation,4.0,45,0,8,18

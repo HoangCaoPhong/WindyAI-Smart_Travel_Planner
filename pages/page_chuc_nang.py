@@ -285,8 +285,8 @@ def render_tao_danh_sach_goi_y():
                     if ALGO_AVAILABLE:
                         with st.spinner("🔄 Đang tính toán lộ trình tối ưu bằng AI..."):
                             try:
-                                # Load POIs
-                                csv_path = os.path.join(os.path.dirname(__file__), "..", "data", "pois_hcm.csv")
+                                # Load POIs - Sử dụng dataset mở rộng (177 POIs)
+                                csv_path = os.path.join(os.path.dirname(__file__), "..", "data", "pois_hcm_extended.csv")
                                 pois = load_pois(csv_path)
                                 
                                 # Call algorithm
