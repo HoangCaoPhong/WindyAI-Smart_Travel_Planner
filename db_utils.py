@@ -1,5 +1,5 @@
 """
-Database utilities for Smart Travel
+Database utilities for WindyAI
 Using SQLite for better performance and scalability
 """
 import sqlite3

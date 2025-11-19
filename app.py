@@ -13,7 +13,8 @@ from pages.page_ho_so import page_ho_so
 from pages.page_sign_in_up import page_sign_in_up
 
 st.set_page_config(
-    page_title="Smart 1-Day Trip Planner",
+    page_title="WindyAI - Smart Travel Website",
+    page_icon="./logo/Final_WindyAI_Logo_WindyAI_Logo_(RemoveBackgroud).png.png",
     layout="wide",  
     initial_sidebar_state="collapsed"
 )
@@ -24,6 +25,11 @@ def load_css(file_name):
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 load_css("style.css")
+
+# Display WindyAI Logo
+col_logo, col_space = st.columns([0.2, 0.8])
+with col_logo:
+    st.image("./logo/Final_WindyAI_Logo_WindyAI_Logo_(RemoveBackgroud).png.png", width=150)
 
 # ======================
 # CUSTOM NAVIGATION FUNCTION
@@ -215,9 +221,10 @@ def minutes_to_str(m: int) -> str:
 # SIDEBAR
 # ======================
 with st.sidebar:
-    st.markdown("<div style='height: 1.5rem;'></div>", unsafe_allow_html=True)
+    st.image("./logo/Final_WindyAI_Logo_WindyAI_Logo_(RemoveBackgroud).png.png", width=120)
+    st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
     st.markdown("---")
-    st.sidebar.caption("© 2025 Smart 1-Day Trip Planner")
+    st.sidebar.caption("© 2025 WindyAI")
 
 # ======================================================
 # THANH ĐIỀU HƯỚNG VÀ ROUTING

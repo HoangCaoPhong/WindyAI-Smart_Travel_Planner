@@ -4,7 +4,7 @@ import requests
 
 NOMINATIM = "https://nominatim.openstreetmap.org"
 OSRM = "https://router.project-osrm.org"
-UA = {"User-Agent": "SmartTravel-Web/1.0"}
+UA = {"User-Agent": "WindyAI/1.0"}
 
 def geocode(address):
     """

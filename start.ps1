@@ -1,7 +1,7 @@
-# Smart Travel - Startup Script
-# Chạy ứng dụng Smart Travel với Streamlit
+# WindyAI - Startup Script
+# Chạy ứng dụng WindyAI với Streamlit
 
-Write-Host "🚀 Starting Smart Travel Application..." -ForegroundColor Green
+Write-Host "🚀 Starting WindyAI Application..." -ForegroundColor Green
 Write-Host ""
 
 # Check if running from correct directory

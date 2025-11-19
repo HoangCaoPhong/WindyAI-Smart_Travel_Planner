@@ -1,4 +1,4 @@
-"""Utility functions for Smart Travel app"""
+"""Utility functions for WindyAI app"""
 from datetime import time
 
 def time_to_minutes(t: time) -> int:

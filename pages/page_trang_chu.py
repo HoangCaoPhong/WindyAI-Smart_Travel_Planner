@@ -7,14 +7,14 @@ def page_trang_chu():
     col_text, col_image = st.columns([1.05, 1], gap="large")
     with col_text:
         st.markdown(
-            "<div class='badge-pill'>✨ Smart 1-Day Trip Planner</div>",
+            "<div class='badge-pill'>✨ WindyAI - Smart Travel Website</div>",
             unsafe_allow_html=True,
         )
         st.markdown(
             """
             <h1 class='home-title'
                 style='font-size: 3.4rem; font-weight: 750; line-height: 1.15; margin-bottom: 1.2rem; margin-top: 1.2rem;'>
-                1 CÂU GIỚI THIỆU.
+                Lên kế hoạch du lịch<br>thông minh với AI
             </h1>
             """,
             unsafe_allow_html=True,
