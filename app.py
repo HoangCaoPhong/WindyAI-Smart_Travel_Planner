@@ -4,6 +4,7 @@ from datetime import time
 import json
 import os
 import db_utils  # SQLite database utilities
+import utils  # Utility functions
 
 # Import page modules
 from pages.page_trang_chu import page_trang_chu
@@ -316,17 +317,6 @@ st.markdown("""
         align-items: center; /* Căn giữa theo chiều dọc */
     }
     
-    /* Căn giữa logo trong cột của nó */
-    div[data-testid="stHorizontalBlock"]:has(div.nav-marker) div[data-testid="column"]:first-child {
-        justify-content: center !important;
-        display: flex !important;
-    }
-    
-    div[data-testid="stHorizontalBlock"]:has(div.nav-marker) div[data-testid="column"]:first-child img {
-        margin: 0 auto !important;
-        display: block !important;
-    }
-    
     /* Ẩn marker */
     div.nav-marker {
         display: none;
@@ -340,7 +330,18 @@ nav_cols = st.columns([0.18] + [0.82 / len(menu_options)] * len(menu_options))
 with nav_cols[0]:
     # Marker để CSS target đúng block này
     st.markdown('<div class="nav-marker"></div>', unsafe_allow_html=True)
-    st.image("./logo/Final_WindyAI_Logo_WindyAI_Logo_(RemoveBackgroud).png.png", width=100)
+    
+    # Load logo base64
+    logo_path = "./logo/Final_WindyAI_Logo_WindyAI_Logo_(RemoveBackgroud).png.png"
+    logo_base64 = utils.get_image_base64(logo_path)
+    img_src = f"data:image/png;base64,{logo_base64}" if logo_base64 else ""
+    
+    # Render logo centered with HTML
+    st.markdown(f"""
+        <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
+            <img src="{img_src}" width="100" style="display: block;">
+        </div>
+    """, unsafe_allow_html=True)
 
 # Navigation buttons ở các cột còn lại
 icon_map = {
