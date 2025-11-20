@@ -1,7 +1,7 @@
-# 📁 CẤU TRÚC PROJECT - SMART TRAVEL OPTIMIZATION
+# 📁 CẤU TRÚC PROJECT - WINDYAI SMART TRAVEL
 
 ## 🎯 Tổng Quan
-Project được tổ chức lại theo cấu trúc modular, tách biệt rõ ràng giữa:
+Project **WindyAI** (tiền thân là Smart Travel Optimization) được tổ chức lại theo cấu trúc modular, tách biệt rõ ràng giữa:
 - **Web Interface** (Streamlit)
 - **Algorithm Core** (Algo1)
 - **Data & Database**
@@ -11,13 +11,13 @@ Project được tổ chức lại theo cấu trúc modular, tách biệt rõ r�
 ## 📂 Cấu Trúc Thư Mục
 
 ```
-SmartTravelProject/
+WindyAI/
 │
 ├── 🚀 app.py                      # Main entry point - Chạy web app
 │
 ├── 📄 pages/                      # Modular pages (Web interface)
 │   ├── page_trang_chu.py         # Trang chủ
-│   ├── page_gioi_thieu.py        # Giới thiệu
+│   ├── page_gioi_thieu.py        # Giới thiệu (Về dự án & Thành viên)
 │   ├── page_chuc_nang.py         # ⭐ Chức năng (tích hợp algo1)
 │   ├── page_ho_so.py             # Hồ sơ người dùng
 │   └── page_sign_in_up.py        # Đăng nhập/Đăng ký
@@ -35,11 +35,12 @@ SmartTravelProject/
 │
 ├── 🗄️ Database & Utilities
 │   ├── db_utils.py               # SQLite database operations
-│   ├── utils.py                  # Helper functions (time conversion)
+│   ├── utils.py                  # Helper functions (time conversion, image utils)
 │   └── smarttravel.db            # SQLite database (users, schedules)
 │
 ├── 🎨 Frontend Assets
-│   └── style.css                 # CSS styling cho web
+│   ├── style.css                 # CSS styling cho web
+│   └── logo/                     # Logo assets
 │
 ├── 🧪 Testing & Demo
 │   ├── run_demo.py               # Test algo1 độc lập
@@ -212,5 +213,5 @@ Các file sau đã được đánh dấu xóa bởi `cleanup_project.ps1`:
 
 ---
 
-**Last Updated:** 2025-11-16
-**Version:** 2.0 (Modular + Algo1 Integrated)
+**Last Updated:** 2025-11-20
+**Version:** 2.1 (Rebranded to WindyAI + UI Improvements)
