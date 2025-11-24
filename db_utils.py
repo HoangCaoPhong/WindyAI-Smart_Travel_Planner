@@ -1,143 +1,187 @@
 """
 Database utilities for WindyAI
-Using SQLite for better performance and scalability
+Using Supabase API (via supabase-py)
 """
-import sqlite3
 import os
-from datetime import datetime
 import json
+import bcrypt
+from datetime import datetime
+from dotenv import load_dotenv
+from supabase import create_client, Client
 
-DB_FILE = "smarttravel.db"
+# Load environment variables
+load_dotenv()
 
-def get_db_connection():
-    """Get database connection"""
-    conn = sqlite3.connect(DB_FILE)
-    conn.row_factory = sqlite3.Row  # Return rows as dictionaries
-    return conn
+# Supabase Configuration
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+# Initialize Supabase Client
+supabase: Client = None
+if SUPABASE_URL and SUPABASE_KEY:
+    try:
+        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+        print(f"✅ Connected to Supabase: {SUPABASE_URL}")
+    except Exception as e:
+        print(f"❌ Failed to connect to Supabase: {e}")
+
+# ======================
+# CORE FUNCTIONS
+# ======================
 
 def init_database():
-    """Initialize database with required tables"""
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    
-    # Users table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    
-    # Schedules table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS schedules (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            destination TEXT NOT NULL,
-            budget REAL NOT NULL,
-            start_time TEXT NOT NULL,
-            end_time TEXT NOT NULL,
-            timeline_json TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
-        )
-    ''')
-    
-    # Create indexes for better performance
-    cursor.execute('CREATE INDEX IF NOT EXISTS idx_user_email ON users(email)')
-    cursor.execute('CREATE INDEX IF NOT EXISTS idx_schedule_user ON schedules(user_id)')
-    
-    conn.commit()
-    conn.close()
+    """
+    Initialize database tables.
+    Since we are using Supabase API, tables should be created via SQL Editor.
+    This function will print the SQL commands needed.
+    """
+    print("⚠️ Using Supabase API. Please run the following SQL in Supabase SQL Editor to create tables:")
+    print("""
+    -- Create users table
+    CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    );
+
+    -- Create schedules table
+    CREATE TABLE IF NOT EXISTS schedules (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        destination TEXT NOT NULL,
+        budget FLOAT NOT NULL,
+        start_time TEXT NOT NULL,
+        end_time TEXT NOT NULL,
+        timeline_json TEXT NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    );
+    """)
 
 def add_user(email, password):
-    """Add a new user"""
+    """Add a new user with hashed password"""
+    if not supabase:
+        return False, "Supabase not configured"
+    
     try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute('INSERT INTO users (email, password) VALUES (?, ?)', (email, password))
-        conn.commit()
-        user_id = cursor.lastrowid
-        conn.close()
-        return True, user_id
-    except sqlite3.IntegrityError:
+        # Check if user exists
+        existing = supabase.table("users").select("id").eq("email", email).execute()
+        if existing.data:
+            return False, None
+            
+        # Hash password
+        hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        
+        # Insert new user
+        data = {
+            "email": email,
+            "password": hashed,
+            "created_at": datetime.utcnow().isoformat()
+        }
+        response = supabase.table("users").insert(data).execute()
+        
+        if response.data:
+            return True, response.data[0]['id']
+        return False, None
+    except Exception as e:
+        print(f"Error adding user: {e}")
         return False, None
 
 def get_user(email):
     """Get user by email"""
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM users WHERE email = ?', (email,))
-    user = cursor.fetchone()
-    conn.close()
-    return dict(user) if user else None
+    if not supabase:
+        return None
+        
+    try:
+        response = supabase.table("users").select("*").eq("email", email).execute()
+        if response.data:
+            return response.data[0]
+        return None
+    except Exception as e:
+        print(f"Error getting user: {e}")
+        return None
 
 def verify_user(email, password):
-    """Verify user credentials"""
+    """Verify user credentials with hashed password"""
     user = get_user(email)
-    if user and user['password'] == password:
-        return True, user['id']
+    if user:
+        stored_password = user['password']
+        # Check if password matches hash
+        try:
+            if bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8')):
+                return True, user['id']
+        except ValueError:
+            # Fallback for old plain text passwords (optional, for migration)
+            if stored_password == password:
+                return True, user['id']
+                
     return False, None
 
 def add_schedule(user_id, destination, budget, start_time, end_time, timeline):
     """Add a new schedule for user"""
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    
-    # Convert timeline list to JSON string
-    timeline_json = json.dumps(timeline, ensure_ascii=False)
-    
-    cursor.execute('''
-        INSERT INTO schedules (user_id, destination, budget, start_time, end_time, timeline_json)
-        VALUES (?, ?, ?, ?, ?, ?)
-    ''', (user_id, destination, budget, start_time, end_time, timeline_json))
-    
-    conn.commit()
-    schedule_id = cursor.lastrowid
-    conn.close()
-    return schedule_id
+    if not supabase:
+        return None
+        
+    try:
+        # Convert timeline list to JSON string
+        timeline_str = json.dumps(timeline, ensure_ascii=False)
+        
+        data = {
+            "user_id": user_id,
+            "destination": destination,
+            "budget": budget,
+            "start_time": start_time,
+            "end_time": end_time,
+            "timeline_json": timeline_str,
+            "created_at": datetime.utcnow().isoformat()
+        }
+        
+        response = supabase.table("schedules").insert(data).execute()
+        if response.data:
+            return response.data[0]['id']
+        return None
+    except Exception as e:
+        print(f"Error adding schedule: {e}")
+        return None
 
 def get_user_schedules(user_id):
     """Get all schedules for a user"""
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT * FROM schedules 
-        WHERE user_id = ? 
-        ORDER BY created_at DESC
-    ''', (user_id,))
-    
-    schedules = cursor.fetchall()
-    conn.close()
-    
-    # Convert to list of dicts and parse JSON timeline
-    result = []
-    for schedule in schedules:
-        schedule_dict = dict(schedule)
-        schedule_dict['timeline'] = json.loads(schedule_dict['timeline_json'])
-        del schedule_dict['timeline_json']  # Remove raw JSON field
-        result.append(schedule_dict)
-    
-    return result
+    if not supabase:
+        return []
+        
+    try:
+        response = supabase.table("schedules").select("*").eq("user_id", user_id).order("created_at", desc=True).execute()
+        
+        schedules = []
+        for item in response.data:
+            # Parse JSON timeline
+            item['timeline'] = json.loads(item['timeline_json'])
+            schedules.append(item)
+            
+        return schedules
+    except Exception as e:
+        print(f"Error getting schedules: {e}")
+        return []
 
 def delete_schedule(schedule_id, user_id):
     """Delete a schedule (with user ownership check)"""
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('''
-        DELETE FROM schedules 
-        WHERE id = ? AND user_id = ?
-    ''', (schedule_id, user_id))
-    
-    rows_affected = cursor.rowcount
-    conn.commit()
-    conn.close()
-    return rows_affected > 0
+    if not supabase:
+        return False
+        
+    try:
+        # Check ownership first
+        check = supabase.table("schedules").select("id").eq("id", schedule_id).eq("user_id", user_id).execute()
+        if not check.data:
+            return False
+            
+        supabase.table("schedules").delete().eq("id", schedule_id).execute()
+        return True
+    except Exception as e:
+        print(f"Error deleting schedule: {e}")
+        return False
 
 def migrate_from_json(json_file="database.json"):
-    """Migrate data from JSON to SQLite (one-time migration)"""
+    """Migrate data from JSON to Database (one-time migration)"""
     if not os.path.exists(json_file):
         return False, "JSON file not found"
     
@@ -151,11 +195,17 @@ def migrate_from_json(json_file="database.json"):
         # Migrate users
         email_to_id = {}
         for email, password in users_data.items():
-            success, user_id = add_user(email, password)
-            if success:
-                email_to_id[email] = user_id
+            # Check if user exists first
+            existing = get_user(email)
+            if not existing:
+                success, user_id = add_user(email, password)
+                if success:
+                    email_to_id[email] = user_id
+            else:
+                email_to_id[email] = existing['id']
         
         # Migrate schedules
+        count_schedules = 0
         for email, udata in user_data.items():
             if email in email_to_id:
                 user_id = email_to_id[email]
@@ -170,8 +220,10 @@ def migrate_from_json(json_file="database.json"):
                         end_time=schedule.get('end_time', ''),
                         timeline=schedule.get('timeline', [])
                     )
+                    count_schedules += 1
         
-        return True, f"Migrated {len(email_to_id)} users successfully"
+        return True, f"Migrated users and {count_schedules} schedules successfully"
     
     except Exception as e:
         return False, f"Migration error: {str(e)}"
+

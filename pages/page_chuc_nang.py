@@ -180,7 +180,7 @@ def render_tim_kiem_nhanh():
                 st.session_state["latest_schedule"] = schedule_data
 
                 # Nút lưu (nếu đã đăng nhập)
-                if st.session_state.get("current_user"):
+                if st.session_state.get("current_user") is not None:
                     st.markdown("---")
                     col_save, col_space = st.columns([1, 2])
                     with col_save:
@@ -467,7 +467,7 @@ def render_tao_danh_sach_goi_y():
                                 st.session_state["latest_schedule"] = schedule_data
                                 
                                 # Save button
-                                if st.session_state.get("current_user"):
+                                if st.session_state.get("current_user") is not None:
                                     st.markdown("---")
                                     if st.button("💾 Lưu lịch trình vào hồ sơ", use_container_width=True):
                                         user_id = st.session_state.get("user_id")
