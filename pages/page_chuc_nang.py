@@ -597,6 +597,10 @@ def render_tim_duong_di():
                 center_lon = (lon1 + lon2) / 2
                 
                 # Tạo bản đồ Leaflet với OSRM routing
+                # Pre-process names to avoid backslash in f-string (Python < 3.12 issue)
+                start_name_safe = result['start']['name'].replace("'", "\\'")
+                end_name_safe = result['end']['name'].replace("'", "\\'")
+                
                 map_html = f"""
                 <!DOCTYPE html>
                 <html>
@@ -640,11 +644,11 @@ def render_tim_duong_di():
                         }});
                         
                         L.marker([{lat1}, {lon1}], {{icon: startIcon}})
-                            .bindPopup('<b>🟢 Điểm bắt đầu</b><br>{result['start']['name'].replace("'", "\\'")}')
+                            .bindPopup('<b>🟢 Điểm bắt đầu</b><br>{start_name_safe}')
                             .addTo(map);
                         
                         L.marker([{lat2}, {lon2}], {{icon: endIcon}})
-                            .bindPopup('<b>🔴 Điểm kết thúc</b><br>{result['end']['name'].replace("'", "\\'")}')
+                            .bindPopup('<b>🔴 Điểm kết thúc</b><br>{end_name_safe}')
                             .addTo(map);
                         
                         // Get route from OSRM
