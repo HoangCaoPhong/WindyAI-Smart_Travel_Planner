@@ -1,6 +1,7 @@
 """Trang Đăng nhập / Đăng ký"""
 import streamlit as st
 import db_utils
+import time
 
 
 def page_sign_in_up():
@@ -36,6 +37,8 @@ def page_sign_in_up():
                         st.session_state.cookie_manager.set("user_email", email_in, key="set_login_cookie")
                     
                     st.success(f"Đăng nhập thành công! Xin chào **{email_in}** 🎉")
+                    # Wait a bit for cookie to be set
+                    time.sleep(0.5)
                     st.rerun()
                 else:
                     st.error("Email hoặc mật khẩu không đúng.")
@@ -70,6 +73,8 @@ def page_sign_in_up():
                         st.session_state.cookie_manager.set("user_email", email_up, key="set_signup_cookie")
                         
                     st.success(f"Đăng ký thành công! Xin chào **{email_up}** 🎉")
+                    # Wait a bit for cookie to be set
+                    time.sleep(0.5)
                     st.rerun()
                 else:
                     # result contains error message if success is False

@@ -26,7 +26,7 @@ st.set_page_config(
 # ======================
 # Initialize Cookie Manager
 if 'cookie_manager' not in st.session_state:
-    st.session_state.cookie_manager = stx.CookieManager()
+    st.session_state.cookie_manager = stx.CookieManager(key="auth_cookie_manager")
 
 cookie_manager = st.session_state.cookie_manager
 
@@ -48,15 +48,18 @@ if "latest_schedule" not in st.session_state:
 if not st.session_state.get("current_user"):
     # Get all cookies
     cookies = cookie_manager.get_all()
-    user_email_cookie = cookies.get("user_email")
     
-    if user_email_cookie:
-        # Verify user exists in DB
-        user = db_utils.get_user(user_email_cookie)
-        if user and isinstance(user, dict):
-            st.session_state["current_user"] = user.get("email")
-            st.session_state["user_id"] = user.get("id")
-            # st.toast(f"👋 Chào mừng trở lại, {user['email']}!", icon="🎉")
+    if cookies:
+        user_email_cookie = cookies.get("user_email")
+        
+        if user_email_cookie:
+            # Verify user exists in DB
+            user = db_utils.get_user(user_email_cookie)
+            if user and isinstance(user, dict):
+                st.session_state["current_user"] = user.get("email")
+                st.session_state["user_id"] = user.get("id")
+                # Force a rerun to update UI immediately after restoring session
+                st.rerun()
 
 def load_css(file_name):
     """Tải file CSS để áp dụng vào ứng dụng."""
