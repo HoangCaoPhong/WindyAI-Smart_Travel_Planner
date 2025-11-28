@@ -6,8 +6,8 @@ Chạy file này để khởi động chương trình
 """
 
 from ui import get_vehicle_choice, get_user_locations, display_route_steps, display_comparison_result
-from routing import get_route_geometry, get_route_steps
-from mapping import create_single_vehicle_map, create_comparison_map
+from core.algo2.routing import get_route_geometry, get_route_steps
+from core.algo2.mapping import create_single_vehicle_map, create_comparison_map
 
 
 def show_route_for_vehicle(lon1, lat1, lon2, lat2, name1, name2, vehicle_type):

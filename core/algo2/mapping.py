@@ -156,3 +156,4 @@ def create_comparison_map(lat1, lon1, lat2, lon2, name1, name2,
     }
     
     return output_file, comparison
+

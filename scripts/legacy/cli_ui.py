@@ -4,8 +4,8 @@
 Module giao diện người dùng - xử lý input/output và hiển thị
 """
 
-from geocoding import geocode
-from weather import get_weather
+from core.algo2.routing import geocode
+from core.algo4.weather import get_weather
 
 
 def get_vehicle_choice():

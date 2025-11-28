@@ -5,6 +5,7 @@ Project **WindyAI** (tiền thân là Smart Travel Optimization) được tổ c
 - **Web Interface** (Streamlit)
 - **Algorithm Core** (Algo1)
 - **Data & Database**
+- **Services** (Database & Utilities)
 
 ---
 
@@ -30,37 +31,37 @@ WindyAI/
 │   ├── config.py                 # Cấu hình (speeds, costs, weights)
 │   └── __init__.py
 │
-├── 📊 data/                       # Dữ liệu
-│   └── pois_hcm.csv              # POIs Hồ Chí Minh (20 địa điểm)
+├── 🛠️ services/                   # Core Services
+│   ├── db.py                     # Database operations (Supabase)
+│   ├── utils.py                  # Helper functions
+│   └── __init__.py
 │
-├── 🗄️ Database & Utilities
-│   ├── db_utils.py               # SQLite database operations
-│   ├── utils.py                  # Helper functions (time conversion, image utils)
-│   └── smarttravel.db            # SQLite database (users, schedules)
+├── 📜 scripts/                    # Scripts & Tools
+│   ├── fetch_pois_large.py       # Script lấy dữ liệu POI
+│   ├── fetch_pois_osm.py         # Script lấy dữ liệu OSM
+│   ├── check_user.py             # Script kiểm tra user
+│   └── legacy/                   # Code cũ (đã ngưng sử dụng)
+│       ├── main.py
+│       └── ui.py
+│
+├── 📊 data/                       # Dữ liệu
+│   ├── pois_hcm_large.csv        # POIs Hồ Chí Minh
+│   └── README.md
 │
 ├── 🎨 Frontend Assets
 │   ├── style.css                 # CSS styling cho web
 │   └── logo/                     # Logo assets
 │
-├── 🧪 Testing & Demo
-│   ├── run_demo.py               # Test algo1 độc lập
-│   └── algo1-flowchart.md        # Flowchart thuật toán
-│
 ├── 📦 Configuration
 │   ├── requirements.txt          # Python dependencies
-│   ├── .gitignore                # Git ignore rules
-│   └── start.ps1                 # PowerShell start script
+│   ├── runtime.txt               # Python runtime version
+│   ├── start.ps1                 # PowerShell start script
+│   ├── WEATHER_SETUP.md          # Hướng dẫn setup thời tiết
+│   └── PROJECT_STRUCTURE.md      # ⭐ This file
 │
-├── 📖 Documentation
-│   ├── README.md                 # Main documentation
-│   ├── CHANGELOG.md              # Change history
-│   ├── CHANGELOG_v2.md           # Version 2 changes
-│   ├── CODE_RULES.md             # Development rules
-│   ├── PROJECT_STRUCTURE.md     # ⭐ This file
-│   └── LICENSE                   # License
-│
-└── 🧹 Scripts
-    └── cleanup_project.ps1       # Script dọn dẹp file thừa
+└── 📖 Documentation
+    ├── README.md                 # Main documentation
+    └── LICENSE                   # License
 ```
 
 ---
@@ -80,7 +81,7 @@ app.py
 ```
 pages/page_chuc_nang.py
   └── core/solver_route.plan_route()
-        ├── load_pois() from data/pois_hcm.csv
+        ├── load_pois() from data/pois_hcm_large.csv
         ├── core/scorer.score_candidate()
         ├── core/utils_geo.travel_info()
         └── Return optimized route
@@ -90,7 +91,7 @@ pages/page_chuc_nang.py
 ```
 User Input → page_chuc_nang.py → algo1 → Optimized Route → Display
                                     ↓
-                            Save to smarttravel.db (via db_utils.py)
+                            Save to Supabase (via services/db.py)
 ```
 
 ---
@@ -104,63 +105,15 @@ streamlit run app.py
 python -m streamlit run app.py
 ```
 
-### Test Thuật Toán Riêng
-```bash
-python run_demo.py
-```
-
-### Dọn Dẹp Project
-```powershell
-.\cleanup_project.ps1
-```
-
 ---
 
 ## ⚙️ Cấu Hình Algo1
 
-File `core/config.py` chứa các tham số:
+File `core/algo1/config.py` chứa các tham số:
 ```python
 SPEEDS_KMH = {"walking": 5.0, "motorbike": 25.0, "taxi": 35.0}
 COST_PER_KM = {"walking": 0.0, "motorbike": 2000.0, "taxi": 12000.0}
-
-# Trọng số scoring
-ALPHA = 1.0      # Travel time weight
-BETA = 0.5       # Visit duration weight
-GAMMA = 0.000001 # Cost scaling
-DELTA = 2.0      # Rating bonus
-EPSILON = 3.0    # Preference bonus
 ```
-
----
-
-## 📊 Dữ Liệu POIs
-
-File `data/pois_hcm.csv` format:
-```csv
-id,name,lat,lon,tags,rating,visit_duration_min,entry_fee,open_hour,close_hour
-1,Nhà thờ Đức Bà,10.7797,106.6990,history;landmark;religious,4.5,45,0,8,17
-```
-
-**Columns:**
-- `id`: Unique identifier
-- `name`: Tên địa điểm
-- `lat`, `lon`: Tọa độ GPS
-- `tags`: Danh sách tag (phân cách bằng `;`)
-- `rating`: Đánh giá (0-5)
-- `visit_duration_min`: Thời gian tham quan (phút)
-- `entry_fee`: Phí vào cửa (VND)
-- `open_hour`, `close_hour`: Giờ mở/đóng cửa
-
----
-
-## 🔧 Thêm POIs Mới
-
-Chỉnh sửa `data/pois_hcm.csv`:
-```csv
-21,Địa điểm mới,10.xxxx,106.xxxx,food;shopping,4.5,60,0,8,22
-```
-
-Restart app để load dữ liệu mới.
 
 ---
 
@@ -171,19 +124,9 @@ Xem file `requirements.txt`:
 streamlit
 pandas
 numpy
+supabase
+...
 ```
-
----
-
-## 🧹 Files Đã Xóa (Không Dùng Nữa)
-
-Các file sau đã được đánh dấu xóa bởi `cleanup_project.ps1`:
-- ❌ `SmartTravel.py` - Entry point cũ
-- ❌ `flask_backend.py` - Flask backend không dùng
-- ❌ `src/` - Thư mục cấu trúc cũ
-- ❌ `static/` - CSS đã copy sang root
-- ❌ `page_chuc_nang_new.py` - File test
-- ❌ `__pycache__/` - Python cache
 
 ---
 
@@ -206,12 +149,5 @@ Các file sau đã được đánh dấu xóa bởi `cleanup_project.ps1`:
 
 ---
 
-## 📞 Liên Hệ
-
-- **GitHub:** [HoangCaoPhong/SmartTravelProject](https://github.com/HoangCaoPhong/SmartTravelProject)
-- **Email:** hcphong2425@clc.fitus.edu.vn
-
----
-
-**Last Updated:** 2025-11-20
-**Version:** 2.1 (Rebranded to WindyAI + UI Improvements)
+**Last Updated:** 2025-05-23
+**Version:** 2.2 (Refactored Structure)

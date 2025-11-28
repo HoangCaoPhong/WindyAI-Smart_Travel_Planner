@@ -3,8 +3,8 @@ from datetime import time
 # from streamlit_option_menu import option_menu  # Replaced with custom navigation
 import json
 import os
-import db_utils  # SQLite database utilities
-import utils  # Utility functions
+import services.db as db_utils  # SQLite database utilities
+import services.utils as utils  # Utility functions
 import extra_streamlit_components as stx
 
 # Import page modules

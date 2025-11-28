@@ -43,3 +43,4 @@ def get_weather(lat, lon):
         }
     except (requests.exceptions.RequestException, KeyError, IndexError):
         return None
+

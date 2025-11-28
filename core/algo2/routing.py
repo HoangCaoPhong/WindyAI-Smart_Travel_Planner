@@ -79,6 +79,71 @@ def osrm_route(lon1, lat1, lon2, lat2, vehicle_type="driving"):
         print(f"OSRM error: {e}")
         return None
 
+def get_route_geometry(lon1, lat1, lon2, lat2, vehicle_type="driving"):
+    """
+    Lấy hình học tuyến đường để vẽ bản đồ.
+    
+    Args:
+        lon1, lat1: Tọa độ điểm bắt đầu
+        lon2, lat2: Tọa độ điểm đích
+        vehicle_type: "driving" (ô tô) hoặc "bike" (xe máy)
+        
+    Returns:
+        tuple: (geometry, distance_km, duration_hours)
+    """
+    try:
+        r = requests.get(
+            f"{OSRM}/route/v1/{vehicle_type}/{lon1},{lat1};{lon2},{lat2}",
+            params={"overview": "full", "geometries": "geojson"},
+            headers=UA,
+            timeout=15
+        )
+        r.raise_for_status()
+        data = r.json()
+        route = data["routes"][0]
+        
+        return (
+            route["geometry"],
+            route["distance"] / 1000.0,
+            route["duration"] / 3600.0
+        )
+    except Exception as e:
+        print(f"Route geometry error: {e}")
+        return None, None, None
+
+
+def get_route_steps(lon1, lat1, lon2, lat2, vehicle_type="driving"):
+    """
+    Lấy các bước chỉ dẫn chi tiết.
+    
+    Args:
+        lon1, lat1: Tọa độ điểm bắt đầu
+        lon2, lat2: Tọa độ điểm đích
+        vehicle_type: "driving" (ô tô) hoặc "bike" (xe máy)
+        
+    Returns:
+        dict: Thông tin route với keys: distance_km, duration_min, steps
+    """
+    route = osrm_route(lon1, lat1, lon2, lat2, vehicle_type)
+    if not route:
+        return None
+    
+    # Convert steps format for compatibility
+    steps = []
+    for step in route.get("steps", []):
+        steps.append({
+            "instruction": step.get("instruction", "Tiếp tục"),
+            "street_name": step.get("street", ""),
+            "distance": step.get("distance_m", 0)
+        })
+    
+    return {
+        "distance_km": route["distance_km"],
+        "duration_min": route["duration_min"],
+        "steps": steps
+    }
+
+
 def get_directions(start_address, end_address, vehicle_type="driving"):
     """
     Hàm chính: Lấy chỉ dẫn từ địa chỉ đầu đến địa chỉ cuối.
