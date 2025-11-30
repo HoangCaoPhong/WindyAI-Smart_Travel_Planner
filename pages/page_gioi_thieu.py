@@ -371,6 +371,11 @@ def page_gioi_thieu():
     init_feedback_db()
     inject_custom_css()
 
+    # Reset modal state if we just entered this page from another page
+    if st.session_state.get("last_page_visited") != "Giới thiệu":
+        st.session_state.show_member_modal = False
+        st.session_state.last_page_visited = "Giới thiệu"
+
     if "show_member_modal" not in st.session_state:
         st.session_state.show_member_modal = False
     if "current_member_idx" not in st.session_state:
