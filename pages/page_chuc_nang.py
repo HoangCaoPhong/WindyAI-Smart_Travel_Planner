@@ -21,6 +21,8 @@ try:
     ROUTING_AVAILABLE = True
 except ImportError:
     ROUTING_AVAILABLE = False
+    geocode = None
+    get_directions = None
 
 # Import weather service
 try:
@@ -634,6 +636,10 @@ def render_bao_thoi_tiet():
     if submitted:
         if not WEATHER_AVAILABLE:
              st.error("❌ Module thời tiết chưa được cài đặt.")
+             return
+
+        if not ROUTING_AVAILABLE or geocode is None:
+             st.error("❌ Không thể tìm kiếm địa điểm (Module Routing/Geocoding thiếu hoặc bị lỗi).")
              return
 
         with st.spinner(f"🔍 Đang tìm kiếm '{location}'..."):

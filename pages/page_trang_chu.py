@@ -3,8 +3,9 @@ import streamlit as st
 import base64
 import os
 
+@st.cache_data
 def get_video_base64(filename):
-    """Đọc file video và chuyển sang base64"""
+    """Đọc file video và chuyển sang base64 (có cache)"""
     current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     video_path = os.path.join(current_dir, "assets", "background", filename)
     
