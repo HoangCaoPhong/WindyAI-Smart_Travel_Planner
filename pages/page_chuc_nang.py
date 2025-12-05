@@ -5,6 +5,7 @@ from datetime import time, datetime
 import services.db as db_utils
 from services.utils import time_to_minutes, minutes_to_str
 import os
+import json
 
 # Import algo1 modules (POI optimization)
 try:
@@ -374,14 +375,25 @@ def render_tao_danh_sach_goi_y():
                                     if st.button("💾 Lưu lịch trình vào hồ sơ", width='stretch'):
                                         user_id = st.session_state.get("user_id")
                                         if user_id:
-                                            dest_names = ", ".join([r['name'] for r in route])
+                                            # Prepare timeline for storage matching page_ho_so.py expectations
+                                            timeline_to_save = []
+                                            for stop in route:
+                                                timeline_to_save.append({
+                                                    "place": stop['name'],
+                                                    "arrive": stop['arrive_time'].strftime('%H:%M'),
+                                                    "depart": stop['depart_time'].strftime('%H:%M')
+                                                })
+                                            
+                                            # Create a summary destination string
+                                            dest_names = f"{len(route)} địa điểm tại TP.HCM"
+                                            
                                             success = db_utils.add_schedule(
                                                 user_id,
                                                 dest_names,
                                                 budget,
                                                 start_time.strftime('%H:%M'),
                                                 end_time.strftime('%H:%M'),
-                                                schedule_data,
+                                                timeline_to_save,
                                             )
                                             if success:
                                                 st.success("✅ Đã lưu thành công!")
@@ -503,6 +515,11 @@ def render_tim_duong_di():
                 start_name_safe = result['start']['name'].replace("'", "\\'")
                 end_name_safe = result['end']['name'].replace("'", "\\'")
                 
+                # Prepare geometry and stats
+                geometry_json = json.dumps(result['route']['geometry'])
+                distance_km = result['route']['distance_km']
+                duration_min = result['route']['duration_min']
+                
                 map_html = f"""
                 <!DOCTYPE html>
                 <html>
@@ -553,26 +570,17 @@ def render_tim_duong_di():
                             .bindPopup('<b>🔴 Điểm kết thúc</b><br>{end_name_safe}')
                             .addTo(map);
                         
-                        // Get route from OSRM
-                        fetch('https://router.project-osrm.org/route/v1/{vehicle_type}/{lon1},{lat1};{lon2},{lat2}?overview=full&geometries=geojson')
-                            .then(response => response.json())
-                            .then(data => {{
-                                if (data.routes && data.routes.length > 0) {{
-                                    var route = data.routes[0];
-                                    var coords = route.geometry.coordinates.map(c => [c[1], c[0]]);
-                                    
-                                    L.polyline(coords, {{
-                                        color: '#2563eb',
-                                        weight: 5,
-                                        opacity: 0.7
-                                    }}).addTo(map).bindPopup('<b>Lộ trình</b><br>' + 
-                                        (route.distance/1000).toFixed(1) + ' km<br>' + 
-                                        (route.duration/60).toFixed(0) + ' phút');
-                                    
-                                    map.fitBounds(L.polyline(coords).getBounds(), {{padding: [50, 50]}});
-                                }}
-                            }})
-                            .catch(err => console.error('Route error:', err));
+                        // Draw route from Python data
+                        var geometry = {geometry_json};
+                        var coords = geometry.coordinates.map(c => [c[1], c[0]]);
+                        
+                        L.polyline(coords, {{
+                            color: '#2563eb',
+                            weight: 5,
+                            opacity: 0.7
+                        }}).addTo(map).bindPopup('<b>Lộ trình</b><br>{distance_km:.1f} km<br>{duration_min:.0f} phút');
+                        
+                        map.fitBounds(L.polyline(coords).getBounds(), {{padding: [50, 50]}});
                     </script>
                 </body>
                 </html>

@@ -1,10 +1,50 @@
 #core/routing.py — Algo2: Tìm đường đi với OSRM + Nominatim
 import time
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 NOMINATIM = "https://nominatim.openstreetmap.org"
-OSRM = "https://router.project-osrm.org"
-UA = {"User-Agent": "WindyAI/1.0"}
+UA = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+}
+
+def get_session():
+    session = requests.Session()
+    retry = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
+
+def _fetch_osrm_data(lon1, lat1, lon2, lat2, vehicle_type, params):
+    session = get_session()
+    
+    # List of servers to try
+    servers = [
+        "https://router.project-osrm.org",
+        "http://router.project-osrm.org"
+    ]
+    
+    # Add FOSSGIS servers as fallback
+    if vehicle_type == "driving":
+        servers.append("https://routing.openstreetmap.de/routed-car")
+    elif vehicle_type == "bike":
+        servers.append("https://routing.openstreetmap.de/routed-bike")
+        
+    for server in servers:
+        try:
+            url = f"{server}/route/v1/{vehicle_type}/{lon1},{lat1};{lon2},{lat2}"
+            r = session.get(url, params=params, headers=UA, timeout=30)
+            r.raise_for_status()
+            data = r.json()
+            if data.get("code") == "Ok":
+                return data
+        except Exception as e:
+            print(f"Error connecting to {server}: {e}")
+            continue
+            
+    return None
 
 def geocode(address):
     """
@@ -13,11 +53,12 @@ def geocode(address):
     """
     try:
         time.sleep(1.0)  # Rate limiting
-        r = requests.get(
+        session = get_session()
+        r = session.get(
             f"{NOMINATIM}/search", 
             params={"q": address, "format": "jsonv2", "limit": 1}, 
             headers=UA,
-            timeout=10
+            timeout=30
         )
         r.raise_for_status()
         j = r.json()
@@ -41,16 +82,9 @@ def osrm_route(lon1, lat1, lon2, lat2, vehicle_type="driving"):
     hoặc None nếu lỗi
     """
     try:
-        r = requests.get(
-            f"{OSRM}/route/v1/{vehicle_type}/{lon1},{lat1};{lon2},{lat2}",
-            params={"overview": "false", "steps": "true"}, 
-            headers=UA,
-            timeout=15
-        )
-        r.raise_for_status()
-        data = r.json()
+        data = _fetch_osrm_data(lon1, lat1, lon2, lat2, vehicle_type, {"overview": "full", "geometries": "geojson", "steps": "true"})
         
-        if not data.get("routes"):
+        if not data or not data.get("routes"):
             return None
             
         route = data["routes"][0]
@@ -73,7 +107,8 @@ def osrm_route(lon1, lat1, lon2, lat2, vehicle_type="driving"):
         return {
             "distance_km": distance_km,
             "duration_min": duration_min,
-            "steps": steps
+            "steps": steps,
+            "geometry": route["geometry"]
         }
     except Exception as e:
         print(f"OSRM error: {e}")
@@ -92,11 +127,17 @@ def get_route_geometry(lon1, lat1, lon2, lat2, vehicle_type="driving"):
         tuple: (geometry, distance_km, duration_hours)
     """
     try:
-        r = requests.get(
-            f"{OSRM}/route/v1/{vehicle_type}/{lon1},{lat1};{lon2},{lat2}",
-            params={"overview": "full", "geometries": "geojson"},
-            headers=UA,
-            timeout=15
+        data = _fetch_osrm_data(lon1, lat1, lon2, lat2, vehicle_type, {"overview": "full", "geometries": "geojson"})
+        
+        if not data or not data.get("routes"):
+            return None, None, None
+
+        route = data["routes"][0]
+        
+        return (
+            route["geometry"],
+            route["distance"] / 1000.0,
+            route["duration"] / 3600.0
         )
         r.raise_for_status()
         data = r.json()
