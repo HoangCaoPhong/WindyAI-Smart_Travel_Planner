@@ -368,14 +368,14 @@ with nav_cols[0]:
     st.markdown('<div class="nav-marker"></div>', unsafe_allow_html=True)
     
     # Load logo base64
-    logo_path = "assets/logo/Final_WindyAI_Logo_WindyAI_Logo_(RemoveBackgroud).png.png"
+    logo_path = "assets/logo/logo.png"
     logo_base64 = utils.get_image_base64(logo_path)
     img_src = f"data:image/png;base64,{logo_base64}" if logo_base64 else ""
     
     # Render logo centered with HTML
     st.markdown(f"""
         <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
-            <img src="{img_src}" width="100" style="display: block; margin-bottom: 15px;">
+            <img src="{img_src}" style="height: 200px; width: auto; object-fit: contain;">
         </div>
     """, unsafe_allow_html=True)
 

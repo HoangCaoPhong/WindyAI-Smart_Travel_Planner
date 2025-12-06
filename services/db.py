@@ -57,15 +57,14 @@ def add_user(email, password):
             "password": hashed,
             "created_at": datetime.utcnow().isoformat()
         }
-        # Use returning='minimal' to avoid 556 error if permissions are tricky
-        supabase.table("users").insert(data, returning='minimal').execute()
         
-        # Fetch the created user to get ID
-        created_user = supabase.table("users").select("id").eq("email", email).execute()
-        if created_user.data:
-            return True, created_user.data[0]['id']
+        # Insert and get returned data
+        response = supabase.table("users").insert(data).execute()
+        
+        if response.data:
+            return True, response.data[0]['id']
             
-        return False, "User created but ID not found"
+        return False, "User created but no data returned"
     except Exception as e:
         print(f"Error adding user: {e}")
         return False, str(e)
@@ -119,15 +118,11 @@ def add_schedule(user_id, destination, budget, start_time, end_time, timeline):
             "created_at": datetime.utcnow().isoformat()
         }
         
-        # Use returning='minimal' to avoid 556 error
-        supabase.table("schedules").insert(data, returning='minimal').execute()
+        # Insert and get returned data
+        response = supabase.table("schedules").insert(data).execute()
         
-        # Fetch the created schedule ID (assuming latest for this user)
-        # This is a bit risky if multiple inserts happen at once, but acceptable for this scale
-        created = supabase.table("schedules").select("id").eq("user_id", user_id).order("created_at", desc=True).limit(1).execute()
-        
-        if created.data:
-            return created.data[0]['id']
+        if response.data:
+            return response.data[0]['id']
         return None
     except Exception as e:
         print(f"Error adding schedule: {e}")

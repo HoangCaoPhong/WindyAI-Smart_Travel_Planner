@@ -53,7 +53,7 @@ MEMBERS = [
 def get_logo_img():
     # Use the new assets path
     current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    logo_path = os.path.join(current_dir, "assets", "logo", "WindyAI_Logo.png")
+    logo_path = os.path.join(current_dir, "assets", "logo", "logo.png")
     # Fallback if png not found, try the other one
     if not os.path.exists(logo_path):
          logo_path = os.path.join(current_dir, "assets", "logo", "Final_WindyAI_Logo_WindyAI_Logo_(RemoveBackgroud).png.png")

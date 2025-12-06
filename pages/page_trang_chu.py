@@ -1,13 +1,14 @@
-`"""Trang Trang chủ với Video Background"""
+"""Trang Trang chủ với Video Background"""
 import streamlit as st
 import base64
 import os
+import textwrap
 
 @st.cache_data
-def get_media_base64(filename):
+def get_base64_media(filename, folder="background"):
     """Đọc file media (video/image) và chuyển sang base64 (có cache)"""
     current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    file_path = os.path.join(current_dir, "assets", "background", filename)
+    file_path = os.path.join(current_dir, "assets", folder, filename)
     
     if not os.path.exists(file_path):
         return None, None
@@ -15,13 +16,16 @@ def get_media_base64(filename):
     try:
         with open(file_path, "rb") as f:
             data = f.read()
-            b64 = base64.b64encode(data).decode("utf-8")
+            # Ensure no newlines or carriage returns in base64 string
+            b64 = base64.b64encode(data).decode("utf-8").replace("\n", "").replace("\r", "")
             
             ext = filename.split('.')[-1].lower()
             if ext in ['mp4', 'mov']:
                 return b64, 'video/mp4'
             elif ext in ['png', 'jpg', 'jpeg']:
-                return b64, f'image/{ext}'
+                # Fix mime type for jpg
+                mime_type = 'image/jpeg' if ext in ['jpg', 'jpeg'] else f'image/{ext}'
+                return b64, mime_type
             elif ext == 'gif':
                 return b64, 'image/gif'
             else:
@@ -30,34 +34,55 @@ def get_media_base64(filename):
         st.error(f"Lỗi khi đọc file {filename}: {e}")
         return None, None
 
-def render_hero_section(filename, content_html, height="85vh", overlay_opacity=0.5):
-    b64, mime = get_media_base64(filename)
+def render_hero_section(filename, content_html, height="85vh", overlay_opacity=0.5, folder="background"):
+    # Check file size first
+    current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    file_path = os.path.join(current_dir, "assets", folder, filename)
+    
+    # Clean up indentation in HTML content
+    content_html = textwrap.dedent(content_html).strip()
+    
+    if os.path.exists(file_path):
+        size_mb = os.path.getsize(file_path) / (1024 * 1024)
+        if size_mb > 10.0:  # Increased limit to 10MB to allow larger video files
+            # File too large for base64 inline injection (prevents string overflow/rendering issues)
+            st.warning(f"Background '{filename}' is too large ({size_mb:.1f}MB) for inline rendering. Showing placeholder.")
+            
+            placeholder_html = f"""
+            <div class="video-section" style="min-height: {height}; position: relative; overflow: hidden; border-radius: 20px; margin-bottom: 2rem; display: flex; align-items: center; justify-content: center; background-color: #1e293b;">
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, #1e293b, #0f172a); z-index: 0;"></div>
+                <div class="overlay-dark" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,{overlay_opacity}); z-index: 1; pointer-events: none;"></div>
+                <div class="content-box" style="position: relative; z-index: 2; width: 100%; padding: 2rem;">
+                    {content_html}
+                </div>
+            </div>
+            """
+            st.markdown(placeholder_html, unsafe_allow_html=True)
+            return
+
+    b64, mime = get_base64_media(filename, folder=folder)
     if not b64 or not mime:
-        st.error(f"Không tìm thấy file {filename}")
+        st.warning(f"Không thể tải resource: {filename}")
         return
 
     media_html = ""
+    # Use explicit tags instead of background-image style to avoid quote parsing issues
     if mime.startswith("video"):
-        media_html = f"""
-            <video class="video-bg" autoplay muted loop playsinline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;">
-                <source src="data:{mime};base64,{b64}" type="{mime}">
-            </video>
-        """
+        media_html = f"""<video autoplay muted loop playsinline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;"><source src="data:{mime};base64,{b64}" type="{mime}"></video>"""
     else:
-        # Use div with background-image for better stability
-        media_html = f"""
-            <div class="video-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('data:{mime};base64,{b64}'); background-size: cover; background-position: center; z-index: 0;"></div>
-        """
+        media_html = f"""<img src="data:{mime};base64,{b64}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;">"""
 
-    st.markdown(f"""
-    <div class="video-section" style="min-height: {height}; position: relative; overflow: hidden;">
+    # Render the complete section
+    full_html = f"""
+    <div class="video-section" style="min-height: {height}; position: relative; overflow: hidden; border-radius: 20px; margin-bottom: 2rem; display: flex; align-items: center; justify-content: center; background-color: #1e293b;">
         {media_html}
-        <div class="overlay-dark" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,{overlay_opacity}); z-index: 1;"></div>
-        <div class="content-box" style="position: relative; z-index: 2;">
+        <div class="overlay-dark" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,{overlay_opacity}); z-index: 1; pointer-events: none;"></div>
+        <div class="content-box" style="position: relative; z-index: 2; width: 100%; padding: 2rem;">
             {content_html}
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """
+    st.markdown(full_html, unsafe_allow_html=True)
 
 def page_trang_chu():
     """Hiển thị nội dung trang chủ với video/image background."""
