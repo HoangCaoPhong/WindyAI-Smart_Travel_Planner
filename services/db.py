@@ -17,7 +17,7 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 # Initialize Supabase Client
-supabase: Client = None
+supabase: Client | None = None
 if SUPABASE_URL and SUPABASE_KEY:
     try:
         supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -61,8 +61,10 @@ def add_user(email, password):
         # Insert and get returned data
         response = supabase.table("users").insert(data).execute()
         
-        if response.data:
-            return True, response.data[0]['id']
+        if response.data and isinstance(response.data, list) and len(response.data) > 0:
+            user_data = response.data[0]
+            if isinstance(user_data, dict):
+                return True, user_data.get('id')
             
         return False, "User created but no data returned"
     except Exception as e:
@@ -76,7 +78,7 @@ def get_user(email):
         
     try:
         response = supabase.table("users").select("*").eq("email", email).execute()
-        if response.data:
+        if response.data and len(response.data) > 0:
             return response.data[0]
         return None
     except Exception as e:
@@ -86,23 +88,26 @@ def get_user(email):
 def verify_user(email, password):
     """Verify user credentials with hashed password"""
     user = get_user(email)
-    if user:
-        stored_password = user['password']
+    if user and isinstance(user, dict):
+        stored_password = str(user.get('password', ''))
+        if not stored_password:
+            return False, None
+            
         # Check if password matches hash
         try:
             if bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8')):
-                return True, user['id']
+                return True, user.get('id')
         except ValueError:
             # Fallback for old plain text passwords (optional, for migration)
             if stored_password == password:
-                return True, user['id']
+                return True, user.get('id')
                 
     return False, None
 
 def add_schedule(user_id, destination, budget, start_time, end_time, timeline):
     """Add a new schedule for user"""
     if not supabase:
-        return None
+        return False, "Supabase not configured"
         
     try:
         # Convert timeline list to JSON string
@@ -121,12 +126,14 @@ def add_schedule(user_id, destination, budget, start_time, end_time, timeline):
         # Insert and get returned data
         response = supabase.table("schedules").insert(data).execute()
         
-        if response.data:
-            return response.data[0]['id']
-        return None
+        if response.data and isinstance(response.data, list) and len(response.data) > 0:
+            schedule_data = response.data[0]
+            if isinstance(schedule_data, dict):
+                return True, schedule_data.get('id')
+        return False, "No data returned from insert"
     except Exception as e:
         print(f"Error adding schedule: {e}")
-        return None
+        return False, str(e)
 
 def get_user_schedules(user_id):
     """Get all schedules for a user"""
@@ -134,13 +141,25 @@ def get_user_schedules(user_id):
         return []
         
     try:
+        # Ensure user_id is int if possible
+        try:
+            user_id = int(user_id)
+        except:
+            pass
+            
         response = supabase.table("schedules").select("*").eq("user_id", user_id).order("created_at", desc=True).execute()
         
         schedules = []
-        for item in response.data:
-            # Parse JSON timeline
-            item['timeline'] = json.loads(item['timeline_json'])
-            schedules.append(item)
+        if response.data and isinstance(response.data, list):
+            for item in response.data:
+                if isinstance(item, dict):
+                    # Parse JSON timeline
+                    timeline_json = item.get('timeline_json')
+                    if isinstance(timeline_json, str):
+                        item['timeline'] = json.loads(timeline_json)
+                    else:
+                        item['timeline'] = []
+                    schedules.append(item)
             
         return schedules
     except Exception as e:
@@ -186,7 +205,8 @@ def migrate_from_json(json_file="database.json"):
                 if success:
                     email_to_id[email] = user_id
             else:
-                email_to_id[email] = existing['id']
+                if isinstance(existing, dict):
+                    email_to_id[email] = existing.get('id')
         
         # Migrate schedules
         count_schedules = 0

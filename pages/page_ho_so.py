@@ -22,11 +22,14 @@ def page_ho_so():
 
         user_id = st.session_state.get("user_id")
         
+        # Debug info (Temporary)
+        # st.write(f"Debug Info: User ID = {user_id} (Type: {type(user_id)})")
+        
         if user_id:
             schedules = db_utils.get_user_schedules(user_id)
             
             if not schedules:
-                st.info("Bạn chưa có lịch trình nào được lưu. Hãy qua trang **Chức năng** > **Tìm kiếm nhanh** để tạo và lưu nhé!")
+                st.info("Bạn chưa có lịch trình nào được lưu. Hãy qua trang **Chức năng** > **Tạo lịch trình gợi ý** để tạo và lưu nhé!")
             else:
                 st.write(f"Bạn có **{len(schedules)}** lịch trình đã lưu:")
 
@@ -39,10 +42,30 @@ def page_ho_so():
                         st.markdown("---")
                         st.write("**Timeline chi tiết:**")
                         for item in schedule["timeline"]:
-                            st.markdown(
-                                f"- **{item['place']}**: {item['arrive']} – {item['depart']}"
-                            )
-                        st.markdown("---")
+                            # Get extended info with defaults for backward compatibility
+                            place = item.get('place', 'Unknown')
+                            arrive = item.get('arrive', '')
+                            depart = item.get('depart', '')
+                            mode = item.get('mode', '')
+                            travel_cost = item.get('travel_cost', 0)
+                            entry_fee = item.get('entry_fee', 0)
+                            
+                            # Display rich info
+                            st.markdown(f"##### 📍 {place}")
+                            st.write(f"⏰ **Thời gian:** {arrive} – {depart}")
+                            
+                            details = []
+                            if mode:
+                                details.append(f"🚗 {mode.title()}")
+                            if travel_cost > 0:
+                                details.append(f"💵 Đi lại: {travel_cost:,}đ")
+                            if entry_fee > 0:
+                                details.append(f"🎫 Vé: {entry_fee:,}đ")
+                                
+                            if details:
+                                st.caption(" | ".join(details))
+                            
+                            st.divider()
 
                         if st.button("🗑️ Xóa lịch trình này", key=f"delete_{schedule['id']}"):
                             if db_utils.delete_schedule(schedule['id'], user_id):

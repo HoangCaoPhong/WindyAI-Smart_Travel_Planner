@@ -374,20 +374,25 @@ def render_tao_danh_sach_goi_y():
                                     st.markdown("---")
                                     if st.button("💾 Lưu lịch trình vào hồ sơ", width='stretch'):
                                         user_id = st.session_state.get("user_id")
-                                        if user_id:
+                                        if not user_id:
+                                            st.error("⚠️ Lỗi phiên đăng nhập: Không tìm thấy ID người dùng. Vui lòng đăng xuất và đăng nhập lại.")
+                                        elif user_id:
                                             # Prepare timeline for storage matching page_ho_so.py expectations
                                             timeline_to_save = []
                                             for stop in route:
                                                 timeline_to_save.append({
                                                     "place": stop['name'],
                                                     "arrive": stop['arrive_time'].strftime('%H:%M'),
-                                                    "depart": stop['depart_time'].strftime('%H:%M')
+                                                    "depart": stop['depart_time'].strftime('%H:%M'),
+                                                    "mode": stop.get('mode', 'walking'),
+                                                    "travel_cost": stop.get('travel_cost', 0),
+                                                    "entry_fee": stop.get('entry_fee', 0)
                                                 })
                                             
                                             # Create a summary destination string
                                             dest_names = f"{len(route)} địa điểm tại TP.HCM"
                                             
-                                            success = db_utils.add_schedule(
+                                            success, msg = db_utils.add_schedule(
                                                 user_id,
                                                 dest_names,
                                                 budget,
@@ -398,7 +403,9 @@ def render_tao_danh_sach_goi_y():
                                             if success:
                                                 st.success("✅ Đã lưu thành công!")
                                             else:
-                                                st.error("❌ Lỗi khi lưu.")
+                                                st.error(f"❌ Lỗi khi lưu: {msg}")
+                                                if "invalid input syntax for type uuid" in str(msg):
+                                                    st.warning("⚠️ Phiên đăng nhập cũ không tương thích. Vui lòng Đăng xuất và Đăng nhập lại.")
                                 else:
                                     st.info("💡 Đăng nhập để lưu lịch trình vào hồ sơ.")
                                     

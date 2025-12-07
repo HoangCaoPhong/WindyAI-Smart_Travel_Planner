@@ -342,26 +342,7 @@ def render_contact_section():
                         st.balloons()
 
 
-def render_admin_dashboard():
-    with st.expander("🔐 ADMIN DASHBOARD (Dành cho Quản trị viên)"):
-        password = st.text_input("Nhập mật khẩu quản trị", type="password", key="admin_pass")
-        if password == "admin123":
-            st.success("Đăng nhập thành công! ✅")
-            df = get_all_feedback()
-            if not df.empty:
-                st.markdown(f"**Tổng số tin nhắn:** `{len(df)}`")
-                st.dataframe(df, use_container_width=True, hide_index=True)
-                csv = df.to_csv(index=False).encode('utf-8')
-                st.download_button(
-                    "📥 Tải báo cáo (CSV)",
-                    data=csv,
-                    file_name="feedback_report.csv",
-                    mime="text/csv"
-                )
-            else:
-                st.info("Chưa có tin nhắn nào trong Database.")
-        elif password:
-            st.error("Mật khẩu sai!")
+
 
 # ==========================================
 # 5. MAIN PAGE FUNCTION
@@ -451,7 +432,6 @@ def page_gioi_thieu():
 
     render_contact_section()
     st.write("")
-    render_admin_dashboard()
 
     if st.session_state.get("show_member_modal", False):
         show_member_modal()

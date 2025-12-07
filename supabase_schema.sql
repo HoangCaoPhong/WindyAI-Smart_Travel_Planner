@@ -7,9 +7,11 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Create schedules table
+-- Note: user_id type must match users.id type. 
+-- If users.id is UUID, use UUID. If Integer, use BIGINT.
 CREATE TABLE IF NOT EXISTS schedules (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE, -- Adjusted for Integer User IDs
     destination TEXT,
     budget NUMERIC,
     start_time TEXT,
