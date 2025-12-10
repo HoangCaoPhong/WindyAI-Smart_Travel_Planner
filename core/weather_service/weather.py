@@ -6,9 +6,43 @@ Module xử lý thời tiết - lấy thông tin thời tiết từ OpenWeatherM
 
 import requests
 
+def get_weather_description(code):
+    """Chuyển đổi mã WMO sang mô tả tiếng Việt"""
+    wmo_codes = {
+        0: "Trời quang",
+        1: "Ít mây",
+        2: "Mây rải rác",
+        3: "Nhiều mây",
+        45: "Sương mù",
+        48: "Sương mù đọng băng",
+        51: "Mưa phùn nhẹ",
+        53: "Mưa phùn vừa",
+        55: "Mưa phùn dày",
+        56: "Mưa phùn băng giá nhẹ",
+        57: "Mưa phùn băng giá dày",
+        61: "Mưa nhỏ",
+        63: "Mưa vừa",
+        65: "Mưa to",
+        66: "Mưa băng giá nhẹ",
+        67: "Mưa băng giá nặng",
+        71: "Tuyết rơi nhẹ",
+        73: "Tuyết rơi vừa",
+        75: "Tuyết rơi dày",
+        77: "Tuyết hạt",
+        80: "Mưa rào nhẹ",
+        81: "Mưa rào vừa",
+        82: "Mưa rào rất to",
+        85: "Mưa tuyết nhẹ",
+        86: "Mưa tuyết nặng",
+        95: "Dông nhẹ hoặc vừa",
+        96: "Dông có mưa đá nhẹ",
+        99: "Dông có mưa đá nặng"
+    }
+    return wmo_codes.get(code, "Không xác định")
+
 def get_weather(lat, lon):
     """
-    Lấy thông tin thời tiết cho một địa điểm sử dụng wttr.in (không cần API Key).
+    Lấy thông tin thời tiết cho một địa điểm sử dụng Open-Meteo.
     
     Args:
         lat, lon: Tọa độ địa điểm
@@ -17,62 +51,44 @@ def get_weather(lat, lon):
         dict: Thông tin thời tiết hoặc None nếu lỗi
     """
     try:
-        # Sử dụng wttr.in với format JSON (j1) và ngôn ngữ tiếng Việt
-        url = f"https://wttr.in/{lat},{lon}?format=j1&lang=vi"
-        
-        # Thêm User-Agent để tránh bị chặn
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        url = "https://api.open-meteo.com/v1/forecast"
+        params = {
+            "latitude": lat,
+            "longitude": lon,
+            "current": "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m",
+            "daily": "weather_code,temperature_2m_max,temperature_2m_min,uv_index_max",
+            "timezone": "auto",
+            "forecast_days": 4  # Lấy hôm nay + 3 ngày tới
         }
         
-        r = requests.get(url, headers=headers, timeout=10)
+        r = requests.get(url, params=params, timeout=10)
         r.raise_for_status()
         data = r.json()
         
-        current = data["current_condition"][0]
+        current = data["current"]
+        daily = data["daily"]
         
-        # Lấy mô tả thời tiết (ưu tiên tiếng Việt)
-        description = ""
-        if "lang_vi" in current:
-            description = current["lang_vi"][0]["value"]
-        elif "weatherDesc" in current:
-            description = current["weatherDesc"][0]["value"]
-            
-        # Chuyển đổi tốc độ gió từ km/h sang m/s
-        wind_speed_kmph = float(current["windspeedKmph"])
-        wind_speed_ms = round(wind_speed_kmph / 3.6, 1)
-        
-        # Lấy dự báo thời tiết (3 ngày)
+        # Xử lý dự báo (bỏ qua hôm nay - index 0, lấy 3 ngày tiếp theo)
         forecast = []
-        if "weather" in data:
-            for day in data["weather"]:
-                # Lấy mô tả thời tiết (lấy buổi trưa hoặc mặc định)
-                day_desc = ""
-                if "hourly" in day and len(day["hourly"]) > 0:
-                    # Lấy khoảng giữa ngày (thường là index 4 cho 12:00)
-                    mid_day = day["hourly"][len(day["hourly"]) // 2]
-                    if "lang_vi" in mid_day:
-                        day_desc = mid_day["lang_vi"][0]["value"]
-                    elif "weatherDesc" in mid_day:
-                        day_desc = mid_day["weatherDesc"][0]["value"]
-                
+        for i in range(1, 4):
+            if i < len(daily["time"]):
                 forecast.append({
-                    "date": day["date"],
-                    "max_temp": float(day["maxtempC"]),
-                    "min_temp": float(day["mintempC"]),
-                    "description": day_desc,
-                    "uv": float(day.get("uvIndex", 0))
+                    "date": daily["time"][i],
+                    "max_temp": daily["temperature_2m_max"][i],
+                    "min_temp": daily["temperature_2m_min"][i],
+                    "description": get_weather_description(daily["weather_code"][i]),
+                    "uv": daily.get("uv_index_max", [0]*4)[i]
                 })
 
         return {
-            "temp": float(current["temp_C"]),
-            "feels_like": float(current["FeelsLikeC"]),
-            "humidity": int(current["humidity"]),
-            "description": description,
-            "wind_speed": wind_speed_ms,
+            "temp": current["temperature_2m"],
+            "feels_like": current["apparent_temperature"],
+            "humidity": current["relative_humidity_2m"],
+            "description": get_weather_description(current["weather_code"]),
+            "wind_speed": current["wind_speed_10m"],
             "forecast": forecast
         }
-    except (requests.exceptions.RequestException, KeyError, IndexError, ValueError) as e:
+    except Exception as e:
         print(f"Weather Error: {e}")
         return None
 

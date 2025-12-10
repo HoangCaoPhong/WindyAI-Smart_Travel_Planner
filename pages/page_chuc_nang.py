@@ -727,7 +727,7 @@ def render_bao_thoi_tiet():
                     if "mưa" in desc or "rain" in desc: return "🌧️"
                     if "mây" in desc or "cloud" in desc or "âm u" in desc: return "☁️"
                     if "nắng" in desc or "sun" in desc or "quang" in desc: return "☀️"
-                    if "bão" in desc or "storm" in desc: return "⛈️"
+                    if "bão" in desc or "storm" in desc or "dông" in desc: return "⛈️"
                     if "tuyết" in desc or "snow" in desc: return "❄️"
                     if "sương" in desc or "fog" in desc: return "🌫️"
                     return "🌤️"
