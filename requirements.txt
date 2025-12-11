@@ -13,19 +13,27 @@ python-dotenv==1.0.1
 # ========= HTTP & API =========
 requests==2.31.0
 
-# ========= SUPABASE (DB) =========
+# ========= SUPABASE (DATABASE) =========
 supabase>=2.0.0
 postgrest>=2.0.0
 
-# ========= DATABASE (SQLITE / OPTIONAL PG) =========
+# ========= DATABASE (SQLITE / POSTGRES) =========
 sqlalchemy>=2.0.0
-psycopg2-binary>=2.9.0   # OK trên Windows
+psycopg2-binary>=2.9.0   # Windows compatible
 
 # ========= IMAGE PROCESSING =========
 Pillow>=10.0.0
 
-# ========= BACKEND (FOR FUTURE API / SERVER) =========
+# ========= BACKEND WEB SERVICES =========
 flask>=3.0.0
 flask-session>=0.5.0
 fastapi==0.110.0
 uvicorn[standard]==0.38.0
+
+# ========= AI / LLM (ALGO6 CHATBOT) =========
+groq>=0.5.0              # GROQ API SDK (ưu tiên chính)
+# Không cần thư viện riêng cho Ollama vì dùng HTTP API
+
+# ========= NLP UTILITIES (LIGHTWEIGHT / OPTIONAL) =========
+tqdm>=4.66.0             # dùng cho xử lý batch nếu muốn
+regex>=2023.12.25        # cải thiện intent_detection
