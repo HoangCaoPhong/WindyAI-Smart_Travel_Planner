@@ -85,6 +85,53 @@ def geocode(location_name):
         
     return None
 
+def get_instruction_text(maneuver):
+    """Tạo hướng dẫn chỉ đường tiếng Việt từ OSRM maneuver"""
+    m_type = maneuver.get("type", "")
+    modifier = maneuver.get("modifier", "")
+    
+    # Mapping modifiers
+    directions = {
+        "uturn": "quay đầu",
+        "sharp right": "rẽ gắt sang phải",
+        "right": "rẽ phải",
+        "slight right": "chếch sang phải",
+        "straight": "đi thẳng",
+        "slight left": "chếch sang trái",
+        "left": "rẽ trái",
+        "sharp left": "rẽ gắt sang trái"
+    }
+    
+    direction_text = directions.get(modifier, "")
+    
+    if m_type == "depart":
+        return f"Xuất phát về hướng {direction_text}" if direction_text else "Xuất phát"
+    elif m_type == "arrive":
+        return "Đến đích"
+    elif m_type == "turn":
+        return f"{direction_text.capitalize()}" if direction_text else "Rẽ"
+    elif m_type == "merge":
+        return f"Nhập làn {direction_text}" if direction_text else "Nhập làn"
+    elif m_type == "on ramp":
+        return f"Vào đường dẫn {direction_text}" if direction_text else "Vào đường dẫn"
+    elif m_type == "off ramp":
+        return f"Ra đường dẫn {direction_text}" if direction_text else "Ra đường dẫn"
+    elif m_type == "fork":
+        return f"Tại ngã ba, {direction_text}" if direction_text else "Tại ngã ba"
+    elif m_type == "end of road":
+        return f"Hết đường, {direction_text}" if direction_text else "Hết đường"
+    elif m_type == "roundabout" or m_type == "rotary":
+        exit_num = maneuver.get("exit", "")
+        if exit_num:
+            return f"Vào vòng xuyến và ra ở lối thứ {exit_num}"
+        return "Vào vòng xuyến"
+    elif m_type == "exit roundabout":
+        return "Ra khỏi vòng xuyến"
+    elif m_type == "notification":
+        return "Lưu ý"
+    else:
+        return f"{direction_text.capitalize()}" if direction_text else "Đi tiếp"
+
 def osrm_route(lon1, lat1, lon2, lat2, vehicle_type="driving"):
     """
     Tìm đường đi bằng OSRM API.
@@ -111,7 +158,8 @@ def osrm_route(lon1, lat1, lon2, lat2, vehicle_type="driving"):
         steps = []
         for leg in route["legs"]:
             for step in leg["steps"]:
-                instruction = step.get("maneuver", {}).get("instruction", "Tiếp tục")
+                maneuver = step.get("maneuver", {})
+                instruction = get_instruction_text(maneuver)
                 street = step.get("name", "")
                 distance_m = step.get("distance", 0)
                 steps.append({
