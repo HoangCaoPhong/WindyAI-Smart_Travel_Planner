@@ -9,17 +9,17 @@ import json
 
 # Import algo1 modules (POI optimization)
 try:
-    from core.route_optimization import load_pois, plan_route
+    from core.algo1 import load_pois, plan_route
     ALGO_AVAILABLE = True
 except ImportError:
     ALGO_AVAILABLE = False
-    st.warning("⚠️ Không tìm thấy module route_optimization. Sử dụng chế độ demo.")
+    st.warning("⚠️ Không tìm thấy module algo1 (route_optimization). Sử dụng chế độ demo.")
 
 # Import algo2 modules (Routing/Navigation)
 ROUTING_ERROR = None
 try:
-    from core.map_integration import get_directions
-    from core.map_integration.routing import geocode
+    from core.algo2 import get_directions
+    from core.algo2.routing import geocode
     ROUTING_AVAILABLE = True
 except ImportError as e:
     ROUTING_AVAILABLE = False
@@ -30,14 +30,14 @@ except ImportError as e:
 
 # Import weather service
 try:
-    from core.weather_service.weather import get_weather
+    from core.algo4.weather import get_weather
     WEATHER_AVAILABLE = True
 except ImportError:
     WEATHER_AVAILABLE = False
 
 # Import algo3 modules (Image Recognition)
 try:
-    from core.image_recognition.predict_vn import get_predictor
+    from core.algo3.predict_vn import get_predictor
     from PIL import Image
     IMAGE_RECOGNITION_AVAILABLE = True
 except ImportError:
@@ -45,7 +45,7 @@ except ImportError:
 
 # Import algo5 modules (Recommendation)
 try:
-    from core.recommendation import recommend_places
+    from core.algo5 import recommend_places
     RECOMMENDATION_AVAILABLE = True
 except ImportError:
     RECOMMENDATION_AVAILABLE = False

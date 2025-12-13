@@ -1,8 +1,13 @@
 import streamlit as st
+import sys
+import os
+
+# Add root directory to sys.path to allow importing pages, services, core
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from datetime import time
 # from streamlit_option_menu import option_menu  # Replaced with custom navigation
 import json
-import os
 import services.db as db_utils  # SQLite database utilities
 import services.utils as utils  # Utility functions
 import extra_streamlit_components as stx
@@ -63,7 +68,10 @@ if not st.session_state.get("current_user"):
 
 def load_css(file_name):
     """Tải file CSS để áp dụng vào ứng dụng."""
-    with open(file_name, "r", encoding="utf-8") as f:
+    # Use absolute path relative to this file
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(current_dir, file_name)
+    with open(file_path, "r", encoding="utf-8") as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 load_css("style.css")

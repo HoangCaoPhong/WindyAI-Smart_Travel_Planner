@@ -3,7 +3,7 @@ import pandas as pd
 # Import load_pois from sibling package
 # Note: In a real package structure, this might need adjustment depending on how it's run.
 # But since we are running from root (app.py), absolute imports from core... work.
-from core.route_optimization import load_pois
+from core.algo1 import load_pois
 
 def recommend_places(csv_path, user_prefs, num_results=20, min_rating=3.5):
     """
