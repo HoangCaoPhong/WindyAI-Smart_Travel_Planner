@@ -63,11 +63,13 @@ button[style*="color:#000"] {
 }
 
 /* Ensure all Streamlit buttons have proper colors */
-.stButton > button {
+.stButton > button,
+.stDownloadButton > button {
     color: white !important;
 }
 
-.stButton > button:hover {
+.stButton > button:hover,
+.stDownloadButton > button:hover {
     color: white !important;
 }
 

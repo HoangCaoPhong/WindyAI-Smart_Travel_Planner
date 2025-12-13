@@ -6,6 +6,7 @@ import services.db as db_utils
 from services.utils import time_to_minutes, minutes_to_str
 import os
 import json
+import urllib.parse
 
 # Import algo1 modules (POI optimization)
 try:
@@ -118,6 +119,64 @@ def page_chuc_nang():
 
 def render_tao_danh_sach_goi_y():
     """Render phần Tạo lịch trình gợi ý - TÍCH HỢP ROUTE OPTIMIZATION"""
+    
+    # --- Handle Shared Link Defaults ---
+    query_params = st.query_params
+    auto_submit = False
+    
+    # Default values
+    default_start_loc = "Quận 1, TP.HCM"
+    default_budget = 1000000
+    default_start_time = time(9, 0)
+    default_end_time = time(21, 0)
+    default_history = True
+    default_food = True
+    default_shopping = False
+    default_nature = False
+    default_modern = False
+    default_culture = False
+    default_nightlife = False
+    default_religious = False
+
+    # Check if we have shared params
+    if "shared" in query_params and query_params["shared"] == "true":
+        # Parse params
+        p_start = query_params.get("start", default_start_loc)
+        try:
+            p_budget = int(query_params.get("budget", default_budget))
+        except:
+            p_budget = default_budget
+            
+        p_start_time = query_params.get("start_time", "09:00")
+        p_end_time = query_params.get("end_time", "21:00")
+        p_prefs = query_params.get("prefs", "").split(",")
+        
+        # Convert times
+        try:
+            default_start_time = datetime.strptime(p_start_time, "%H:%M").time()
+            default_end_time = datetime.strptime(p_end_time, "%H:%M").time()
+        except:
+            pass
+            
+        # Set defaults
+        default_start_loc = p_start
+        default_budget = p_budget
+        
+        # Prefs defaults
+        if p_prefs and p_prefs != [""]:
+            default_history = "history" in p_prefs or "landmark" in p_prefs
+            default_food = "food" in p_prefs or "street_food" in p_prefs
+            default_shopping = "shopping" in p_prefs or "market" in p_prefs
+            default_nature = "nature" in p_prefs or "park" in p_prefs
+            default_modern = "modern" in p_prefs or "viewpoint" in p_prefs
+            default_culture = "culture" in p_prefs or "museum" in p_prefs
+            default_nightlife = "nightlife" in p_prefs or "entertainment" in p_prefs
+            default_religious = "religious" in p_prefs or "architecture" in p_prefs
+        
+        # Set auto_submit flag if we haven't calculated yet
+        if 'latest_schedule' not in st.session_state:
+            auto_submit = True
+
     st.markdown("### 🗓️ Tạo lịch trình gợi ý")
     st.markdown(
         "<p class='feature-muted'>🎯 Nhập sở thích và yêu cầu, thuật toán AI sẽ tối ưu lịch trình cho bạn!</p>",
@@ -127,41 +186,41 @@ def render_tao_danh_sach_goi_y():
     # Form nhập liệu ở trên cùng
     st.markdown("#### 📝 Thông tin và sở thích")
     with st.form("suggest_form"):
-        start_location = st.text_input("Điểm xuất phát", value="Quận 1, TP.HCM", 
+        start_location = st.text_input("Điểm xuất phát", value=default_start_loc, 
                                       help="Vị trí bạn bắt đầu hành trình")
         
         # Chọn sở thích
         st.markdown("**Sở thích của bạn:**")
         col_pref1, col_pref2 = st.columns(2)
         with col_pref1:
-            pref_history = st.checkbox("🏛️ Lịch sử / Di tích", value=True)
-            pref_food = st.checkbox("🍜 Ẩm thực", value=True)
-            pref_shopping = st.checkbox("🛍️ Mua sắm", value=False)
-            pref_nature = st.checkbox("🌳 Thiên nhiên", value=False)
+            pref_history = st.checkbox("🏛️ Lịch sử / Di tích", value=default_history)
+            pref_food = st.checkbox("🍜 Ẩm thực", value=default_food)
+            pref_shopping = st.checkbox("🛍️ Mua sắm", value=default_shopping)
+            pref_nature = st.checkbox("🌳 Thiên nhiên", value=default_nature)
         with col_pref2:
-            pref_modern = st.checkbox("🏙️ Hiện đại", value=False)
-            pref_culture = st.checkbox("🎭 Văn hóa", value=False)
-            pref_nightlife = st.checkbox("🌃 Giải trí", value=False)
-            pref_religious = st.checkbox("🙏 Tôn giáo", value=False)
+            pref_modern = st.checkbox("🏙️ Hiện đại", value=default_modern)
+            pref_culture = st.checkbox("🎭 Văn hóa", value=default_culture)
+            pref_nightlife = st.checkbox("🌃 Giải trí", value=default_nightlife)
+            pref_religious = st.checkbox("🙏 Tôn giáo", value=default_religious)
         
         st.markdown("**Kế hoạch:**")
         c1, c2 = st.columns(2)
         with c1:
-            start_time = st.time_input("Giờ bắt đầu", value=time(9, 0))
+            start_time = st.time_input("Giờ bắt đầu", value=default_start_time)
         with c2:
-            end_time = st.time_input("Giờ kết thúc", value=time(21, 0))
+            end_time = st.time_input("Giờ kết thúc", value=default_end_time)
         budget = st.number_input(
             "Ngân sách tối đa (VND)",
             min_value=0,
-            value=1000000,
+            value=default_budget,
             step=100000,
         )
         submitted = st.form_submit_button("🎯 Tạo lịch trình tối ưu", width='stretch')
 
     # 1. Handle Submission (Calculation)
-    if submitted:
-        # Reset previous result
-        if 'latest_schedule' in st.session_state:
+    if submitted or auto_submit:
+        # Reset previous result if manual submit
+        if submitted and 'latest_schedule' in st.session_state:
             del st.session_state['latest_schedule']
             
         # Thu thập sở thích
@@ -324,13 +383,30 @@ def render_tao_danh_sach_goi_y():
             for idx, stop in enumerate(route, 1):
                 share_content += f"{idx}. {stop['name']} ({stop['arrive_time'].strftime('%H:%M')} - {stop['depart_time'].strftime('%H:%M')})\n"
             
-            st.download_button(
-                label="📥 Tải xuống lịch trình (.txt)",
-                data=share_content,
-                file_name="lich_trinh_tphcm.txt",
-                mime="text/plain"
-            )
+            col_share_btn, col_share_link = st.columns([1, 1])
             
+            with col_share_btn:
+                st.download_button(
+                    label="📥 Tải xuống (.txt)",
+                    data=share_content,
+                    file_name="lich_trinh_tphcm.txt",
+                    mime="text/plain"
+                )
+            
+            with col_share_link:
+                if st.button("🔗 Tạo link chia sẻ"):
+                    # Construct params
+                    params = {
+                        "shared": "true",
+                        "start": start_location,
+                        "budget": str(int(budget)),
+                        "start_time": start_time.strftime("%H:%M"),
+                        "end_time": end_time.strftime("%H:%M"),
+                        "prefs": ",".join(user_prefs)
+                    }
+                    st.query_params.update(params)
+                    st.success("✅ Đã tạo link! Hãy copy URL trên thanh địa chỉ trình duyệt.")
+
             with st.expander("📋 Xem nội dung text để copy"):
                 st.code(share_content, language="text")
             # ------------------------------------
