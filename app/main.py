@@ -20,7 +20,7 @@ from pages.page_ho_so import page_ho_so
 from pages.page_sign_in_up import page_sign_in_up
 
 st.set_page_config(
-    page_title="WindyAI - Smart Travel Website",
+    page_title="WindyAI - Smart Travel Planner",
     page_icon="assets/logo/logo.png",
     layout="wide",  
     initial_sidebar_state="collapsed"
@@ -383,7 +383,7 @@ with nav_cols[0]:
     # Render logo centered with HTML
     st.markdown(f"""
         <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
-            <img src="{img_src}" style="height: 200px; width: auto; object-fit: contain;">
+            <img src="{img_src}" style="height: 50px; width: auto; object-fit: contain;">
         </div>
     """, unsafe_allow_html=True)
 

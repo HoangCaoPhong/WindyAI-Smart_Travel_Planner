@@ -212,7 +212,7 @@ def page_trang_chu():
 
     # --- SECTION 1: HERO (City Night) ---
     render_hero_section("section-1_optimized.jpg", """
-        <div class="badge-pill">✨ WindyAI - Smart Travel Website</div>
+        <div class="badge-pill">✨ WindyAI - Smart Travel Planner</div>
         <h1 class="home-title">Lên kế hoạch du lịch<br>thông minh với AI</h1>
         <p class="home-subtitle">
             Chỉ cần nhập điểm đến, ngân sách và thời gian rảnh.<br>
