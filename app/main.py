@@ -383,7 +383,7 @@ with nav_cols[0]:
     # Render logo centered with HTML
     st.markdown(f"""
         <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
-            <img src="{img_src}" style="height: 50px; width: auto; object-fit: contain;">
+            <img src="{img_src}" style="height: 100px; width: auto; object-fit: contain;">
         </div>
     """, unsafe_allow_html=True)
 
