@@ -7,6 +7,15 @@ from .utils_geo import travel_info
 from .scorer import score_candidate
 from .config import DEFAULT_BUDGET, DEFAULT_TIME_WINDOW, DEFAULT_START
 
+# Define food-related tags
+FOOD_TAGS = {'food', 'restaurant', 'cafe', 'fast_food', 'bakery', 'bar', 'pub', 'ice_cream', 'street_food'}
+
+def is_food_place(poi_tags):
+    """Check if POI is a food place based on tags"""
+    if isinstance(poi_tags, list):
+        return any(tag in FOOD_TAGS for tag in poi_tags)
+    return False
+
 # ---------- Load POIs ----------
 def load_pois(csv_path, filter_tags=None, min_rating=None, max_pois=None):
     """
@@ -71,6 +80,7 @@ def plan_route(pois, user_prefs=None, start_loc=DEFAULT_START,
     budget_left = budget
     route = []
     visited = set()
+    last_food_time = None  # Track the finish time of the last food place
 
     while True:
         candidates = []
@@ -86,6 +96,11 @@ def plan_route(pois, user_prefs=None, start_loc=DEFAULT_START,
                 if (arrive.hour < poi["open_hour"] or finish.hour > poi["close_hour"]
                     or budget_left < poi["entry_fee"] + cost_vnd or finish > end_time):
                     continue
+
+                # Constraint: Avoid consecutive food places within a short time window (e.g., 2.5 hours)
+                if is_food_place(poi["tags"]):
+                    if last_food_time and arrive < last_food_time + timedelta(minutes=150):
+                        continue
 
                 score = score_candidate(poi, travel_min, cost_vnd, user_prefs)
                 candidates.append((score, poi, mode, arrive, finish, cost_vnd))
@@ -115,5 +130,9 @@ def plan_route(pois, user_prefs=None, start_loc=DEFAULT_START,
         budget_left -= (best_poi["entry_fee"] + cost)
         current_time = finish
         current_loc = (best_poi["lat"], best_poi["lon"])
+        
+        # Update last_food_time if the selected POI is a food place
+        if is_food_place(best_poi["tags"]):
+            last_food_time = finish
 
     return route
