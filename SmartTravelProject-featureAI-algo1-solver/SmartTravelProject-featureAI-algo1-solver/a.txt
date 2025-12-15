@@ -1,0 +1,483 @@
+main.py
+from fastapi import FastAPI
+from core.solver_route import load_pois, plan_route
+
+app = FastAPI(title="Smart Travel AI")
+
+@app.get("/")
+def home():
+    return {
+        "message": "Smart Travel AI API running — visit /docs",
+        "docs": "/docs"
+    }
+
+@app.post("/plan")
+def plan(input_data: dict):
+    pois = load_pois("data/pois_hcm_large.csv")  # dataset lớn
+    route = plan_route(
+        pois,
+        input_data.get("preferences", []),
+        tuple(input_data.get("start_location")),
+        (input_data["start_time"], input_data["end_time"]),
+        input_data.get("budget", 1_000_000),
+    )
+    return {
+        "total_stops": len(route),
+        "itinerary": [
+            {
+                "name": r["name"],
+                "arrive": r["arrive_time"].strftime("%H:%M"),
+                "depart": r["depart_time"].strftime("%H:%M"),
+                "mode": r["mode"],
+                "cost": int(r["travel_cost"]),
+                "entry_fee": int(r["entry_fee"])
+            } for r in route
+        ]
+    }
+
+
+#core/config.py — Cấu hình chung
+
+# core/config.py
+SPEEDS_KMH = {"walking": 5.0, "motorbike": 25.0, "taxi": 35.0}
+COST_PER_KM = {"walking": 0.0, "motorbike": 2000.0, "taxi": 12000.0}
+
+# Trọng số cho hàm đánh giá
+ALPHA = 1.0     # travel time weight
+BETA = 0.5      # visit duration weight
+GAMMA = 0.000001  # cost scaling
+DELTA = 2.0     # rating bonus weight
+EPSILON = 3.0   # preference bonus weight
+
+# Giới hạn mặc định
+DEFAULT_START = (10.7769, 106.7006)
+DEFAULT_TIME_WINDOW = ("2025-11-10 09:00", "2025-11-10 21:00")
+DEFAULT_BUDGET = 1000000.0
+
+#core/optimizer.py — Tối ưu hậu kỳ (2-opt, insertion)
+# core/optimizer.py
+from datetime import timedelta
+from core.utils_geo import travel_info
+
+def two_opt(route):
+    if len(route) < 4:
+        return route
+    best = route[:]
+    improved = True
+    while improved:
+        improved = False
+        for i in range(1, len(best) - 2):
+            for j in range(i + 1, len(best)):
+                if j - i == 1:
+                    continue
+                new_route = best[:]
+                new_route[i:j] = reversed(best[i:j])
+                if total_travel_time(new_route) < total_travel_time(best):
+                    best = new_route
+                    improved = True
+    return best
+
+def total_travel_time(route):
+    return sum(step.get("travel_time_min", 0) for step in route)
+
+# core/scorer.py
+from core.config import ALPHA, BETA, GAMMA, DELTA, EPSILON
+
+def preference_score(tags, user_prefs):
+    """
+    tags: list or set of tag strings for POI
+    user_prefs: list or set
+    return: [0..1] how well POI matches user's preferences
+    """
+    if not tags or not user_prefs:
+        return 0.0
+    tags_set = set(tags)
+    prefs_set = set(user_prefs)
+    return len(tags_set & prefs_set) / len(prefs_set)
+
+def score_candidate(poi, travel_min, travel_cost, user_prefs):
+    """
+    Lower score = better candidate (we will sort ascending).
+    poi: dict contains 'rating' and 'visit_duration_min'
+    """
+    pref = preference_score(poi.get("tags", []), user_prefs)
+    rating = float(poi.get("rating", 0.0))
+    visit_duration = float(poi.get("visit_duration_min", 30))
+    # score components: time, visit, cost penalize; rating and pref reduce score
+    score = (ALPHA * travel_min
+             + BETA * visit_duration
+             + GAMMA * travel_cost
+             - DELTA * rating
+             - EPSILON * pref)
+    return score
+
+# core/solver_route.py
+import pandas as pd
+from datetime import datetime, timedelta
+from core.utils_geo import travel_info
+from core.scorer import score_candidate
+from core.config import DEFAULT_BUDGET, DEFAULT_TIME_WINDOW, DEFAULT_START
+
+def load_pois(csv_path):
+    """
+    Load POIs from csv and normalize fields.
+    Required columns: id,name,lat,lon,open_hour,close_hour,visit_duration_min,entry_fee,rating,tags
+    tags stored as "a;b;c" in CSV -> becomes ['a','b','c']
+    Also fill alias 'visit_duration' for backward compatibility.
+    """
+    df = pd.read_csv(csv_path)
+    pois = df.to_dict("records")
+    for p in pois:
+        tags = p.get("tags", "")
+        p["tags"] = tags.split(";") if isinstance(tags, str) and tags != "" else []
+        # alias
+        p["visit_duration"] = p.get("visit_duration_min", p.get("visit_duration", 30))
+        # ensure numeric types
+        p["lat"] = float(p["lat"])
+        p["lon"] = float(p["lon"])
+        p["open_hour"] = int(p.get("open_hour", 0))
+        p["close_hour"] = int(p.get("close_hour", 23))
+        p["entry_fee"] = float(p.get("entry_fee", 0.0))
+        p["rating"] = float(p.get("rating", 0.0))
+    return pois
+
+def plan_route(pois, user_prefs=None, start_loc=DEFAULT_START,
+               time_window=DEFAULT_TIME_WINDOW, budget=DEFAULT_BUDGET):
+    """
+    Greedy + lookahead(1) route planner.
+    Returns list of route steps with arrival/depart times and costs.
+    """
+    user_prefs = user_prefs or []
+    start_time = datetime.strptime(time_window[0], "%Y-%m-%d %H:%M")
+    end_time = datetime.strptime(time_window[1], "%Y-%m-%d %H:%M")
+    current_time = start_time
+    current_loc = start_loc
+    budget_left = budget
+    visited = set()
+    route = []
+
+    while True:
+        candidates = []
+        for poi in pois:
+            if poi["id"] in visited:
+                continue
+
+            for mode in ["walking", "motorbike", "taxi"]:
+                _, travel_min, travel_cost = travel_info(current_loc, (poi["lat"], poi["lon"]), mode)
+                arrive = current_time + timedelta(minutes=travel_min)
+                finish = arrive + timedelta(minutes=float(poi.get("visit_duration_min", poi["visit_duration"])))
+
+                # constraints: open/close hour, overall end_time, budget
+                # Note: compare hours simply (assumes same-day)
+                if (arrive.hour < poi["open_hour"] or finish.hour > poi["close_hour"] or finish > end_time):
+                    continue
+
+                if budget_left < (travel_cost + poi.get("entry_fee", 0.0)):
+                    continue
+
+                score = score_candidate(poi, travel_min, travel_cost, user_prefs)
+                candidates.append((score, poi, mode, arrive, finish, travel_cost))
+
+        if not candidates:
+            break
+
+        # choose best candidate (lowest score)
+        candidates.sort(key=lambda x: x[0])
+        best = candidates[0]
+        _, best_poi, best_mode, arrive, finish, cost = best
+
+        route.append({
+            "id": best_poi["id"],
+            "name": best_poi["name"],
+            "mode": best_mode,
+            "arrive_time": arrive,
+            "depart_time": finish,
+            "travel_cost": cost,
+            "entry_fee": best_poi["entry_fee"]
+        })
+
+        visited.add(best_poi["id"])
+        budget_left -= (best_poi["entry_fee"] + cost)
+        current_time = finish
+        current_loc = (best_poi["lat"], best_poi["lon"])
+
+    return route
+
+# core/utils_geo.py
+import math
+from core.config import SPEEDS_KMH, COST_PER_KM
+
+def haversine_km(a, b):
+    """Return great-circle distance (km) between two (lat, lon) tuples."""
+    R = 6371.0
+    lat1, lon1 = map(math.radians, a)
+    lat2, lon2 = map(math.radians, b)
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    h = math.sin(dlat/2)**2 + math.cos(lat1)*math.cos(lat2)*math.sin(dlon/2)**2
+    return 2 * R * math.asin(math.sqrt(h))
+
+def travel_info(a, b, mode="motorbike"):
+    """
+    Return tuple (distance_km, time_min, cost_vnd) for travel between a and b.
+    a, b: (lat, lon)
+    mode: "walking" | "motorbike" | "taxi"
+    """
+    d = haversine_km(a, b)
+    speed = SPEEDS_KMH.get(mode, 25)
+    time_min = (d / speed) * 60.0
+    cost = d * COST_PER_KM.get(mode, 0.0)
+    return d, time_min, cost
+
+# tools/generate_dataset_osm.py
+
+import os
+import sys
+import pandas as pd
+
+# Thêm thư mục gốc vào PYTHONPATH
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
+
+from tools.osm_fetcher import fetch_osm_pois
+
+# Trung tâm TP.HCM
+CENTER = (10.7769, 106.7006)
+
+# Chia lưới 5x5 để bao phủ toàn TP.HCM
+LAT_OFFSETS = [-0.12, -0.06, 0, 0.06, 0.12]
+LON_OFFSETS = [-0.12, -0.06, 0, 0.06, 0.12]
+
+RADIUS = 3000   # mỗi ô quét bán kính 3km
+
+rows = []
+seen = set()
+id_counter = 1
+
+for dlat in LAT_OFFSETS:
+    for dlon in LON_OFFSETS:
+        lat = CENTER[0] + dlat
+        lon = CENTER[1] + dlon
+
+        print(f"Fetching POIs at cell: {lat}, {lon}")
+        elements = fetch_osm_pois(lat, lon, RADIUS)
+
+        for e in elements:
+            uid = e.get("id")
+            if uid in seen:
+                continue
+            seen.add(uid)
+
+            tags = e.get("tags", {})
+            name = tags.get("name")
+            if not name:
+                continue
+
+            rows.append({
+                "id": id_counter,
+                "name": name,
+                "lat": e["lat"],
+                "lon": e["lon"],
+                "open_hour": 6,
+                "close_hour": 22,
+                "visit_duration_min": 30,
+                "entry_fee": 0,
+                "rating": 4.0,
+                "tags": ";".join(tags.keys())
+            })
+            id_counter += 1
+
+df = pd.DataFrame(rows)
+os.makedirs("data", exist_ok=True)
+df.to_csv("data/pois_hcm_large.csv", index=False)
+print("Generated POIs:", len(df))
+
+
+import requests, time
+
+OVERPASS_URL = "https://overpass-api.de/api/interpreter"
+
+OSM_FILTERS = [
+    '["tourism"]',
+    '["amenity"]',
+    '["shop"]',
+    '["leisure"]',
+    '["historic"]'
+]
+
+def fetch_osm_pois(lat, lon, radius=5000):
+    query = f"""
+    [out:json][timeout:25];
+    (
+        {"".join([f"node {f} (around:{radius},{lat},{lon});" for f in OSM_FILTERS])}
+    );
+    out body;
+    """
+    for retry in range(3):
+        try:
+            res = requests.get(OVERPASS_URL, params={"data": query}, timeout=30)
+            res.raise_for_status()
+            return res.json().get("elements", [])
+        except:
+            time.sleep(2)
+    return []
+
+
+    algo1_pseudocode.md
+    Algorithm Algo1_PlanRoute
+Input:
+    POIs dataset (CSV >= 1000 records)
+    UserPreferences (list)
+    StartLocation (lat, lon)
+    TimeWindow: (StartTime, EndTime)
+    Budget
+
+Output:
+    Optimized itinerary (ordered list of POIs)
+
+-----------------------------------------------
+
+1. Load POIs from CSV into list POIs
+
+2. Initialize:
+       CurrentTime ← StartTime
+       CurrentLoc ← StartLocation
+       BudgetLeft ← Budget
+       Route ← empty list
+       Visited ← empty set
+
+3. Loop:
+       While exists unvisited POI AND CurrentTime < EndTime:
+
+           Candidates ← empty list
+
+           For each POI in POIs:
+               If POI.id in Visited:
+                   continue
+
+               For each transport mode in {walking, motorbike, taxi}:
+
+                   (distance, travelMin, costVND) ← TravelInfo(CurrentLoc, POI.location, mode)
+
+                   ArriveTime ← CurrentTime + travelMin
+                   FinishTime ← ArriveTime + POI.visitDuration
+
+                   If ArriveTime < POI.openHour OR FinishTime > POI.closeHour:
+                       continue
+                   If FinishTime > EndTime:
+                       continue
+                   If BudgetLeft < costVND + POI.entryFee:
+                       continue
+
+                   Score ← Evaluate(POI, travelMin, costVND, UserPreferences)
+
+                   Add (Score, POI, mode, ArriveTime, FinishTime, costVND)
+                   to Candidates
+
+           If Candidates is empty:
+               break loop
+
+           Sort Candidates by Score ascending
+           Best ← Candidates[0]
+
+           Add Best to Route
+           Add Best.POI.id to Visited
+
+           BudgetLeft ← BudgetLeft - (Best.costVND + Best.POI.entryFee)
+           CurrentTime ← Best.FinishTime
+           CurrentLoc ← Best.POI.location
+
+4. Return Route
+
+algo1-flowchart.md
+
+flowchart TD
+
+    A([Start]) --> B[Load dataset POIs (CSV >= 1000)]
+    B --> C[Nhận input người dùng: Preferences, Start location, Time window, Budget]
+
+    C --> D[Khởi tạo biến:
+CurrentTime = StartTime
+CurrentLoc = StartLoc
+Visited = {}
+Route = []]
+
+    D --> E{Còn POI chưa thăm
+và còn thời gian?}
+
+    E -->|Không| Z([Kết thúc → Trả về lộ trình])
+    E -->|Có| F[Khởi tạo Candidates = []]
+
+    F --> G[For mỗi POI chưa thăm]
+    G --> H[For mỗi phương tiện:
+• walking
+• motorbike
+• taxi]
+
+    H --> I[Tính TravelTime & TravelCost (haversine)]
+    I --> J[Tính thời gian đến & thời gian rời POI]
+
+    J --> K{Thỏa điều kiện?
+• Trong giờ mở cửa
+• Không quá EndTime
+• Đủ ngân sách}
+
+    K -->|Không| G
+    K -->|Có| L[Tính Score = f(time, rating, prefs, cost)]
+
+    L --> M[Thêm vào Candidates]
+    M --> G
+
+    G --> N{Candidates rỗng?}
+
+    N -->|Có| Z
+    N -->|Không| O[Chọn POI có Score thấp nhất]
+
+    O --> P[Cập nhật Route & Visited]
+    P --> Q[Cập nhật CurrentLoc, CurrentTime, BudgetLeft]
+
+    Q --> E
+
+
+# 4) Cài đặt tất cả dependencies
+# pip install -r requirements.txt
+
+# 5) Chạy API
+# python -m uvicorn api.main:app --reload
+
+# Sau đó mở trình duyệt:
+# http://127.0.0.1:8000/docs
+# Swagger UI tự sinh → test API không cần Postman.
+
+fastapi==0.110.0
+uvicorn[standard]==0.38.0
+pandas==2.2.2
+numpy==1.26.4
+python-dotenv==1.0.1
+requests==2.31.0
+geopy==2.4.1
+overpy==0.7
+
+
+# Nếu sau này muốn gọi Google Distance Matrix:
+# googlemaps==4.10.0
+# Nếu sau này muốn render map UI bằng Streamlit:
+# streamlit==1.34.0
+
+run_demo.py
+from core.solver_route import load_pois, plan_route
+
+pois = load_pois("data/pois_hcm.csv")
+
+route = plan_route(
+    pois,
+    user_prefs=["food", "history"],
+    start_loc=(10.7769, 106.7006),
+    time_window=("2025-11-10 09:00", "2025-11-10 21:00"),
+    budget=1000000.0
+)
+
+print("==== LỘ TRÌNH GỢI Ý ====")
+for i, step in enumerate(route, 1):
+    print(f"{i}. {step['name']} ({step['mode']}) - {step['arrive_time'].strftime('%H:%M')} → {step['depart_time'].strftime('%H:%M')}")
+print(f"Tổng số điểm: {len(route)}")

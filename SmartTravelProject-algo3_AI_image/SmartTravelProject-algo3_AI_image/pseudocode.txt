@@ -1,0 +1,258 @@
+======================================================================
+PSEUDOCODE - CHƯƠNG TRÌNH NHẬN DIỆN ĐỊA ĐIỂM VIỆT NAM BẰNG RESNET18
+======================================================================
+
+----------------------------------------------------------------------
+HÀM PREPROCESS_TRAIN(image)
+----------------------------------------------------------------------
+INPUT : image (ảnh gốc)
+OUTPUT: tensor (ảnh tensor đã chuẩn hóa dùng cho tập train)
+
+BẮT ĐẦU
+    // Resize, crop ngẫu nhiên, lật, chuẩn hóa
+    image ← Resize lớn hơn 224x224
+    image ← RandomResizedCrop(224, 224)
+    image ← RandomHorizontalFlip()
+    tensor ← Chuyển image sang Tensor
+    tensor ← Chuẩn hoá theo mean, std của ImageNet
+    TRẢ VỀ tensor
+KẾT THÚC
+
+
+----------------------------------------------------------------------
+HÀM PREPROCESS_VAL(image)
+----------------------------------------------------------------------
+INPUT : image (ảnh gốc)
+OUTPUT: tensor (ảnh tensor đã chuẩn hóa dùng cho tập val / predict)
+
+BẮT ĐẦU
+    image ← Resize về 224x224
+    tensor ← Chuyển image sang Tensor
+    tensor ← Chuẩn hoá theo mean, std của ImageNet
+    TRẢ VỀ tensor
+KẾT THÚC
+
+
+----------------------------------------------------------------------
+HÀM LOAD_DATASET(data_dir)
+----------------------------------------------------------------------
+INPUT : data_dir – đường dẫn thư mục dataset (vd: "dataset")
+OUTPUT: train_loader, val_loader, class_names
+
+BẮT ĐẦU
+    train_path ← data_dir + "/train"
+    val_path   ← data_dir + "/val"
+
+    // Tạo dataset theo cấu trúc thư mục, mỗi lớp 1 folder
+    train_dataset ← ImageFolder(train_path, transform = PREPROCESS_TRAIN)
+    val_dataset   ← ImageFolder(val_path,   transform = PREPROCESS_VAL)
+
+    // Tạo DataLoader
+    train_loader ← DataLoader(train_dataset, batch_size = BATCH_SIZE, shuffle = TRUE)
+    val_loader   ← DataLoader(val_dataset,   batch_size = BATCH_SIZE, shuffle = FALSE)
+
+    class_names ← train_dataset.classes    // Danh sách tên lớp
+
+    TRẢ VỀ (train_loader, val_loader, class_names)
+KẾT THÚC
+
+
+----------------------------------------------------------------------
+HÀM BUILD_MODEL(num_classes)
+----------------------------------------------------------------------
+INPUT : num_classes – số lớp địa điểm
+OUTPUT: model – mô hình ResNet18 đã cấu hình
+
+BẮT ĐẦU
+    // Khởi tạo ResNet18 pretrained ImageNet
+    model ← ResNet18(weights = "IMAGENET_PRETRAINED")
+
+    in_features ← số node đầu vào của lớp fully-connected cuối
+    model.fc ← Linear(in_features, num_classes)   // Thay FC cuối cho đúng số lớp
+
+    ĐƯA model lên DEVICE (CPU hoặc GPU)
+
+    TRẢ VỀ model
+KẾT THÚC
+
+
+----------------------------------------------------------------------
+HÀM TRAIN_MODEL(train_loader, val_loader, class_names)
+----------------------------------------------------------------------
+INPUT :
+    train_loader – dữ liệu huấn luyện
+    val_loader   – dữ liệu kiểm tra
+    class_names  – danh sách tên lớp
+OUTPUT:
+    Lưu file model_vietnam.pth và classes.txt ra đĩa
+
+BẮT ĐẦU
+    num_classes ← độ dài(class_names)
+
+    // Lưu danh sách lớp ra file classes.txt
+    GHI từng tên trong class_names vào file "classes.txt"
+
+    // Khởi tạo model, loss, optimizer, scheduler
+    model ← BUILD_MODEL(num_classes)
+    loss_fn   ← CrossEntropyLoss
+    optimizer ← Adam(tham số model, lr = LR)
+    scheduler ← ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=3)
+
+    best_acc ← 0
+    epochs_no_improve ← 0
+
+    CHO epoch từ 1 đến NUM_EPOCHS LẶP
+        -----------------------------------------------------
+        // PHA TRAIN
+        ĐẶT model.train()
+        running_loss     ← 0
+        running_corrects ← 0
+        total            ← 0
+
+        CHO MỖI batch (inputs, labels) TRONG train_loader LẶP
+            ĐƯA inputs, labels lên DEVICE
+            optimizer.zero_grad()
+
+            outputs ← model(inputs)
+            loss    ← loss_fn(outputs, labels)
+            preds   ← chỉ số lớp lớn nhất trong outputs
+
+            THỰC HIỆN lan truyền ngược (loss.backward())
+            optimizer.step()
+
+            running_loss     ← running_loss + loss * số_mẫu_batch
+            running_corrects ← running_corrects + số phần tử(preds == labels)
+            total            ← total + số_mẫu_batch
+        HẾT LẶP batch
+
+        train_loss ← running_loss / total
+        train_acc  ← running_corrects / total
+
+        IN "TRAIN: loss, acc"
+
+        -----------------------------------------------------
+        // PHA VAL
+        ĐẶT model.eval()
+        val_loss_total ← 0
+        val_corrects   ← 0
+        val_total      ← 0
+
+        TẮT tính gradient
+            CHO MỖI batch (inputs, labels) TRONG val_loader LẶP
+                ĐƯA inputs, labels lên DEVICE
+
+                outputs ← model(inputs)
+                loss    ← loss_fn(outputs, labels)
+                preds   ← argmax(outputs)
+
+                val_loss_total ← val_loss_total + loss * số_mẫu_batch
+                val_corrects   ← val_corrects + số phần tử(preds == labels)
+                val_total      ← val_total + số_mẫu_batch
+            HẾT LẶP batch
+        BẬT lại gradient (nếu cần)
+
+        val_loss ← val_loss_total / val_total
+        val_acc  ← val_corrects   / val_total
+
+        IN "VAL: loss, acc"
+
+        -----------------------------------------------------
+        // SCHEDULER + LƯU MODEL TỐT NHẤT
+        GỌI scheduler.step(val_loss)
+
+        NẾU val_acc > best_acc THÌ
+            best_acc ← val_acc
+            epochs_no_improve ← 0
+            LƯU trọng số model vào file "model_vietnam.pth"
+        NGƯỢC LẠI
+            epochs_no_improve ← epochs_no_improve + 1
+        HẾT NẾU
+
+        NẾU epochs_no_improve ≥ PATIENCE THÌ
+            IN "EARLY STOPPING"
+            THOÁT KHỎI VÒNG LẶP epoch
+        HẾT NẾU
+
+    HẾT LẶP epoch
+
+    IN "Best validation accuracy = ", best_acc
+
+KẾT THÚC
+
+
+----------------------------------------------------------------------
+HÀM PREDICT_IMAGE_PATH(image_path)
+----------------------------------------------------------------------
+INPUT : image_path – đường dẫn file ảnh
+OUTPUT: (label, confidence) – nhãn địa điểm và độ tin cậy
+
+BẮT ĐẦU
+    // Đọc model và class_names đã lưu
+    NẾU model CHƯA được load THÌ
+        ĐỌC "classes.txt" → CLASS_NAMES
+        num_classes ← độ dài(CLASS_NAMES)
+        model ← ResNet18(weights = None)
+        Thay model.fc = Linear(in_features, num_classes)
+        Load trọng số từ "model_vietnam.pth" vào model
+        model.eval()
+        ĐƯA model lên DEVICE
+    HẾT NẾU
+
+    // Đọc và tiền xử lý ảnh
+    img ← Mở ảnh từ image_path
+    img ← Chuyển sang RGB
+    tensor ← PREPROCESS_VAL(img)
+    tensor ← Thêm chiều batch → shape [1,3,224,224]
+    tensor ← ĐƯA lên DEVICE
+
+    // Dự đoán
+    outputs ← model(tensor)
+    probs   ← softmax(outputs)
+
+    (conf, idx) ← phần tử có xác suất lớn nhất trong probs
+    label ← CLASS_NAMES[idx]
+
+    TRẢ VỀ (label, conf)
+KẾT THÚC
+
+
+----------------------------------------------------------------------
+CHƯƠNG TRÌNH CHÍNH – HUẤN LUYỆN (train.py)
+----------------------------------------------------------------------
+BẮT ĐẦU
+    CHỌN DEVICE = "cuda" NẾU có GPU, NGƯỢC LẠI "cpu"
+
+    (train_loader, val_loader, class_names) ← LOAD_DATASET("dataset")
+
+    GỌI HÀM TRAIN_MODEL(train_loader, val_loader, class_names)
+
+    // Sau khi kết thúc, đã có:
+    //  - model_vietnam.pth
+    //  - classes.txt
+KẾT THÚC
+
+
+----------------------------------------------------------------------
+CHƯƠNG TRÌNH CHÍNH – BACKEND TEST CMD (backend_model.py)
+----------------------------------------------------------------------
+BẮT ĐẦU
+    ĐỌC tham số dòng lệnh:
+        image_path = argv[1]
+        k (tùy chọn) = argv[2] (mặc định 1)
+
+    NẾU không có image_path THÌ
+        IN hướng dẫn "python backend_model.py <anh> [k]"
+        KẾT THÚC
+    HẾT NẾU
+
+    NẾU k = 1 THÌ
+        (label, conf) ← PREDICT_IMAGE_PATH(image_path)
+        IN label, conf
+    NGƯỢC LẠI
+        // Lấy top-k: gọi hàm giống PREDICT_IMAGE_PATH nhưng dùng top-k
+        DANH_SÁCH_KQ ← PREDICT_TOPK_IMAGE_PATH(image_path, k)
+        CHO MỖI (label, conf) TRONG DANH_SÁCH_KQ
+            IN label, conf
+        HẾT LẶP
+    HẾT NẾU
+KẾT THÚC

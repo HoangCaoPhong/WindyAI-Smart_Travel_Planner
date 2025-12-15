@@ -1,0 +1,307 @@
+button[data-baseweb="button"] {
+    background-color: #2563EB !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 999px !important;
+    padding: 0.5rem 1.25rem !important;
+    font-weight: 600 !important;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+button[data-baseweb="button"]:hover {
+    background-color: #1D4ED8 !important;
+    color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(37, 99, 235, 0.35);
+}
+[data-testid="stForm"] button[data-baseweb="button"] {
+    background-color: #2563EB !important;
+    color: white !important;
+}
+[data-testid="stForm"] button[data-baseweb="button"]:hover {
+    background-color: #1D4ED8 !important;
+    color: white !important;
+}
+button[data-baseweb="button"] p {
+    color: white !important;
+}
+
+/* Fix buttons with black background */
+button[style*="background-color: black"],
+button[style*="background-color: rgb(0, 0, 0)"],
+button[style*="background-color:#000"] {
+    background-color: #2563EB !important;
+    color: white !important;
+}
+
+button[style*="background-color: black"]:hover,
+button[style*="background-color: rgb(0, 0, 0)"]:hover,
+button[style*="background-color:#000"]:hover {
+    background-color: #1D4ED8 !important;
+    color: white !important;
+}
+
+/* Fix any button with black text */
+button[style*="color: black"],
+button[style*="color: rgb(0, 0, 0)"],
+button[style*="color:#000"] {
+    color: white !important;
+}
+
+/* Ensure all Streamlit buttons have proper colors */
+.stButton > button {
+    color: white !important;
+}
+
+.stButton > button:hover {
+    color: white !important;
+}
+
+/* Fix expander/dropdown text colors */
+[data-testid="stExpander"] summary {
+    background-color: #2563EB !important;
+    color: white !important;
+    border-radius: 8px;
+    padding: 0.75rem 1rem !important;
+}
+
+[data-testid="stExpander"] summary:hover {
+    background-color: #1D4ED8 !important;
+    color: white !important;
+}
+
+[data-testid="stExpander"] summary p,
+[data-testid="stExpander"] summary div,
+[data-testid="stExpander"] summary span {
+    color: white !important;
+}
+
+/* Fix selectbox/dropdown options */
+[role="listbox"] [role="option"] {
+    color: #0F172A !important;
+    background-color: white !important;
+}
+
+[role="listbox"] [role="option"]:hover {
+    background-color: #EFF6FF !important;
+    color: #0F172A !important;
+}
+
+[role="listbox"] [role="option"][aria-selected="true"] {
+    background-color: #2563EB !important;
+    color: white !important;
+}
+
+/* Fix form submit buttons with proper colors */
+[data-testid="stForm"] button[type="submit"],
+[data-testid="stFormSubmitButton"] button,
+form button[data-baseweb="button"] {
+    background-color: #2563EB !important;
+    color: white !important;
+}
+
+[data-testid="stForm"] button[type="submit"] p,
+[data-testid="stFormSubmitButton"] button p,
+form button[data-baseweb="button"] p {
+    color: white !important;
+    margin: 0;
+    padding: 0;
+}
+
+/* Override any inline styles that set black background */
+button[style*="background"][style*="black"] {
+    background-color: #2563EB !important;
+}
+
+button[style*="color"][style*="black"] p,
+button[style*="background"][style*="black"] p {
+    color: white !important;
+}
+
+/* NỀN CHUNG – XANH ĐEN */
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.stApp {
+    background: radial-gradient(circle at top left, #1D4ED8 0, #0F172A 40%, #020617 100%);
+    color: #E0F2FE;
+    border-top: none !important;
+}
+
+/* KHỐI NỘI DUNG CHÍNH – CARD TRẮNG */
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 2.5rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+    background-color: #EFF6FF;
+    color: #0F172A;
+    border-radius: 1.25rem;
+    margin-top: 1.6rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.45);
+}
+@media (min-width: 768px) {
+    .block-container {
+        margin-top: 2.2rem;
+        margin-bottom: 2.2rem;
+    }
+}
+
+/* ẨN HEADER & SIDEBAR MẶC ĐỊNH */
+[data-testid="stHeader"] {
+    display: none !important;
+    visibility: hidden;
+}
+[data-testid="stSidebar"] {
+    display: none !important;
+}
+
+/* LABEL & TEXT */
+label, [data-testid="stWidgetLabel"] div {
+    color: #0F172A !important;
+    font-weight: 500;
+}
+input[type="text"], input[type="password"], textarea {
+    background-color: #ffffff !important;
+    color: #0F172A !important;
+    border: 1px solid #CBD5E1 !important;
+    border-radius: 0.75rem !important;
+    padding: 0.5rem 0.75rem !important;
+}
+::-webkit-input-placeholder { color: #9CA3AF !important; }
+::-moz-placeholder { color: #9CA3AF !important; }
+:-ms-input-placeholder { color: #9CA3AF !important; }
+:-moz-placeholder { color: #9CA3AF !important; }
+
+h1, h2, h3, h4, h5, h6 {
+    color: #0F172A;
+    font-weight: 700;
+}
+h1.home-title {
+    color: #0F172A;
+}
+
+/* TITLE SECTION CHUNG */
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: #0F172A;
+}
+.section-subtitle {
+    font-size: 0.98rem;
+    color: #64748B;
+    margin-bottom: 1.5rem;
+}
+
+    /* TABS*/
+[data-testid="stTabs"] > div[role="tablist"] {
+    background-color: #ffffff;       
+    border-radius: 999px;            
+    padding: 0.25rem 0.35rem;       
+    border: 1.5px solid #2563EB;     
+    box-shadow: 0 16px 30px rgba(15,23,42,0.16);
+    display: flex;
+    gap: 0.25rem;                    
+    width: 100%;
+    margin: 0.6rem 0 1.0rem 0;
+}
+
+[data-testid="stTabs"] button[role="tab"] {
+    flex: 1;                      
+    margin: 0 !important;
+    text-align: center;
+    border-radius: 999px;
+    padding: 0.45rem 0.5rem;
+    background-color: transparent !important;
+    color: #0F172A !important;
+    border: 1px solid transparent !important;
+    font-weight: 500 !important;
+}
+
+[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
+    background-color: #2563EB !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    border-color: #1D4ED8 !important;
+}
+
+[data-testid="stTabs"] button[role="tab"]:not([aria-selected="true"]):hover {
+    background-color: rgba(37,99,235,0.08) !important;
+    color: #0F172A !important;
+}
+
+/* Fix tab text color - ensure white text on selected tabs */
+[data-testid="stTabs"] button[role="tab"][aria-selected="true"] p,
+[data-testid="stTabs"] button[role="tab"][aria-selected="true"] div,
+[data-testid="stTabs"] button[role="tab"][aria-selected="true"] span {
+    color: #ffffff !important;
+}
+
+/* Fix non-selected tab text */
+[data-testid="stTabs"] button[role="tab"]:not([aria-selected="true"]) p,
+[data-testid="stTabs"] button[role="tab"]:not([aria-selected="true"]) div,
+[data-testid="stTabs"] button[role="tab"]:not([aria-selected="true"]) span {
+    color: #0F172A !important;
+}
+
+/* Ensure tab content area has proper background */
+[data-testid="stTabs"] > div > div[role="tabpanel"] {
+    background-color: transparent !important;
+    padding: 1rem 0;
+}
+
+/* FEATURE CARD */
+.feature-card {
+    background-color: #ffffff;
+    border-radius: 1.2rem;
+    padding: 1.5rem 1.75rem;
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.18);
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    border-top: 4px solid #2563EB;
+}
+.feature-card h3 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    color: #0F172A;
+}
+.feature-muted {
+    color: #64748B;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+}
+
+/* BADGE NHỎ TRÊN TRANG CHỦ */
+.badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    background-color: rgba(37, 99, 235, 0.1);
+    color: #1D4ED8;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.home-stat-card {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    padding: 0.9rem 1rem;
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.15);
+    text-align: left;
+}
+.home-stat-label {
+    font-size: 0.8rem;
+    color: #64748B;
+    margin-bottom: 0.2rem;
+}
+.home-stat-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0F172A;
+}
