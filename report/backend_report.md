@@ -47,18 +47,86 @@ Dự án tuân theo mô hình **Modular Monolith**:
     *   **Data Access Layer (`services/`):** Xử lý kết nối CSDL và gọi API bên ngoài.
 
 ### 3.2. Cấu trúc thư mục (Backend view)
-*   `app/`: Điểm khởi chạy ứng dụng (`main.py`), cấu hình (`config.py`).
-*   `core/`: Trái tim của backend, chia thành các module thuật toán:
-    *   `algo1`: Tối ưu hóa lộ trình (Optimizer).
-    *   `algo2`: Mapping & Routing logic.
-    *   `algo3`: Mô hình AI (Vietnam prediction model).
-    *   `algo4`: Xử lý dữ liệu thời tiết.
-    *   `algo5`: Hệ thống gợi ý (Recommender).
-    *   `algo6_chatbot`: Chatbot engine.
-*   `services/`: Các dịch vụ dùng chung.
-    *   `db.py`: Wrapper cho các thao tác với Supabase.
-    *   `utils.py`: Các hàm tiện ích.
-*   `data/`: Chứa dữ liệu tĩnh (CSV) và dữ liệu huấn luyện.
+
+```text
+├── .env
+├── .gitignore
+├── CodeRules.md
+├── LICENSE
+├── README.md
+├── requirements.txt
+├── runtime.txt
+├── start.ps1
+├── app/
+│   ├── __init__.py
+│   ├── config.py
+│   ├── main.py
+│   ├── style.css
+│   └── api/
+│       └── chatbot_api.py
+├── assets/
+│   ├── background/
+│   ├── images/
+│   └── logo/
+├── core/
+│   ├── __init__.py
+│   ├── algo1/
+│   │   ├── __init__.py
+│   │   ├── config.py
+│   │   ├── optimizer.py
+│   │   ├── scorer.py
+│   │   ├── solver_route.py
+│   │   └── utils_geo.py
+│   ├── algo2/
+│   │   ├── __init__.py
+│   │   ├── mapping.py
+│   │   └── routing.py
+│   ├── algo3/
+│   │   ├── __init__.py
+│   │   ├── classes.txt
+│   │   ├── model_vietnam.pth
+│   │   └── predict_vn.py
+│   ├── algo4/
+│   │   ├── __init__.py
+│   │   └── weather.py
+│   ├── algo5/
+│   │   ├── __init__.py
+│   │   └── recommender.py
+│   └── algo6_chatbot/
+│       ├── __init__.py
+│       ├── chatbot_engine.py
+│       ├── intent_classifier.py
+│       ├── knowledge_base.py
+│       └── response_generator.py
+├── data/
+│   ├── Data_README.md
+│   ├── pois_hcm_large.csv
+│   ├── README.md
+│   ├── windy_feedback.db
+│   ├── train/
+│   └── val/
+├── database/
+│   └── supabase_schema.sql
+├── pages/
+│   ├── page_chuc_nang.py
+│   ├── page_gioi_thieu.py
+│   ├── page_ho_so.py
+│   ├── page_sign_in_up.py
+│   └── page_trang_chu.py
+├── scripts/
+│   ├── check_user.py
+│   ├── fetch_pois_large.py
+│   ├── fetch_pois_osm.py
+│   ├── optimize_assets.py
+│   ├── train.py
+│   └── legacy/
+└── services/
+    ├── __init__.py
+    ├── db.py
+    ├── db_sqlite_backup.py
+    ├── feedback.py
+    └── utils.py
+```
 
 ## 4. Dịch vụ bên ngoài (External Services)
 
