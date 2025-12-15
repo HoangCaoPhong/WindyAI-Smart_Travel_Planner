@@ -122,6 +122,7 @@ flowchart TD
     Optimize --> End([Trả về Lộ trình])
     
     NextCand --> Loop
+```
 
 ## 5. Quy trình Chatbot (Algo6 Design)
 
