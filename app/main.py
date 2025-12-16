@@ -272,7 +272,12 @@ with st.sidebar:
 
 # Initialize current_page in session state
 if 'current_page' not in st.session_state:
-    st.session_state['current_page'] = "Trang chủ"
+    # Check for shared link params to redirect to "Chức năng"
+    query_params = st.query_params
+    if "shared" in query_params and query_params["shared"] == "true":
+        st.session_state['current_page'] = "Chức năng"
+    else:
+        st.session_state['current_page'] = "Trang chủ"
 
 if st.session_state.get("current_user"):
     menu_options = ["Trang chủ", "Giới thiệu", "Chức năng", "Hồ sơ"]

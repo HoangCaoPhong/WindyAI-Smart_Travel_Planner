@@ -174,7 +174,7 @@ def render_tao_danh_sach_goi_y():
             default_religious = "religious" in p_prefs or "architecture" in p_prefs
         
         # Set auto_submit flag if we haven't calculated yet
-        if 'latest_schedule' not in st.session_state:
+        if st.session_state.get('latest_schedule') is None:
             auto_submit = True
 
     st.markdown("### 🗓️ Tạo lịch trình gợi ý")
@@ -405,7 +405,13 @@ def render_tao_danh_sach_goi_y():
                         "prefs": ",".join(user_prefs)
                     }
                     st.query_params.update(params)
-                    st.success("✅ Đã tạo link! Hãy copy URL trên thanh địa chỉ trình duyệt.")
+                    
+                    # Generate query string for display
+                    query_string = urllib.parse.urlencode(params)
+                    
+                    st.success("✅ Đã tạo link!")
+                    st.markdown("Bạn có thể copy URL trên thanh địa chỉ, hoặc copy đoạn mã bên dưới:")
+                    st.code(f"?{query_string}", language="text")
 
             with st.expander("📋 Xem nội dung text để copy"):
                 st.code(share_content, language="text")
