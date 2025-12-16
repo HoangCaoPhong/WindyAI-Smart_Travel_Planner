@@ -261,7 +261,15 @@ def minutes_to_str(m: int) -> str:
 # SIDEBAR
 # ======================
 with st.sidebar:
-    st.image("assets/logo/logo.png", width=120)
+    # Use absolute path for logo to avoid MediaFileStorageError
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    logo_abs_path = os.path.join(os.path.dirname(current_dir), "assets", "logo", "logo.png")
+    
+    if os.path.exists(logo_abs_path):
+        st.image(logo_abs_path, width=120)
+    else:
+        st.warning("Logo not found")
+        
     st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
     st.markdown("---")
     st.sidebar.caption("© 2025 WindyAI")
