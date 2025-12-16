@@ -43,7 +43,6 @@ MEMBERS = [
     {
         "mssv": "24127569", "name": "Nguyễn Minh Trí", "role": "Member",
         "tech_role": "UX/UI & Frontend Dev", "email": "mntri2437@clc.fitus.edu.vn",
-         "image": "24127068.jpg",
     },
 ]
 
