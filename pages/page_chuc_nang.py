@@ -411,17 +411,16 @@ def render_tao_danh_sach_goi_y():
                     
                     st.success("✅ Đã tạo link!")
                     
-                    # Button copy clipboard via JS
+                    # Button copy clipboard via JS (Auto-copy attempt)
                     components.html(
                         """
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <button onclick="copyToClipboard()" style="
+                        <div style="display: flex; align-items: center; gap: 10px; font-family: sans-serif;">
+                            <button id="copy-btn" onclick="manualCopy()" style="
                                 padding: 0.5rem 1rem;
                                 background-color: #ffffff;
                                 color: #1f2937;
                                 border: 1px solid #d1d5db;
                                 border-radius: 0.375rem;
-                                font-family: sans-serif;
                                 font-size: 0.875rem;
                                 font-weight: 500;
                                 cursor: pointer;
@@ -431,30 +430,36 @@ def render_tao_danh_sach_goi_y():
                             ">
                                 📋 Copy Link
                             </button>
-                            <span id="copy-status" style="
-                                display: none;
-                                color: #059669;
-                                font-family: sans-serif;
-                                font-size: 0.875rem;
-                            ">✅ Đã copy!</span>
+                            <span id="status" style="font-size: 0.875rem; color: #059669; display: none;"></span>
                         </div>
                         <script>
                             function copyToClipboard() {
                                 const url = window.parent.location.href;
                                 navigator.clipboard.writeText(url).then(() => {
-                                    const status = document.getElementById('copy-status');
-                                    status.style.display = 'inline';
+                                    document.getElementById('status').innerText = '✅ Đã copy vào clipboard!';
+                                    document.getElementById('status').style.display = 'inline';
+                                    document.getElementById('copy-btn').innerText = '📋 Đã copy';
                                     setTimeout(() => {
-                                        status.style.display = 'none';
-                                    }, 2000);
+                                        document.getElementById('status').style.display = 'none';
+                                        document.getElementById('copy-btn').innerText = '📋 Copy Link';
+                                    }, 3000);
                                 }).catch(err => {
-                                    console.error('Failed to copy:', err);
-                                    alert('Không thể copy tự động. Vui lòng copy từ thanh địa chỉ.');
+                                    console.error('Copy failed:', err);
+                                    document.getElementById('status').innerText = '⚠️ Tự động copy bị chặn. Hãy nhấn nút!';
+                                    document.getElementById('status').style.display = 'inline';
+                                    document.getElementById('status').style.color = '#d97706';
                                 });
                             }
+
+                            function manualCopy() {
+                                copyToClipboard();
+                            }
+                            
+                            // Attempt auto-copy after a short delay to ensure URL is updated
+                            setTimeout(copyToClipboard, 300);
                         </script>
                         """,
-                        height=50
+                        height=60
                     )
 
             with st.expander("📋 Xem nội dung text để copy"):
