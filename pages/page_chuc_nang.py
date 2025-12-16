@@ -410,8 +410,52 @@ def render_tao_danh_sach_goi_y():
                     query_string = urllib.parse.urlencode(params)
                     
                     st.success("✅ Đã tạo link!")
-                    st.markdown("Bạn có thể copy URL trên thanh địa chỉ, hoặc copy đoạn mã bên dưới:")
-                    st.code(f"?{query_string}", language="text")
+                    
+                    # Button copy clipboard via JS
+                    components.html(
+                        """
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <button onclick="copyToClipboard()" style="
+                                padding: 0.5rem 1rem;
+                                background-color: #ffffff;
+                                color: #1f2937;
+                                border: 1px solid #d1d5db;
+                                border-radius: 0.375rem;
+                                font-family: sans-serif;
+                                font-size: 0.875rem;
+                                font-weight: 500;
+                                cursor: pointer;
+                                display: inline-flex;
+                                align-items: center;
+                                box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+                            ">
+                                📋 Copy Link
+                            </button>
+                            <span id="copy-status" style="
+                                display: none;
+                                color: #059669;
+                                font-family: sans-serif;
+                                font-size: 0.875rem;
+                            ">✅ Đã copy!</span>
+                        </div>
+                        <script>
+                            function copyToClipboard() {
+                                const url = window.parent.location.href;
+                                navigator.clipboard.writeText(url).then(() => {
+                                    const status = document.getElementById('copy-status');
+                                    status.style.display = 'inline';
+                                    setTimeout(() => {
+                                        status.style.display = 'none';
+                                    }, 2000);
+                                }).catch(err => {
+                                    console.error('Failed to copy:', err);
+                                    alert('Không thể copy tự động. Vui lòng copy từ thanh địa chỉ.');
+                                });
+                            }
+                        </script>
+                        """,
+                        height=50
+                    )
 
             with st.expander("📋 Xem nội dung text để copy"):
                 st.code(share_content, language="text")
