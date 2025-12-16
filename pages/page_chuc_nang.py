@@ -174,7 +174,7 @@ def render_tao_danh_sach_goi_y():
             default_religious = "religious" in p_prefs or "architecture" in p_prefs
         
         # Set auto_submit flag if we haven't calculated yet
-        if 'latest_schedule' not in st.session_state:
+        if st.session_state.get('latest_schedule') is None:
             auto_submit = True
 
     st.markdown("### 🗓️ Tạo lịch trình gợi ý")
@@ -405,7 +405,62 @@ def render_tao_danh_sach_goi_y():
                         "prefs": ",".join(user_prefs)
                     }
                     st.query_params.update(params)
-                    st.success("✅ Đã tạo link! Hãy copy URL trên thanh địa chỉ trình duyệt.")
+                    
+                    # Generate query string for display
+                    query_string = urllib.parse.urlencode(params)
+                    
+                    st.success("✅ Đã tạo link!")
+                    
+                    # Button copy clipboard via JS (Auto-copy attempt)
+                    components.html(
+                        """
+                        <div style="display: flex; align-items: center; gap: 10px; font-family: sans-serif;">
+                            <button id="copy-btn" onclick="manualCopy()" style="
+                                padding: 0.5rem 1rem;
+                                background-color: #ffffff;
+                                color: #1f2937;
+                                border: 1px solid #d1d5db;
+                                border-radius: 0.375rem;
+                                font-size: 0.875rem;
+                                font-weight: 500;
+                                cursor: pointer;
+                                display: inline-flex;
+                                align-items: center;
+                                box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+                            ">
+                                📋 Copy Link
+                            </button>
+                            <span id="status" style="font-size: 0.875rem; color: #059669; display: none;"></span>
+                        </div>
+                        <script>
+                            function copyToClipboard() {
+                                const url = window.parent.location.href;
+                                navigator.clipboard.writeText(url).then(() => {
+                                    document.getElementById('status').innerText = '✅ Đã copy vào clipboard!';
+                                    document.getElementById('status').style.display = 'inline';
+                                    document.getElementById('copy-btn').innerText = '📋 Đã copy';
+                                    setTimeout(() => {
+                                        document.getElementById('status').style.display = 'none';
+                                        document.getElementById('copy-btn').innerText = '📋 Copy Link';
+                                    }, 3000);
+                                }).catch(err => {
+                                    console.error('Copy failed:', err);
+                                    document.getElementById('status').innerText = '⚠️ Tự động copy bị chặn. Hãy nhấn nút!';
+                                    document.getElementById('status').style.display = 'inline';
+                                    document.getElementById('status').style.color = '#d97706';
+                                });
+                            }
+
+                            function manualCopy() {
+                                copyToClipboard();
+                            }
+                            
+                            // Attempt auto-copy after a short delay to ensure URL is updated
+                            setTimeout(copyToClipboard, 300);
+                        </script>
+                        """,
+                        height=60
+                    )
 
             with st.expander("📋 Xem nội dung text để copy"):
                 st.code(share_content, language="text")
