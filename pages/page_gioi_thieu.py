@@ -39,6 +39,7 @@ MEMBERS = [
     {
         "mssv": "24127068", "name": "Nguyễn Trung Kiên", "role": "Member",
         "tech_role": "Data & Fullstack", "email": "ntkien2468@clc.fitus.edu.vn",
+        "image": "24127068.jpg",
     },
     {
         "mssv": "24127569", "name": "Nguyễn Minh Trí", "role": "Member",
@@ -189,11 +190,16 @@ def get_member_img_src(member) -> str:
     img_dir = os.path.join(current_dir, "assets", "images", "members")
 
     mssv = member.get("mssv", "")
-    candidates = [
-        f"{mssv}.png",
-        f"{mssv}.jpg",
-        f"{mssv}.jpeg",
-    ]
+    
+    # Check if explicit image is provided
+    if "image" in member:
+        candidates = [member["image"]]
+    else:
+        candidates = [
+            f"{mssv}.png",
+            f"{mssv}.jpg",
+            f"{mssv}.jpeg",
+        ]
 
     for filename in candidates:
         img_path = os.path.join(img_dir, filename)
