@@ -29,20 +29,20 @@ MEMBERS = [
     },
     {
         "mssv": "24127294", "name": "Võ Mỹ Ngọc", "role": "Secretary",
-        "tech_role": "Tester & Frontend", "email": "vmngoc2433@clc.fitus.edu.vn",
+        "tech_role": "Tester & Frontend Dev", "email": "vmngoc2433@clc.fitus.edu.vn",
         "hobby": "Ngủ",
     },
     {
         "mssv": "24127570", "name": "Võ Thúc Trí", "role": "Member",
-        "tech_role": "AI & Backend", "email": "vttri2418@clc.fitus.edu.vn",
+        "tech_role": "AI & Backend Dev", "email": "vttri2418@clc.fitus.edu.vn",
     },
     {
         "mssv": "24127068", "name": "Nguyễn Trung Kiên", "role": "Member",
-        "tech_role": "Data & Fullstack", "email": "ntkien2468@clc.fitus.edu.vn",
+        "tech_role": "Data & Fullstack Dev", "email": "ntkien2468@clc.fitus.edu.vn",
     },
     {
         "mssv": "24127569", "name": "Nguyễn Minh Trí", "role": "Member",
-        "tech_role": "UX/UI & Frontend", "email": "mntri2437@clc.fitus.edu.vn",
+        "tech_role": "UX/UI & Frontend Dev", "email": "mntri2437@clc.fitus.edu.vn",
     },
 ]
 
