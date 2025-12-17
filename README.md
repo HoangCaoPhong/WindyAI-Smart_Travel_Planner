@@ -2,8 +2,11 @@
 
 ## Project Focus:
 > **Core Objective:** To develop an intelligent system for optimizing a single-day travel itinerary in Ho Chi Minh City.
-> **Link website 1:** windyai-web.streamlit.app
-> **Link website 2:** windyai.streamlit.app
+
+##  Website Links:
+- **Link website 1:** https://windyai-web.streamlit.app
+- **Link website 2:** https://windyai.streamlit.app
+
 
 ---
 
@@ -114,3 +117,4 @@ Thực hiện các bước sau để chạy Mô phỏng Nhỏ (Small Simulation)
 ## 🔍 4. Quy Tắc Phát Triển & Mã Nguồn
 
 **Toàn bộ thành viên nhóm được yêu cầu tuân thủ nghiêm ngặt các Quy tắc về Code Style, Quy trình Git Workflow và Quy tắc đặt tên chi tiết được quy định trong file [CODE_RULES.md]** trước khi viết code hoặc yêu cầu hợp nhất (Pull Request).
+
