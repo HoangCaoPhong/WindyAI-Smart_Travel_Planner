@@ -2,8 +2,8 @@
 
 ## Project Focus:
 > **Core Objective:** To develop an intelligent system for optimizing a single-day travel itinerary in Ho Chi Minh City.
->
-> **CT Focus:** Addressing the **Traveling Salesperson Problem (TSP) with Constraints** using **Optimization Algorithms** (CT Step 4) to minimize time and cost within defined limits.
+> **Link website 1:** windyai-web.streamlit.app
+> **Link website 2:** windyai.streamlit.app
 
 ---
 
