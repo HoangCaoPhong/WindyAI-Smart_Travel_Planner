@@ -251,7 +251,7 @@ def page_trang_chu():
                 <div style="font-weight: 600;">Thời gian chuẩn bị</div>
             </div>
             <div class="feature-box">
-                <div class="stat-number">3 – 6</div>
+                <div class="stat-number">3 – 20</div>
                 <div style="font-weight: 600;">Điểm đến / ngày</div>
             </div>
             <div class="feature-box">
