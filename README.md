@@ -15,7 +15,7 @@
 | Role | Member | Email |
 | :--- | :--- | :--- |
 | **Project Manager & AI Engineer** | Hoang Cao Phong | hcphong2425@clc.fitus.edu.vn |
-| **QA & Tester** | Vo My Ngoc | vmngoc2433@clc.fitus.edu.vn |
+| **Tester & Frontend Developer** | Vo My Ngoc | vmngoc2433@clc.fitus.edu.vn |
 | **AI Engineer & Backend Developer** | Vo Thuc Tri | vttri2418@clc.fitus.edu.vn |
 | **UX & Frontend Developer** | Nguyen Minh Tri | nmtri2437@clc.fitus.edu.vn |
 | **Data Engineer & Fullstack Developer** | Nguyen Trung Kien | ntkien24XX@clc.fitus.edu.vn |
