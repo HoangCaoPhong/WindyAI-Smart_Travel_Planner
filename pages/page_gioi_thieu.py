@@ -442,6 +442,6 @@ def page_gioi_thieu():
         show_member_modal()
 
     st.markdown(
-        f"<div style='text-align:center; padding:30px; color:#94A3B8; border-top:1px solid #E2E8F0; margin-top:50px'>© 2024 {PROJECT_INFO['name']}. Built by Group 24.</div>",
+        f"<div style='text-align:center; padding:30px; color:#94A3B8; border-top:1px solid #E2E8F0; margin-top:50px'>© 2025 {PROJECT_INFO['name']}. Built by WindyAI.Software.</div>",
         unsafe_allow_html=True
     )
