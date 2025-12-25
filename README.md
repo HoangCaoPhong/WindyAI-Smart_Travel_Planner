@@ -48,7 +48,7 @@ Follow these steps to run the project's Small Simulation locally:
     ```
 3.  **Run Local Simulation:** Launch the interactive demonstration interface.
     ```bash
-    streamlit run app.py  # Or specify the main application file
+    python -m streamlit run .\app\main.py  # Or specify the main application file
     ```
 
 ---
