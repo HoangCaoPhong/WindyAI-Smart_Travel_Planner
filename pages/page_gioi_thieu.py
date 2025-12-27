@@ -411,8 +411,10 @@ def page_gioi_thieu():
     # DEMO VIDEO
     st.markdown("### 🎥 Demo Website")
     st.markdown("""
-        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #E2E8F0; margin-bottom: 2rem;">
-            <iframe src="https://www.youtube.com/embed/LPOv2afp0iU" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+        <div style="max-width: 80%; margin: 0 auto 2rem auto;">
+            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; width: 100%; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #E2E8F0;">
+                <iframe src="https://www.youtube.com/embed/LPOv2afp0iU" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+            </div>
         </div>
     """, unsafe_allow_html=True)
 
