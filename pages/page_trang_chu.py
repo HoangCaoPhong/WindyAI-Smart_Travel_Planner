@@ -137,7 +137,7 @@ def page_trang_chu():
             text-align: center;
             color: white;
             padding: 2rem;
-            max-width: 900px;
+            max-width: 1200px;
             animation: fadeIn 1.5s ease-in-out;
         }
         
