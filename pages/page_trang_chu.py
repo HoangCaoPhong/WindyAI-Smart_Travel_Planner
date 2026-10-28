@@ -63,7 +63,7 @@ def inject_custom_css(logo_b64=None, chat_open=False):
             bottom: 140px;
             right: 20px;
             width: 350px;
-            height: 500px;
+            height: min(440px, calc(100vh - 270px));
             background: #ffffff;
             border-radius: 20px;
             box-shadow: 0 5px 30px rgba(0,0,0,0.2);
@@ -111,7 +111,7 @@ def inject_custom_css(logo_b64=None, chat_open=False):
         /* ---------------------------------------------------------------------- */
         div.element-container:has(#chat-input-marker) + div.element-container div[data-testid="stTextInput"] {{
             position: fixed !important;
-            bottom: 108px !important;
+            bottom: 155px !important;
             right: 35px !important;
             width: 320px !important;
             z-index: 999999 !important;
@@ -132,15 +132,6 @@ def inject_custom_css(logo_b64=None, chat_open=False):
         header {{ visibility: hidden; }}
         footer {{ visibility: hidden; }}
         
-        /* Ẩn padding mặc định của block-container để video tràn viền đẹp hơn */
-        .block-container {{
-            padding-top: 1rem !important;
-            padding-bottom: 2rem !important;
-            padding-left: 1rem !important;
-            padding-right: 1rem !important;
-            max-width: 100% !important;
-        }}
-
     </style>
     """, unsafe_allow_html=True)
 
@@ -330,127 +321,62 @@ def render_floating_chat():
 # ==============================================================================
 # 4. MAIN APP (CẬP NHẬT GIAO DIỆN MỚI)
 # ==============================================================================
-def page_trang_chu():
-    st.set_page_config(layout="wide", page_title="WindyAI", initial_sidebar_state="collapsed")
-    
-    # Đảm bảo state được khởi tạo trước khi inject CSS để điều khiển nút chat
-    if 'show_chat' not in st.session_state: st.session_state.show_chat = False
+def _open_feature(feature):
+    st.session_state["selected_function"] = feature
+    st.session_state["current_page"] = "Chức năng"
+    st.rerun()
 
-    # 1. Load Logo WindyAI cho nút chat
-    # File: assets/logo/logo.png
+
+def page_trang_chu():
+    # Landing page with real Streamlit actions for every existing feature.
+    if "show_chat" not in st.session_state:
+        st.session_state.show_chat = False
     logo_b64, _ = get_base64_media("logo.png", folder="logo")
-    
-    # 2. Inject CSS chung (Chat button + Logo)
-    # Truyền logo_b64 và trạng thái chat hiện tại vào hàm CSS
     inject_custom_css(logo_b64, st.session_state.show_chat)
 
-    # 3. Inject CSS riêng cho trang chủ (Sections)
-    st.markdown("""
-    <style>
-        .video-section {
-            position: relative; width: 100%; min-height: 85vh;
-            overflow: hidden; display: flex; align-items: center; justify-content: center;
-            border-radius: 20px; margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            background-color: #1e293b;
-        }
-        .content-box {
-            position: relative; z-index: 2; text-align: center; color: white;
-            padding: 2rem; max-width: 1200px;
-            animation: fadeIn 1.5s ease-in-out;
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .home-title {
-            font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 1.5rem;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            background: linear-gradient(90deg, #60A5FA, #FFFFFF);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .home-subtitle {
-            font-size: 1.2rem; line-height: 1.6; margin-bottom: 2rem;
-            color: #E2E8F0; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-        .feature-box {
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 1.5rem; border-radius: 16px; margin: 10px;
-            flex: 1; min-width: 200px; transition: transform 0.3s ease;
-        }
-        .feature-box:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.2); }
-        
-        .stat-number { font-size: 2.5rem; font-weight: 700; color: #60A5FA; margin-bottom: 0.5rem; }
-        .flex-row { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; margin-top: 2rem; }
-        
-        .badge-pill {
-            display: inline-block; padding: 0.5rem 1.5rem;
-            background: rgba(37, 99, 235, 0.8); color: white;
-            border-radius: 99px; font-weight: 600; margin-bottom: 1.5rem;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
-        }
-    </style>
-    """, unsafe_allow_html=True)
+    image_b64, mime = get_base64_media("section-1_optimized.jpg")
+    image_style = f"background-image: linear-gradient(90deg, rgba(3,30,68,.91) 0%, rgba(3,42,82,.73) 52%, rgba(8,51,91,.10) 100%), url('data:{mime};base64,{image_b64}');" if image_b64 else ""
+    st.markdown(f'''<section class="landing-hero" style="{image_style}">
+      <div class="hero-inner">
+        <span class="eyebrow">KHÁM PHÁ VIỆT NAM THEO CÁCH CỦA BẠN</span>
+        <h1>Mỗi chuyến đi,<br><em>một trải nghiệm đáng nhớ.</em></h1>
+        <p>WindyAI giúp bạn lên lịch trình, khám phá địa điểm và tìm đường đi phù hợp với thời gian, sở thích và ngân sách của mình.</p>
+        <div class="hero-proof"><span>Lịch trình cá nhân hóa</span><span>Khám phá thông minh</span><span>Dễ dàng bắt đầu</span></div>
+      </div>
+    </section>''', unsafe_allow_html=True)
+    cta, more, spacer = st.columns([1.45, 1.3, 4.2], gap="small")
+    with cta:
+        if st.button("Tạo lịch trình ngay", type="primary", use_container_width=True, key="home_plan"):
+            _open_feature("Tạo lịch trình gợi ý")
+    with more:
+        if st.button("Khám phá tính năng  →", use_container_width=True, key="home_features"):
+            st.session_state["current_page"] = "Chức năng"
+            st.rerun()
 
-    # --- SECTION 1: HERO (City Night) ---
-    render_hero_section("section-1_optimized.jpg", """
-        <div class="badge-pill">✨ WindyAI - Smart Travel Planner</div>
-        <h1 class="home-title">Lên kế hoạch du lịch<br>thông minh với AI</h1>
-        <p class="home-subtitle">
-            Chỉ cần nhập điểm đến, ngân sách và thời gian rảnh.<br>
-            Hệ thống sẽ giúp bạn tạo lịch trình <b>thông minh – nhanh chóng – tối ưu</b>.
-        </p>
-    """, overlay_opacity=0.5)
+    st.markdown('''<div class="section-heading"><div><span class="overline">CÔNG CỤ CHO CHUYẾN ĐI</span><h2>Bạn muốn <span class="title-accent">khám phá</span> điều gì?</h2><p>Chọn một công cụ và bắt đầu lên kế hoạch theo cách của bạn.</p></div></div>''', unsafe_allow_html=True)
+    features = [
+        ("Tạo lịch trình", "Lên kế hoạch theo thời gian, sở thích và ngân sách.", "Tạo lịch trình gợi ý", "Lên kế hoạch"),
+        ("Tìm đường đi", "Xem lộ trình giữa các điểm đến của bạn.", "Tìm đường đi", "Xem đường đi"),
+        ("Tìm vị trí ảnh", "Nhận diện địa điểm từ hình ảnh của bạn.", "Tìm vị trí ảnh", "Thử nhận diện"),
+        ("Xem thời tiết", "Kiểm tra thời tiết trước khi khởi hành.", "Báo thời tiết vị trí", "Xem dự báo"),
+        ("Gợi ý địa điểm", "Tìm những điểm dừng chân hợp sở thích.", "Gợi ý địa điểm", "Khám phá ngay"),
+    ]
+    cols = st.columns(5, gap="medium")
+    for i, (title, desc, feature, action) in enumerate(features):
+        with cols[i]:
+            st.markdown(f'<div class="tool-card"><div class="tool-index">{i + 1:02d} / 05</div><h3>{title}</h3><p>{desc}</p></div>', unsafe_allow_html=True)
+            if st.button(f"{action}  →", key=f"home_tool_{i}", use_container_width=True):
+                _open_feature(feature)
 
-    # --- SECTION 2: HIGHLIGHTS (Global Connection) ---
-    render_hero_section("section-2_optimized.jpg", """
-        <h2 style="font-size: 2.5rem; margin-bottom: 2rem; font-weight: 700;">Điểm nổi bật</h2>
-        <div class="flex-row">
-            <div class="feature-box">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">⏱️</div>
-                <h3>Tối ưu thời gian</h3>
-                <p style="font-size: 0.9rem; opacity: 0.9;">Sắp xếp lộ trình khoa học, không lo kẹt xe hay đi đường vòng.</p>
-            </div>
-            <div class="feature-box">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">💸</div>
-                <h3>Cân đối chi phí</h3>
-                <p style="font-size: 0.9rem; opacity: 0.9;">Gợi ý điểm đến phù hợp với túi tiền của bạn.</p>
-            </div>
-            <div class="feature-box">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">🧭</div>
-                <h3>Dễ sử dụng</h3>
-                <p style="font-size: 0.9rem; opacity: 0.9;">Giao diện thân thiện, thao tác đơn giản cho mọi lứa tuổi.</p>
-            </div>
-        </div>
-    """, overlay_opacity=0.6)
-
-    # --- SECTION 3: STATS (Coding/Encryption) ---
-    render_hero_section("section-3.mp4", """
-        <h2 style="font-size: 2.5rem; margin-bottom: 2rem; font-weight: 700;">Hiệu suất vượt trội</h2>
-        <div class="flex-row">
-            <div class="feature-box">
-                <div class="stat-number">~ 2 phút</div>
-                <div style="font-weight: 600;">Thời gian chuẩn bị</div>
-            </div>
-            <div class="feature-box">
-                <div class="stat-number">3 – 20</div>
-                <div style="font-weight: 600;">Điểm đến / ngày</div>
-            </div>
-            <div class="feature-box">
-                <div class="stat-number">100%</div>
-                <div style="font-weight: 600;">Tự động hóa</div>
-            </div>
-        </div>
-    """, overlay_opacity=0.7)
-
-    # --- SECTION 4: FOOTER (Clouds) ---
-    render_hero_section("section-4.MP4", """
-        <h2 style="font-size: 2.5rem; margin-bottom: 1rem; font-weight: 700;">Trải nghiệm ngay hôm nay</h2>
-        <p style="font-size: 1.2rem; margin-bottom: 2rem;">Khám phá thế giới theo cách riêng của bạn.</p>
-        <div style="font-size: 0.9rem; opacity: 0.8;">© 2025 WindyAI - Smart Travel Planner</div>
-    """, height="60vh", overlay_opacity=0.3)
-
-    # 4. Render Chatbot
+    st.markdown('''<div class="how-intro"><span class="overline">BẮT ĐẦU THẬT ĐƠN GIẢN</span><h2>Ba bước cho <span class="title-accent">hành trình</span> của bạn</h2></div>
+    <div class="steps-grid">
+      <div><span>01</span><h3>Chọn điều bạn cần</h3><p>Lịch trình, đường đi, thời tiết hay một địa điểm mới.</p></div>
+      <div><span>02</span><h3>Thêm thông tin</h3><p>Cho WindyAI biết thời gian, ngân sách và sở thích của bạn.</p></div>
+      <div><span>03</span><h3>Sẵn sàng khám phá</h3><p>Xem gợi ý và lưu lịch trình trong tài khoản.</p></div>
+    </div>
+    <div class="landing-footer"><strong>WindyAI</strong><span>Lên kế hoạch dễ hơn. Tận hưởng hành trình nhiều hơn.</span></div>''', unsafe_allow_html=True)
     render_floating_chat()
+
 
 if __name__ == "__main__":
     page_trang_chu()

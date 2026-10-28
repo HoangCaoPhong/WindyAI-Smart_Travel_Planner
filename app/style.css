@@ -1,322 +1,87 @@
-/* Global Font Settings */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
-html, body, [class*="css"] {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    color: #1e293b; /* Dark slate for better contrast on white */
-}
-
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Inter', sans-serif;
-    color: #0f172a;
-}
-
-button[data-baseweb="button"] {
-    background-color: #2563EB !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 999px !important;
-    padding: 0.5rem 1.25rem !important;
-    font-weight: 600 !important;
-    margin-top: 0.5rem;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-}
-button[data-baseweb="button"]:hover {
-    background-color: #1D4ED8 !important;
-    color: white !important;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 16px rgba(37, 99, 235, 0.35);
-}
-[data-testid="stForm"] button[data-baseweb="button"] {
-    background-color: #2563EB !important;
-    color: white !important;
-}
-[data-testid="stForm"] button[data-baseweb="button"]:hover {
-    background-color: #1D4ED8 !important;
-    color: white !important;
-}
-button[data-baseweb="button"] p {
-    color: white !important;
-}
-
-/* Fix buttons with black background */
-button[style*="background-color: black"],
-button[style*="background-color: rgb(0, 0, 0)"],
-button[style*="background-color:#000"] {
-    background-color: #2563EB !important;
-    color: white !important;
-}
-
-button[style*="background-color: black"]:hover,
-button[style*="background-color: rgb(0, 0, 0)"]:hover,
-button[style*="background-color:#000"]:hover {
-    background-color: #1D4ED8 !important;
-    color: white !important;
-}
-
-/* Fix any button with black text */
-button[style*="color: black"],
-button[style*="color: rgb(0, 0, 0)"],
-button[style*="color:#000"] {
-    color: white !important;
-}
-
-/* Ensure all Streamlit buttons have proper colors */
-.stButton > button,
-.stDownloadButton > button {
-    color: white !important;
-}
-
-.stButton > button:hover,
-.stDownloadButton > button:hover {
-    color: white !important;
-}
-
-/* Fix expander/dropdown text colors */
-[data-testid="stExpander"] summary {
-    background-color: #2563EB !important;
-    color: white !important;
-    border-radius: 8px;
-    padding: 0.75rem 1rem !important;
-}
-
-[data-testid="stExpander"] summary:hover {
-    background-color: #1D4ED8 !important;
-    color: white !important;
-}
-
-[data-testid="stExpander"] summary p,
-[data-testid="stExpander"] summary div,
-[data-testid="stExpander"] summary span {
-    color: white !important;
-}
-
-/* Fix selectbox/dropdown options */
-[role="listbox"] [role="option"] {
-    color: #0F172A !important;
-    background-color: white !important;
-}
-
-[role="listbox"] [role="option"]:hover {
-    background-color: #EFF6FF !important;
-    color: #0F172A !important;
-}
-
-[role="listbox"] [role="option"][aria-selected="true"] {
-    background-color: #2563EB !important;
-    color: white !important;
-}
-
-/* Fix form submit buttons with proper colors */
-[data-testid="stForm"] button[type="submit"],
-[data-testid="stFormSubmitButton"] button,
-form button[data-baseweb="button"] {
-    background-color: #2563EB !important;
-    color: white !important;
-}
-
-[data-testid="stForm"] button[type="submit"] p,
-[data-testid="stFormSubmitButton"] button p,
-form button[data-baseweb="button"] p {
-    color: white !important;
-    margin: 0;
-    padding: 0;
-}
-
-/* Override any inline styles that set black background */
-button[style*="background"][style*="black"] {
-    background-color: #2563EB !important;
-}
-
-button[style*="color"][style*="black"] p,
-button[style*="background"][style*="black"] p {
-    color: white !important;
-}
-
-/* NỀN CHUNG – XANH ĐEN */
-body {
-    margin: 0 !important;
-    padding: 0 !important;
-}
-.stApp {
-    background: radial-gradient(circle at top left, #1D4ED8 0, #0F172A 40%, #020617 100%);
-    color: #E0F2FE;
-    border-top: none !important;
-}
-
-/* KHỐI NỘI DUNG CHÍNH – CARD TRẮNG */
-.block-container {
-    padding-top: 1rem;
-    padding-bottom: 2.5rem;
-    padding-left: 3rem;
-    padding-right: 3rem;
-    background-color: #EFF6FF;
-    color: #0F172A;
-    border-radius: 1.25rem;
-    margin-top: 0.5rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.45);
-}
-@media (min-width: 768px) {
-    .block-container {
-        margin-top: 1rem;
-        margin-bottom: 2.2rem;
-    }
-}
-
-/* ẨN HEADER & SIDEBAR MẶC ĐỊNH */
-[data-testid="stHeader"] {
-    display: none !important;
-    visibility: hidden;
-}
-[data-testid="stSidebar"] {
-    display: none !important;
-}
-
-/* LABEL & TEXT */
-label, [data-testid="stWidgetLabel"] div {
-    color: #0F172A !important;
-    font-weight: 500;
-}
-input[type="text"], input[type="password"], textarea {
-    background-color: #ffffff !important;
-    color: #0F172A !important;
-    border: 1px solid #CBD5E1 !important;
-    border-radius: 0.75rem !important;
-    padding: 0.5rem 0.75rem !important;
-}
-::-webkit-input-placeholder { color: #9CA3AF !important; }
-::-moz-placeholder { color: #9CA3AF !important; }
-:-ms-input-placeholder { color: #9CA3AF !important; }
-:-moz-placeholder { color: #9CA3AF !important; }
-
-h1, h2, h3, h4, h5, h6 {
-    color: #0F172A;
-    font-weight: 700;
-}
-h1.home-title {
-    color: #0F172A;
-}
-
-/* TITLE SECTION CHUNG */
-.section-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-    color: #0F172A;
-}
-.section-subtitle {
-    font-size: 0.98rem;
-    color: #64748B;
-    margin-bottom: 1.5rem;
-}
-
-    /* TABS*/
-[data-testid="stTabs"] > div[role="tablist"] {
-    background-color: #ffffff;       
-    border-radius: 999px;            
-    padding: 0.25rem 0.35rem;       
-    border: 1.5px solid #2563EB;     
-    box-shadow: 0 16px 30px rgba(15,23,42,0.16);
-    display: flex;
-    gap: 0.25rem;                    
-    width: 100%;
-    margin: 0.6rem 0 1.0rem 0;
-}
-
-[data-testid="stTabs"] button[role="tab"] {
-    flex: 1;                      
-    margin: 0 !important;
-    text-align: center;
-    border-radius: 999px;
-    padding: 0.45rem 0.5rem;
-    background-color: transparent !important;
-    color: #0F172A !important;
-    border: 1px solid transparent !important;
-    font-weight: 500 !important;
-}
-
-[data-testid="stTabs"] button[role="tab"][aria-selected="true"] {
-    background-color: #2563EB !important;
-    color: #ffffff !important;
-    font-weight: 600 !important;
-    border-color: #1D4ED8 !important;
-}
-
-[data-testid="stTabs"] button[role="tab"]:not([aria-selected="true"]):hover {
-    background-color: rgba(37,99,235,0.08) !important;
-    color: #0F172A !important;
-}
-
-/* Fix tab text color - ensure white text on selected tabs */
-[data-testid="stTabs"] button[role="tab"][aria-selected="true"] p,
-[data-testid="stTabs"] button[role="tab"][aria-selected="true"] div,
-[data-testid="stTabs"] button[role="tab"][aria-selected="true"] span {
-    color: #ffffff !important;
-}
-
-/* Fix non-selected tab text */
-[data-testid="stTabs"] button[role="tab"]:not([aria-selected="true"]) p,
-[data-testid="stTabs"] button[role="tab"]:not([aria-selected="true"]) div,
-[data-testid="stTabs"] button[role="tab"]:not([aria-selected="true"]) span {
-    color: #0F172A !important;
-}
-
-/* Ensure tab content area has proper background */
-[data-testid="stTabs"] > div > div[role="tabpanel"] {
-    background-color: transparent !important;
-    padding: 1rem 0;
-}
-
-/* FEATURE CARD */
-.feature-card {
-    background-color: #ffffff;
-    border-radius: 1.2rem;
-    padding: 1.5rem 1.75rem;
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.18);
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
-    border-top: 4px solid #2563EB;
-}
-.feature-card h3 {
-    margin-top: 0;
-    margin-bottom: 0.75rem;
-    color: #0F172A;
-}
-.feature-muted {
-    color: #64748B;
-    font-size: 0.95rem;
-    margin-bottom: 1rem;
-}
-
-/* BADGE NHỎ TRÊN TRANG CHỦ */
-.badge-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.25rem 0.75rem;
-    border-radius: 999px;
-    background-color: rgba(37, 99, 235, 0.1);
-    color: #1D4ED8;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.home-stat-card {
-    background-color: #ffffff;
-    border-radius: 1rem;
-    padding: 0.9rem 1rem;
-    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.15);
-    text-align: left;
-}
-.home-stat-label {
-    font-size: 0.8rem;
-    color: #64748B;
-    margin-bottom: 0.2rem;
-}
-.home-stat-value {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #0F172A;
-}
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+:root { --navy:#11263e; --ink-soft:#344d68; --blue:#0969da; --blue-dark:#0754b1; --sky:#eaf4ff; --muted:#52677f; --line:#ccdaea; --shadow:0 18px 42px rgba(12,42,76,.08); }
+html, body, [class*="css"], [data-testid="stAppViewContainer"] { font-family:'Be Vietnam Pro',sans-serif; color:var(--navy); font-size:16px; }
+.stApp { background:#f6f9fd; }
+[data-testid="stHeader"], [data-testid="stSidebar"], footer { display:none!important; }
+.block-container { max-width:1360px!important; padding:1.25rem clamp(1rem,3.4vw,3rem) 3rem!important; }
+h1,h2,h3,h4,h5,h6 { font-family:'Plus Jakarta Sans','Be Vietnam Pro',sans-serif!important; color:var(--navy); letter-spacing:-.035em; font-weight:700; }
+h1 { font-weight:800!important; }
+h2 { font-weight:800!important; }
+h1 a[href^="#"],h2 a[href^="#"],h3 a[href^="#"],h4 a[href^="#"] { display:none!important; }
+.landing-hero,.section-heading,.tool-card,.steps-grid,.landing-footer,.feature-card,.sub-header,.tech-badge { font-family:'Be Vietnam Pro',sans-serif!important; }
+p { line-height:1.65; }
+a { color:var(--blue); }
+[data-testid="stHorizontalBlock"]:has(.brand) { align-items:center; padding:0 0 .8rem; margin-bottom:1.4rem; border-bottom:1px solid var(--line); gap:.5rem; }
+.brand { display:flex; align-items:center; gap:.7rem; white-space:nowrap; color:var(--navy); }
+.brand-logo { display:block; width:66px; height:66px; object-fit:contain; }
+.brand-ai { color:var(--blue); }
+.brand small { display:block; margin-top:.32rem; font-size:.7rem; font-weight:700; letter-spacing:.12em; color:var(--muted); }
+.stButton > button, .stDownloadButton > button, [data-testid="stFormSubmitButton"] button { min-height:46px; border-radius:11px!important; border:1px solid var(--line)!important; background:#fff!important; color:var(--ink-soft)!important; font-family:'Be Vietnam Pro',sans-serif!important; font-size:.9rem!important; font-weight:600!important; box-shadow:none!important; transition:transform .18s,box-shadow .18s,background .18s,border-color .18s; }
+.stButton > button:hover, .stDownloadButton > button:hover { transform:translateY(-2px); border-color:#7fb2f7!important; background:#f3f8ff!important; color:var(--blue-dark)!important; box-shadow:0 8px 18px rgba(22,99,216,.10)!important; }
+.stButton > button[kind="primary"], [data-testid="stFormSubmitButton"] button { color:#fff!important; background:linear-gradient(130deg,#0b67db,#0754b1)!important; border-color:#0754b1!important; font-weight:700!important; box-shadow:0 7px 18px rgba(18,102,232,.2)!important; }
+.stButton > button[kind="primary"]:hover, [data-testid="stFormSubmitButton"] button:hover { background:linear-gradient(130deg,#0e6ce5,#084cb8)!important; color:#fff!important; }
+.stButton > button p, .stDownloadButton > button p, [data-testid="stFormSubmitButton"] button p { color:inherit!important; margin:0!important; }
+[data-testid="stHorizontalBlock"]:has(.brand) .stButton > button { min-height:42px; background:transparent!important; border-color:transparent!important; color:var(--ink-soft)!important; box-shadow:none!important; font-size:.88rem!important; }
+[data-testid="stHorizontalBlock"]:has(.brand) .stButton > button:hover { background:#edf5ff!important; color:var(--blue-dark)!important; }
+[data-testid="stHorizontalBlock"]:has(.brand) .stButton > button[kind="primary"] { background:#e8f2ff!important; color:var(--blue-dark)!important; font-weight:700!important; }
+.landing-hero { display:flex; align-items:center; min-height:450px; padding:clamp(2rem,5vw,4.5rem); border-radius:24px; background-color:#0b3e72; background-size:cover; background-position:center 47%; box-shadow:var(--shadow); overflow:hidden; }
+.hero-inner { max-width:760px; color:#fff; }
+.eyebrow { display:inline-flex; padding:.5rem .8rem; border:1px solid rgba(255,255,255,.55); border-radius:100px; background:rgba(4,32,65,.42); color:#fff; font-size:.76rem; font-weight:700; letter-spacing:.08em; }
+.landing-hero h1 { margin:1.3rem 0 1rem; color:#fff; font-size:clamp(2.45rem,4.5vw,4.5rem); font-weight:800; line-height:1.15; letter-spacing:-.045em; }
+.landing-hero h1 em { font-style:normal; color:#b8e9ff; box-shadow:inset 0 -.13em 0 rgba(140,218,255,.18); }
+.landing-hero p { max-width:620px; color:#f1f7ff; font-size:clamp(1rem,1.25vw,1.12rem); line-height:1.7; }
+.hero-proof { display:flex; flex-wrap:wrap; gap:.7rem 1.45rem; margin-top:1.6rem; color:#fff; font-size:.82rem; font-weight:600; }
+.landing-hero + div { margin-top:1.15rem; }
+.section-heading { display:flex; justify-content:space-between; align-items:end; margin:3.8rem 0 1.3rem; }
+.overline { display:inline-flex; align-items:center; gap:.65rem; color:var(--blue-dark); font-family:'Be Vietnam Pro',sans-serif; font-weight:800; font-size:.74rem; letter-spacing:.12em; }
+.overline::before { content:""; display:inline-block; width:19px; height:3px; flex:none; border-radius:3px; background:var(--blue); }
+.section-heading h2,.how-intro h2 { margin:.55rem 0 .4rem; font-size:clamp(1.7rem,2.35vw,2.3rem); font-weight:800; line-height:1.27; }
+.title-accent { color:var(--blue-dark); box-shadow:inset 0 -.17em 0 #dceeff; }
+.section-heading p { margin:0; color:var(--ink-soft); font-size:1rem; line-height:1.65; }
+.tool-card { min-height:212px; background:#fff; padding:1.5rem 1.3rem 1rem; border:1px solid var(--line); border-bottom:0; border-radius:16px 16px 0 0; box-shadow:0 9px 26px rgba(16,55,100,.055); transition:transform .2s,box-shadow .2s; }
+.tool-card:hover { transform:translateY(-4px); box-shadow:var(--shadow); }
+.tool-index { display:inline-flex; padding:.28rem .48rem; border-radius:6px; background:#eaf4ff; color:var(--blue-dark); font-size:.74rem; font-weight:800; letter-spacing:.08em; }
+.tool-card h3 { margin:1.05rem 0 .5rem; font-size:1.17rem; font-weight:700; line-height:1.35; }
+.tool-card p { margin:0; color:var(--muted); font-size:.91rem; line-height:1.65; }
+[data-testid="stColumn"]:has(.tool-card) .stButton > button { border-radius:0 0 16px 16px!important; border-top:0!important; min-height:52px; color:var(--blue-dark)!important; }
+.how-intro { margin:4.2rem 0 1.4rem; }
+.steps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+.steps-grid > div { padding:1.6rem; background:#fff; border:1px solid var(--line); border-radius:16px; }
+.steps-grid > div > span { font-family:'Plus Jakarta Sans','Be Vietnam Pro',sans-serif; font-size:1.35rem; font-weight:800; color:var(--blue-dark); }
+.steps-grid h3 { margin:.7rem 0 .4rem; font-size:1.1rem; }
+.steps-grid p { margin:0; color:var(--muted); font-size:.94rem; }
+.landing-footer { display:flex; justify-content:space-between; flex-wrap:wrap; gap:1rem; padding:2rem 0 .5rem; margin-top:4rem; border-top:1px solid var(--line); color:var(--muted); font-size:.86rem; }
+.landing-footer strong { font-size:1.05rem; font-weight:700; color:var(--blue-dark); }
+.section-title { margin:.45rem 0 .35rem; font-family:'Plus Jakarta Sans','Be Vietnam Pro',sans-serif!important; font-size:clamp(2rem,3.2vw,2.75rem); font-weight:800; line-height:1.2; letter-spacing:-.045em; color:var(--navy); }
+.section-subtitle { color:var(--ink-soft); font-size:1.05rem; line-height:1.65; margin:.25rem 0 1.5rem; }
+.page-intro { max-width:760px; padding:.7rem 0 .15rem; }
+.page-intro .section-subtitle { margin:.55rem 0 1.6rem; }
+.section-subtitle,[data-testid="stMarkdownContainer"] p,[data-testid="stMarkdownContainer"] p span,[data-testid="stWidgetLabel"] p,label,input,textarea,[data-baseweb="select"] { font-family:'Be Vietnam Pro',sans-serif!important; }
+[data-testid="stWidgetLabel"] p,label { font-size:.93rem!important; line-height:1.5!important; }
+[data-testid="stForm"], [data-testid="stVerticalBlockBorderWrapper"] { border-color:var(--line)!important; border-radius:18px!important; background:#fff; }
+[data-testid="stForm"] { padding:1.5rem!important; box-shadow:var(--shadow); }
+[data-testid="stWidgetLabel"] p, label { color:var(--ink-soft)!important; font-weight:600!important; }
+[data-testid="stMarkdownContainer"] h3 { font-size:clamp(1.35rem,2vw,1.65rem); font-weight:700; color:var(--navy); }
+[data-testid="stMarkdownContainer"] h4 { font-size:1.12rem; font-weight:700; color:var(--ink-soft); }
+[data-testid="stCaptionContainer"] p { color:var(--muted)!important; font-size:.85rem!important; }
+[data-baseweb="input"], [data-baseweb="select"], textarea { border-radius:11px!important; border-color:#cbdcee!important; background:#fff!important; }
+[data-testid="stTabs"] [role="tablist"] { background:#edf5ff; padding:.3rem; border-radius:13px; gap:.2rem; }
+[data-testid="stTabs"] button[role="tab"] { border-radius:10px; color:#536f8e; font-weight:700; }
+[data-testid="stTabs"] button[role="tab"][aria-selected="true"] { background:#fff; color:var(--blue-dark); box-shadow:0 2px 8px rgba(22,71,130,.1); }
+[data-testid="stExpander"] { border-radius:12px!important; border-color:var(--line)!important; background:#fff; }
+[data-testid="stAlert"] { border-radius:13px; }
+.feature-card { background:#fff; border:1px solid var(--line); border-radius:18px; padding:1.5rem; box-shadow:var(--shadow); }
+.feature-muted { color:var(--muted); font-size:.98rem; line-height:1.7; }
+@media(max-width:900px) { .block-container { padding:1rem 1rem 2rem!important; } [data-testid="stHorizontalBlock"]:has(.brand) { flex-wrap:wrap; } [data-testid="stHorizontalBlock"]:has(.brand) > div[data-testid="stColumn"] { min-width:140px; flex:1 1 auto; } [data-testid="stHorizontalBlock"]:has(.brand) > div[data-testid="stColumn"]:first-child { min-width:100%; } .landing-hero { min-height:450px; } .steps-grid { grid-template-columns:1fr; } }
+@media(max-width:600px) { .landing-hero { min-height:0; padding:2rem 1.4rem; border-radius:18px; } .landing-hero h1 { font-size:clamp(2rem,8vw,2.5rem); } .hero-proof { display:none; } .section-heading { margin-top:3rem; } .tool-card { min-height:0; } [data-testid="stHorizontalBlock"]:has(.brand) > div[data-testid="stColumn"] { min-width:calc(50% - .5rem); } .floating-chat-window { max-width:calc(100vw - 24px); right:12px!important; } }
+/* The cookie component leaves two non-interactive skeleton placeholders in some Streamlit versions. */
+[data-testid="stElementContainer"]:has(> [data-testid="stSkeleton"]) { display:none!important; }
+[data-testid="stElementContainer"]:has(iframe[title="extra_streamlit_components.CookieManager.cookie_manager"]) { height:0!important; min-height:0!important; overflow:hidden!important; }
+[data-testid="stTextInputRootElement"], [data-testid="stNumberInputContainer"], [data-testid="stTimeInput"] [data-baseweb="input"], [data-testid="stSelectbox"] [data-baseweb="select"] { border:1px solid #cadcf0!important; background:#fff!important; border-radius:11px!important; min-height:44px; }
+[data-testid="stTextInputRootElement"]:focus-within, [data-testid="stNumberInputContainer"]:focus-within { border-color:#1479f6!important; box-shadow:0 0 0 3px rgba(20,121,246,.13)!important; }
+[data-testid="stTabs"] [role="tablist"] { width:min(100%,580px); }
+[data-testid="stTabs"] button[role="tab"] { min-width:130px; padding:.65rem 1rem!important; }
+[data-testid="stTabs"] [data-testid="stForm"] { max-width:580px; }
+[data-testid="stTabs"] [role="tab"] { flex:1; display:flex; justify-content:center; align-items:center; min-height:42px; padding:.55rem 1rem!important; border-radius:10px; color:#536f8e; font-weight:700; }
+[data-testid="stTabs"] [role="tab"][aria-selected="true"] { background:#fff; color:var(--blue-dark); box-shadow:0 2px 8px rgba(22,71,130,.1); }
+[data-testid="stHorizontalBlock"]:has(.brand) > [data-testid="stColumn"]:first-child { min-height:74px; }

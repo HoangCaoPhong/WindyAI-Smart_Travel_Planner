@@ -14,7 +14,7 @@ try:
     ALGO_AVAILABLE = True
 except ImportError:
     ALGO_AVAILABLE = False
-    st.warning("⚠️ Không tìm thấy module algo1 (route_optimization). Sử dụng chế độ demo.")
+    st.warning("Không tìm thấy module algo1 (route_optimization). Sử dụng chế độ demo.")
 
 # Import algo2 modules (Routing/Navigation)
 ROUTING_ERROR = None
@@ -61,10 +61,11 @@ except ImportError:
 
 
 def page_chuc_nang():
-    """Hiển thị nội dung trang chức năng với 4 nút lựa chọn."""
-    st.markdown("<div class='section-title'>Chức năng</div>", unsafe_allow_html=True)
+    """Hiển thị nội dung trang chức năng với 5 nút lựa chọn."""
     st.markdown(
-        "<div class='section-subtitle'>Chọn chức năng bạn muốn sử dụng.</div>",
+        '<div class="page-intro"><span class="overline">LÊN KẾ HOẠCH</span>'
+        '<h1 class="section-title">Chức năng <span class="title-accent">du lịch</span></h1>'
+        '<p class="section-subtitle">Chọn công cụ phù hợp để bắt đầu chuyến đi của bạn.</p></div>',
         unsafe_allow_html=True,
     )
     
@@ -73,28 +74,28 @@ def page_chuc_nang():
         st.session_state['selected_function'] = "Tạo lịch trình gợi ý"
     
     # ===== BỐ CỤC 5 NÚT CHỌN CHỨC NĂNG (1 ROW / 5 COL) =====
-    st.markdown("### Chọn chức năng")
+    st.markdown("<div class='overline'>CHỌN CÔNG CỤ</div>", unsafe_allow_html=True)
     
     # Hàng 1: 5 chức năng trong 1 row
     col_btn1, col_btn2, col_btn3, col_btn4, col_btn5 = st.columns(5)
     with col_btn1:
-        if st.button("🗓️ Tạo lịch trình gợi ý", width='stretch', key="btn_algo1"):
+        if st.button("Tạo lịch trình gợi ý", width='stretch', key="btn_algo1", type="primary" if st.session_state["selected_function"] == "Tạo lịch trình gợi ý" else "secondary"):
             st.session_state['selected_function'] = "Tạo lịch trình gợi ý"
             st.rerun()
     with col_btn2:
-        if st.button("🚗 Tìm đường đi", width='stretch', key="btn_algo2"):
+        if st.button("Tìm đường đi", width='stretch', key="btn_algo2", type="primary" if st.session_state["selected_function"] == "Tìm đường đi" else "secondary"):
             st.session_state['selected_function'] = "Tìm đường đi"
             st.rerun()
     with col_btn3:
-        if st.button("📷 Tìm vị trí ảnh", width='stretch', key="btn_algo3"):
+        if st.button("Tìm vị trí ảnh", width='stretch', key="btn_algo3", type="primary" if st.session_state["selected_function"] == "Tìm vị trí ảnh" else "secondary"):
             st.session_state['selected_function'] = "Tìm vị trí ảnh"
             st.rerun()
     with col_btn4:
-        if st.button("🌤️ Báo thời tiết vị trí", width='stretch', key="btn_algo4"):
+        if st.button("Báo thời tiết vị trí", width='stretch', key="btn_algo4", type="primary" if st.session_state["selected_function"] == "Báo thời tiết vị trí" else "secondary"):
             st.session_state['selected_function'] = "Báo thời tiết vị trí"
             st.rerun()
     with col_btn5:
-        if st.button("📍 Gợi ý địa điểm", width='stretch', key="btn_algo5"):
+        if st.button("Gợi ý địa điểm", width='stretch', key="btn_algo5", type="primary" if st.session_state["selected_function"] == "Gợi ý địa điểm" else "secondary"):
             st.session_state['selected_function'] = "Gợi ý địa điểm"
             st.rerun()
     
@@ -102,7 +103,7 @@ def page_chuc_nang():
     
     # ===== HIỂN THỊ NỘI DUNG THEO LỰA CHỌN =====
     selected = st.session_state['selected_function']
-    st.info(f"✨ Đang hiển thị: **{selected}**")
+    st.caption(f"Đang sử dụng: {selected}")
     
     # 1. TẠO LỊCH TRÌNH GỢI Ý (Route Optimization)
     if selected == "Tạo lịch trình gợi ý":
@@ -114,7 +115,10 @@ def page_chuc_nang():
     
     # 3. TÌM VỊ TRÍ ẢNH (Image Recognition)
     elif selected == "Tìm vị trí ảnh":
-        render_nhan_dien_anh()
+        if IMAGE_RECOGNITION_AVAILABLE:
+            render_nhan_dien_anh()
+        else:
+            st.error("Tính năng nhận diện ảnh cần PyTorch, torchvision và tệp mô hình đi kèm.")
     
     # 4. BÁO THỜI TIẾT VỊ TRÍ (Weather Service)
     elif selected == "Báo thời tiết vị trí":
@@ -185,14 +189,14 @@ def render_tao_danh_sach_goi_y():
         if st.session_state.get('latest_schedule') is None:
             auto_submit = True
 
-    st.markdown("### 🗓️ Tạo lịch trình gợi ý")
+    st.markdown("### Tạo lịch trình gợi ý")
     st.markdown(
-        "<p class='feature-muted'>🎯 Nhập sở thích và yêu cầu, thuật toán AI sẽ tối ưu lịch trình cho bạn!</p>",
+        "<p class='feature-muted'>Nhập sở thích và yêu cầu, thuật toán AI sẽ tối ưu lịch trình cho bạn!</p>",
         unsafe_allow_html=True,
     )
     
     # Form nhập liệu ở trên cùng
-    st.markdown("#### 📝 Thông tin và sở thích")
+    st.markdown("#### Thông tin và sở thích")
     with st.form("suggest_form"):
         start_location = st.text_input("Điểm xuất phát", value=default_start_loc, 
                                       help="Vị trí bạn bắt đầu hành trình")
@@ -201,15 +205,15 @@ def render_tao_danh_sach_goi_y():
         st.markdown("**Sở thích của bạn:**")
         col_pref1, col_pref2 = st.columns(2)
         with col_pref1:
-            pref_history = st.checkbox("🏛️ Lịch sử / Di tích", value=default_history)
-            pref_food = st.checkbox("🍜 Ẩm thực", value=default_food)
-            pref_shopping = st.checkbox("🛍️ Mua sắm", value=default_shopping)
-            pref_nature = st.checkbox("🌳 Thiên nhiên", value=default_nature)
+            pref_history = st.checkbox("Lịch sử / Di tích", value=default_history)
+            pref_food = st.checkbox("Ẩm thực", value=default_food)
+            pref_shopping = st.checkbox("Mua sắm", value=default_shopping)
+            pref_nature = st.checkbox("Thiên nhiên", value=default_nature)
         with col_pref2:
-            pref_modern = st.checkbox("🏙️ Hiện đại", value=default_modern)
-            pref_culture = st.checkbox("🎭 Văn hóa", value=default_culture)
-            pref_nightlife = st.checkbox("🌃 Giải trí", value=default_nightlife)
-            pref_religious = st.checkbox("🙏 Tôn giáo", value=default_religious)
+            pref_modern = st.checkbox("Hiện đại", value=default_modern)
+            pref_culture = st.checkbox("Văn hóa", value=default_culture)
+            pref_nightlife = st.checkbox("Giải trí", value=default_nightlife)
+            pref_religious = st.checkbox("Tôn giáo", value=default_religious)
         
         st.markdown("**Kế hoạch:**")
         c1, c2 = st.columns(2)
@@ -223,7 +227,7 @@ def render_tao_danh_sach_goi_y():
             value=default_budget,
             step=100000,
         )
-        submitted = st.form_submit_button("🎯 Tạo lịch trình tối ưu", width='stretch')
+        submitted = st.form_submit_button("Tạo lịch trình tối ưu", width='stretch')
 
     # 1. Handle Submission (Calculation)
     if submitted or auto_submit:
@@ -243,13 +247,13 @@ def render_tao_danh_sach_goi_y():
         if pref_religious: user_prefs.extend(["religious", "architecture"])
         
         if not user_prefs:
-            st.warning("⚠️ Vui lòng chọn ít nhất 1 sở thích!")
+            st.warning("Vui lòng chọn ít nhất 1 sở thích!")
         else:
             # Validate time
             start_min = time_to_minutes(start_time)
             end_min = time_to_minutes(end_time)
             if end_min <= start_min:
-                st.error("❌ Giờ kết thúc phải lớn hơn giờ bắt đầu!")
+                st.error("Giờ kết thúc phải lớn hơn giờ bắt đầu!")
             else:
                 # Format time for algo
                 today = datetime.now().strftime("%Y-%m-%d")
@@ -260,13 +264,13 @@ def render_tao_danh_sach_goi_y():
                 
                 # Run algorithm
                 if ALGO_AVAILABLE:
-                    with st.spinner("🔄 Đang tính toán lộ trình tối ưu bằng AI..."):
+                    with st.spinner("Đang tính toán lộ trình tối ưu bằng AI..."):
                         try:
                             # Load POIs - Dataset lớn với filter (7,743 POIs)
                             csv_path = os.path.join(os.path.dirname(__file__), "..", "data", "pois_hcm_large.csv")
                             
                             if not os.path.exists(csv_path):
-                                st.error(f"❌ Không tìm thấy file dữ liệu: {csv_path}")
+                                st.error(f"Không tìm thấy file dữ liệu: {csv_path}")
                                 st.info("Vui lòng kiểm tra lại thư mục data trên server.")
                                 st.stop()
 
@@ -284,7 +288,7 @@ def render_tao_danh_sach_goi_y():
                             )
                             
                             if not pois:
-                                st.error("❌ Không tìm thấy địa điểm nào phù hợp trong dữ liệu.")
+                                st.error("Không tìm thấy địa điểm nào phù hợp trong dữ liệu.")
                                 st.stop()
                             
                             # Determine start location coordinates
@@ -294,9 +298,9 @@ def render_tao_danh_sach_goi_y():
                                 geo_res = geocode(start_location)
                                 if geo_res:
                                     start_coords = (geo_res[0], geo_res[1])
-                                    # st.success(f"📍 Đã xác định vị trí xuất phát: {geo_res[2]}")
+                                    # st.success(f"Đã xác định vị trí xuất phát: {geo_res[2]}")
                                 else:
-                                    st.warning(f"⚠️ Không tìm thấy địa điểm '{start_location}'. Sử dụng vị trí mặc định (Trung tâm Q1).")
+                                    st.warning(f"Không tìm thấy địa điểm '{start_location}'. Sử dụng vị trí mặc định (Trung tâm Q1).")
                             
                             # Call algorithm
                             route = plan_route(
@@ -308,8 +312,8 @@ def render_tao_danh_sach_goi_y():
                             )
                             
                             if not route:
-                                st.error("❌ Không tìm thấy lịch trình phù hợp.")
-                                st.info("💡 Gợi ý: Tăng ngân sách, mở rộng thời gian hoặc chọn thêm sở thích.")
+                                st.error("Không tìm thấy lịch trình phù hợp.")
+                                st.info("Gợi ý: Tăng ngân sách, mở rộng thời gian hoặc chọn thêm sở thích.")
                             else:
                                 # Save to session state
                                 st.session_state['latest_schedule'] = {
@@ -322,10 +326,10 @@ def render_tao_danh_sach_goi_y():
                                     'end_time_obj': end_time
                                 }
                         except Exception as e:
-                            st.error(f"❌ Lỗi thuật toán: {str(e)}")
+                            st.error(f"Lỗi thuật toán: {str(e)}")
                             st.info("Vui lòng kiểm tra lại dữ liệu hoặc liên hệ admin.")
                 else:
-                    st.error("❌ Module thuật toán chưa được cài đặt.")
+                    st.error("Module thuật toán chưa được cài đặt.")
 
     # 2. Display Logic (if data exists)
     if st.session_state.get('latest_schedule'):
@@ -339,19 +343,19 @@ def render_tao_danh_sach_goi_y():
         end_time = data.get('end_time_obj', time(21,0))
         
         # Display results
-        st.success(f"✅ Tìm thấy lộ trình với **{len(route)}** điểm đến!")
+        st.success(f"Tìm thấy lộ trình với **{len(route)}** điểm đến!")
         
         # Layout: Lịch trình | Chi tiết
         col_summary, col_details = st.columns([1, 1], gap="large")
         
         with col_summary:
-            st.markdown("#### 🗺️ Lịch trình gợi ý")
+            st.markdown("#### Lịch trình gợi ý")
             
             # Styled info boxes
             st.markdown("""
             <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
                         padding: 1.2rem; border-radius: 12px; color: white; margin-bottom: 1rem;'>
-                <div style='font-size: 0.9rem; opacity: 0.9; margin-bottom: 0.3rem;'>📍 Xuất phát</div>
+                <div style='font-size: 0.9rem; opacity: 0.9; margin-bottom: 0.3rem;'>Xuất phát</div>
                 <div style='font-size: 1.1rem; font-weight: 600;'>{}</div>
             </div>
             """.format(start_location), unsafe_allow_html=True)
@@ -361,7 +365,7 @@ def render_tao_danh_sach_goi_y():
                 st.markdown("""
                 <div style='background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
                             padding: 1rem; border-radius: 12px; color: white; text-align: center;'>
-                    <div style='font-size: 0.85rem; opacity: 0.9;'>⏰ Thời gian</div>
+                    <div style='font-size: 0.85rem; opacity: 0.9;'>Thời gian</div>
                     <div style='font-size: 1rem; font-weight: 600; margin-top: 0.3rem;'>{} – {}</div>
                 </div>
                 """.format(start_time.strftime('%H:%M'), end_time.strftime('%H:%M')), unsafe_allow_html=True)
@@ -369,24 +373,24 @@ def render_tao_danh_sach_goi_y():
                 st.markdown("""
                 <div style='background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
                             padding: 1rem; border-radius: 12px; color: white; text-align: center;'>
-                    <div style='font-size: 0.85rem; opacity: 0.9;'>💰 Chi phí dự kiến</div>
+                    <div style='font-size: 0.85rem; opacity: 0.9;'>Chi phí dự kiến</div>
                     <div style='font-size: 1rem; font-weight: 600; margin-top: 0.3rem;'>{:,} VND</div>
                 </div>
                 """.format(int(round(total_cost))), unsafe_allow_html=True)
             
-            st.write(f"**💰 Tổng chi phí:** {int(round(total_cost)):,} / {budget:,.0f} VND")
-            st.write(f"**🎯 Sở thích:** {', '.join(set(user_prefs))}")
+            st.write(f"**Tổng chi phí:** {int(round(total_cost)):,} / {budget:,.0f} VND")
+            st.write(f"**Sở thích:** {', '.join(set(user_prefs))}")
             
             # --- Tính năng chia sẻ lịch trình ---
             st.markdown("---")
-            st.markdown("##### 📤 Chia sẻ lịch trình")
+            st.markdown("##### Chia sẻ lịch trình")
             
             # Tạo nội dung text để chia sẻ
-            share_content = f"📅 Lịch trình du lịch TP.HCM\n"
-            share_content += f"📍 Xuất phát: {start_location}\n"
-            share_content += f"⏰ Thời gian: {start_time.strftime('%H:%M')} - {end_time.strftime('%H:%M')}\n"
-            share_content += f"💰 Chi phí: {int(round(total_cost)):,} VND\n\n"
-            share_content += "🗺️ Chi tiết:\n"
+            share_content = f"Lịch trình du lịch TP.HCM\n"
+            share_content += f"Xuất phát: {start_location}\n"
+            share_content += f"Thời gian: {start_time.strftime('%H:%M')} - {end_time.strftime('%H:%M')}\n"
+            share_content += f"Chi phí: {int(round(total_cost)):,} VND\n\n"
+            share_content += "Chi tiết:\n"
             
             for idx, stop in enumerate(route, 1):
                 share_content += f"{idx}. {stop['name']} ({stop['arrive_time'].strftime('%H:%M')} - {stop['depart_time'].strftime('%H:%M')})\n"
@@ -395,14 +399,14 @@ def render_tao_danh_sach_goi_y():
             
             with col_share_btn:
                 st.download_button(
-                    label="📥 Tải xuống (.txt)",
+                    label="Tải xuống (.txt)",
                     data=share_content,
                     file_name="lich_trinh_tphcm.txt",
                     mime="text/plain"
                 )
             
             with col_share_link:
-                if st.button("🔗 Tạo link chia sẻ"):
+                if st.button("Tạo link chia sẻ"):
                     # Construct params
                     params = {
                         "shared": "true",
@@ -417,7 +421,7 @@ def render_tao_danh_sach_goi_y():
                     # Generate query string for display
                     query_string = urllib.parse.urlencode(params)
                     
-                    st.success("✅ Đã tạo link!")
+                    st.success("Đã tạo link!")
                     
                     # Button copy clipboard via JS (Auto-copy attempt)
                     components.html(
@@ -436,7 +440,7 @@ def render_tao_danh_sach_goi_y():
                                 align-items: center;
                                 box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
                             ">
-                                📋 Copy Link
+                                Copy Link
                             </button>
                             <span id="status" style="font-size: 0.875rem; color: #059669; display: none;"></span>
                         </div>
@@ -444,16 +448,16 @@ def render_tao_danh_sach_goi_y():
                             function copyToClipboard() {
                                 const url = window.parent.location.href;
                                 navigator.clipboard.writeText(url).then(() => {
-                                    document.getElementById('status').innerText = '✅ Đã copy vào clipboard!';
+                                    document.getElementById('status').innerText = 'Đã copy vào clipboard!';
                                     document.getElementById('status').style.display = 'inline';
-                                    document.getElementById('copy-btn').innerText = '📋 Đã copy';
+                                    document.getElementById('copy-btn').innerText = 'Đã copy';
                                     setTimeout(() => {
                                         document.getElementById('status').style.display = 'none';
-                                        document.getElementById('copy-btn').innerText = '📋 Copy Link';
+                                        document.getElementById('copy-btn').innerText = 'Copy Link';
                                     }, 3000);
                                 }).catch(err => {
                                     console.error('Copy failed:', err);
-                                    document.getElementById('status').innerText = '⚠️ Tự động copy bị chặn. Hãy nhấn nút!';
+                                    document.getElementById('status').innerText = 'Tự động copy bị chặn. Hãy nhấn nút!';
                                     document.getElementById('status').style.display = 'inline';
                                     document.getElementById('status').style.color = '#d97706';
                                 });
@@ -470,13 +474,13 @@ def render_tao_danh_sach_goi_y():
                         height=60
                     )
 
-            with st.expander("📋 Xem nội dung text để copy"):
+            with st.expander("Xem nội dung text để copy"):
                 st.code(share_content, language="text")
             # ------------------------------------
 
             # Bản đồ tổng quan
             st.markdown("---")
-            st.markdown("##### 🗺️ Bản đồ tổng quan")
+            st.markdown("##### Bản đồ tổng quan")
             
             # Tạo Leaflet map với tất cả điểm đến
             all_lats = [stop.get('lat', 0) for stop in route if stop.get('lat', 0) != 0]
@@ -503,7 +507,7 @@ def render_tao_danh_sach_goi_y():
                         iconSize: [28, 28],
                         iconAnchor: [14, 14]
                     }})
-                }}).bindPopup('<b>{idx}. {name}</b><br>⏰ {arrive} - {depart}').addTo(map);
+                }}).bindPopup('<b>{idx}. {name}</b><br>{arrive} - {depart}').addTo(map);
                 """
                 
                 map_html = f"""
@@ -549,11 +553,10 @@ def render_tao_danh_sach_goi_y():
                 components.html(map_html, height=400)
         
         with col_details:
-            st.markdown("#### 📍 Chi tiết từng điểm")
+            st.markdown("#### Chi tiết từng điểm")
             
             # Display each stop with address
             for i, stop in enumerate(route, 1):
-                mode_icon = {"walking": "🚶", "motorbike": "🏍️", "taxi": "🚕"}.get(stop['mode'], "🚗")
                 lat = stop.get('lat', 0)
                 lon = stop.get('lon', 0)
                 
@@ -565,29 +568,29 @@ def render_tao_danh_sach_goi_y():
                     st.markdown(f"""
                     <div style='background: linear-gradient(120deg, #ffecd2 0%, #fcb69f 100%); 
                                 padding: 0.8rem; border-radius: 8px; margin-bottom: 0.8rem;'>
-                        <div style='color: #1e293b; font-weight: 600; margin-bottom: 0.3rem;'>📍 {stop['name']}</div>
+                        <div style='color: #1e293b; font-weight: 600; margin-bottom: 0.3rem;'>{stop['name']}</div>
                         <div style='color: #475569; font-size: 0.85rem;'>Tọa độ: {lat:.4f}, {lon:.4f}</div>
                         <a href='https://www.google.com/maps/search/?api=1&query={lat},{lon}' 
                            target='_blank' 
                            style='color: #2563eb; font-size: 0.85rem; text-decoration: none; font-weight: 500;'>
-                           🗺️ Xem trên Google Maps →
+                           Xem trên Google Maps →
                         </a>
                     </div>
                     """, unsafe_allow_html=True)
                     
-                    st.write(f"**🚗 Di chuyển:** {mode_icon} {stop['mode'].title()}")
-                    st.write(f"**⏰ Đến:** {stop['arrive_time'].strftime('%H:%M')}")
-                    st.write(f"**⏰ Rời:** {stop['depart_time'].strftime('%H:%M')}")
-                    st.write(f"**💵 Chi phí di chuyển:** {stop['travel_cost']:,.0f} VND")
-                    st.write(f"**🎫 Vé vào cửa:** {stop['entry_fee']:,.0f} VND")
+                    st.write(f"**Di chuyển:** {stop['mode'].title()}")
+                    st.write(f"**Đến:** {stop['arrive_time'].strftime('%H:%M')}")
+                    st.write(f"**Rời:** {stop['depart_time'].strftime('%H:%M')}")
+                    st.write(f"**Chi phí di chuyển:** {stop['travel_cost']:,.0f} VND")
+                    st.write(f"**Vé vào cửa:** {stop['entry_fee']:,.0f} VND")
         
         # Save button
         if st.session_state.get("current_user") is not None:
             st.markdown("---")
-            if st.button("💾 Lưu lịch trình vào hồ sơ", width='stretch'):
+            if st.button("Lưu lịch trình vào hồ sơ", width='stretch'):
                 user_id = st.session_state.get("user_id")
                 if not user_id:
-                    st.error("⚠️ Lỗi phiên đăng nhập: Không tìm thấy ID người dùng. Vui lòng đăng xuất và đăng nhập lại.")
+                    st.error("Lỗi phiên đăng nhập: Không tìm thấy ID người dùng. Vui lòng đăng xuất và đăng nhập lại.")
                 elif user_id:
                     # Prepare timeline for storage matching page_ho_so.py expectations
                     timeline_to_save = []
@@ -613,23 +616,23 @@ def render_tao_danh_sach_goi_y():
                         timeline_to_save,
                     )
                     if success:
-                        st.success("✅ Đã lưu thành công!")
+                        st.success("Đã lưu thành công!")
                     else:
-                        st.error(f"❌ Lỗi khi lưu: {msg}")
+                        st.error(f"Lỗi khi lưu: {msg}")
                         st.write(f"Debug Info: User ID: {user_id} ({type(user_id)})")
                         if "invalid input syntax for type uuid" in str(msg):
-                            st.warning("⚠️ Phiên đăng nhập cũ không tương thích. Vui lòng Đăng xuất và Đăng nhập lại.")
+                            st.warning("Phiên đăng nhập cũ không tương thích. Vui lòng Đăng xuất và Đăng nhập lại.")
         else:
-            st.info("💡 Đăng nhập để lưu lịch trình vào hồ sơ.")
+            st.info("Đăng nhập để lưu lịch trình vào hồ sơ.")
             
     elif not submitted:
-        st.caption("⏳ Điền thông tin và bấm nút để nhận gợi ý tối ưu.")
+        st.caption("Điền thông tin và bấm nút để nhận gợi ý tối ưu.")
 
 
 
 def render_tim_duong_di():
     """Render phần Tìm đường đi - TÍCH HỢP MAP INTEGRATION"""
-    st.markdown("### 🚗 Tìm đường đi")
+    st.markdown("### Tìm đường đi")
     st.markdown(
         "<p class='feature-muted'>Tìm đường đi tối ưu giữa các địa điểm với OpenStreetMap.</p>",
         unsafe_allow_html=True,
@@ -637,64 +640,62 @@ def render_tim_duong_di():
     
     with st.form("route_form"):
         start_point = st.text_input(
-            "📍 Điểm bắt đầu", 
+            "Điểm bắt đầu",
             value="Dinh Độc Lập, TPHCM",
             help="Nhập địa chỉ đầy đủ để có kết quả chính xác"
         )
         end_point = st.text_input(
-            "🎯 Điểm kết thúc", 
+            "Điểm kết thúc",
             value="Chợ Bến Thành, TPHCM",
             help="Nhập địa chỉ đầy đủ để có kết quả chính xác"
         )
         
         mode = st.selectbox(
-            "🚦 Phương tiện",
+            "Phương tiện",
             ["Ô tô", "Xe máy"],
             help="Ô tô dùng đường lớn, Xe máy có thể đi đường hẹp"
         )
         
         c1, c2, c3 = st.columns([2, 1, 2])
         with c2:
-            find_route = st.form_submit_button("🗺️ Tìm đường!", width='stretch')
+            find_route = st.form_submit_button("Tìm đường!", width='stretch')
     
     if find_route:
         st.markdown("---")
         
         if not ROUTING_AVAILABLE:
-            st.warning("⚠️ Module routing chưa được cài đặt. Sử dụng chế độ demo.")
+            st.warning("Module routing chưa được cài đặt. Sử dụng chế độ demo.")
             if ROUTING_ERROR:
-                st.error(f"🔍 Chi tiết lỗi: `{ROUTING_ERROR}`")
-                st.info("💡 Vui lòng kiểm tra lại các thư viện đã cài đặt (requests, folium, ...).")
+                st.error(f"Chi tiết lỗi: `{ROUTING_ERROR}`")
+                st.info("Vui lòng kiểm tra lại các thư viện đã cài đặt (requests, folium, ...).")
             
-            st.markdown("#### 📍 Kết quả (Demo)")
+            st.markdown("#### Kết quả (Demo)")
             st.write(f"- **Từ:** {start_point}")
             st.write(f"- **Đến:** {end_point}")
             st.write(f"- **Phương tiện:** {mode}")
-            st.info("💡 Cài đặt `requests` để sử dụng tính năng thực tế.")
+            st.info("Cài đặt `requests` để sử dụng tính năng thực tế.")
         else:
             # Chuyển đổi tên phương tiện
             vehicle_type = "driving" if mode == "Ô tô" else "bike"
-            vehicle_icon = "🚗" if mode == "Ô tô" else "🏍️"
-            
-            with st.spinner(f"🔍 Đang tìm đường cho {vehicle_icon} {mode}..."):
+            with st.spinner(f"Đang tìm đường cho {mode}..."):
                 if get_directions:
                     result = get_directions(start_point, end_point, vehicle_type)
                 else:
                     result = None
             
             if not result:
-                st.error("❌ Không tìm thấy đường đi. Vui lòng kiểm tra lại địa chỉ.")
+                st.error("Không tìm thấy đường đi. Vui lòng kiểm tra lại địa chỉ.")
             else:
-                st.success(f"✅ Tìm thấy lộ trình {vehicle_icon} {mode}!")
+                st.success(f"Tìm thấy lộ trình {mode}!")
                 
                 # Hiển thị thông tin tổng quan với màu sắc đẹp
-                st.markdown("#### 📊 Thông tin tổng quan")
+                st.markdown("#### Thông tin tổng quan")
                 col1, col2, col3 = st.columns(3)
                 with col1:
                     st.markdown(f"""
                     <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
                                 padding: 1.2rem; border-radius: 12px; color: white; text-align: center;'>
-                        <div style='font-size: 0.85rem; opacity: 0.9; margin-bottom: 0.3rem;'>📏 Quãng đường</div>
+                        <div style='font-size: 0.85rem; opacity: 0.9; margin-bottom: 0.3rem;'>Quãng đường</div>
                         <div style='font-size: 1.5rem; font-weight: 700;'>{result['route']['distance_km']:.1f} km</div>
                     </div>
                     """, unsafe_allow_html=True)
@@ -702,7 +703,7 @@ def render_tim_duong_di():
                     st.markdown(f"""
                     <div style='background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
                                 padding: 1.2rem; border-radius: 12px; color: white; text-align: center;'>
-                        <div style='font-size: 0.85rem; opacity: 0.9; margin-bottom: 0.3rem;'>⏱️ Thời gian</div>
+                        <div style='font-size: 0.85rem; opacity: 0.9; margin-bottom: 0.3rem;'>Thời gian</div>
                         <div style='font-size: 1.5rem; font-weight: 700;'>{result['route']['duration_min']:.0f} phút</div>
                     </div>
                     """, unsafe_allow_html=True)
@@ -711,7 +712,7 @@ def render_tim_duong_di():
                     st.markdown(f"""
                     <div style='background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
                                 padding: 1.2rem; border-radius: 12px; color: white; text-align: center;'>
-                        <div style='font-size: 0.85rem; opacity: 0.9; margin-bottom: 0.3rem;'>🕐 Tổng thời gian</div>
+                        <div style='font-size: 0.85rem; opacity: 0.9; margin-bottom: 0.3rem;'>Tổng thời gian</div>
                         <div style='font-size: 1.5rem; font-weight: 700;'>{hours:.1f}h</div>
                     </div>
                     """, unsafe_allow_html=True)
@@ -722,14 +723,14 @@ def render_tim_duong_di():
                 st.markdown(f"""
                 <div style='background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%); 
                             padding: 1rem; border-radius: 12px; margin-bottom: 1rem;'>
-                    <div style='color: #1e293b; font-weight: 600; margin-bottom: 0.5rem;'>📍 Địa chỉ chi tiết</div>
+                    <div style='color: #1e293b; font-weight: 600; margin-bottom: 0.5rem;'>Địa chỉ chi tiết</div>
                     <div style='color: #475569; margin-bottom: 0.3rem;'><strong>Điểm bắt đầu:</strong> {result['start']['name']}</div>
                     <div style='color: #475569;'><strong>Điểm kết thúc:</strong> {result['end']['name']}</div>
                 </div>
                 """, unsafe_allow_html=True)
                 
                 # Thêm bản đồ OSM với Leaflet
-                st.markdown("#### 🗺️ Bản đồ đường đi")
+                st.markdown("#### Bản đồ đường đi")
                 lat1, lon1 = result['start']['lat'], result['start']['lon']
                 lat2, lon2 = result['end']['lat'], result['end']['lon']
                 center_lat = (lat1 + lat2) / 2
@@ -788,11 +789,11 @@ def render_tim_duong_di():
                         }});
                         
                         L.marker([{lat1}, {lon1}], {{icon: startIcon}})
-                            .bindPopup('<b>🟢 Điểm bắt đầu</b><br>{start_name_safe}')
+                            .bindPopup('<b>Điểm bắt đầu</b><br>{start_name_safe}')
                             .addTo(map);
                         
                         L.marker([{lat2}, {lon2}], {{icon: endIcon}})
-                            .bindPopup('<b>🔴 Điểm kết thúc</b><br>{end_name_safe}')
+                            .bindPopup('<b>Điểm kết thúc</b><br>{end_name_safe}')
                             .addTo(map);
                         
                         // Draw route from Python data
@@ -820,13 +821,13 @@ def render_tim_duong_di():
                 <div style='text-align: center; margin-top: 0.5rem;'>
                     <a href='{google_maps_url}' target='_blank' 
                        style='color: #2563eb; text-decoration: none; font-weight: 600;'>
-                       🗺️ Mở trong Google Maps →
+                       Mở trong Google Maps →
                     </a>
                 </div>
                 """, unsafe_allow_html=True)
                 
                 # Hiển thị chỉ dẫn từng bước
-                st.markdown("#### 🛣️ Chỉ dẫn đường đi")
+                st.markdown("#### Chỉ dẫn đường đi")
                 steps = result['route']['steps']
                 
                 for i, step in enumerate(steps, 1):
@@ -839,15 +840,15 @@ def render_tim_duong_di():
                     else:
                         st.write(f"**{i}.** {instruction} ({distance_m:.0f}m)")
                 
-                st.success(f"✅ Đã đến đích! Tổng quãng đường: {result['route']['distance_km']:.1f} km")
-                st.info(f"💡 Lưu ý: Thời gian và quãng đường có thể thay đổi tùy điều kiện giao thông thực tế.")
+                st.success(f"Đã đến đích! Tổng quãng đường: {result['route']['distance_km']:.1f} km")
+                st.info(f"Lưu ý: Thời gian và quãng đường có thể thay đổi tùy điều kiện giao thông thực tế.")
 
 
 
 
 def render_bao_thoi_tiet():
     """Render phần Báo thời tiết vị trí"""
-    st.markdown("### 🌤️ Báo thời tiết vị trí")
+    st.markdown("### Báo thời tiết vị trí")
     st.markdown(
         "<p class='feature-muted'>Xem thời tiết tại vị trí bạn muốn đến.</p>",
         unsafe_allow_html=True,
@@ -855,48 +856,37 @@ def render_bao_thoi_tiet():
     
     with st.form("weather_form"):
         location = st.text_input(
-            "📍 Vị trí",
+            "Vị trí",
             value="Hồ Chí Minh",
             help="Nhập tên địa điểm hoặc tọa độ"
         )
-        submitted = st.form_submit_button("🌤️ Xem thời tiết", width='stretch')
+        submitted = st.form_submit_button("Xem thời tiết", width='stretch')
     
     if submitted:
         if not WEATHER_AVAILABLE:
-             st.error("❌ Module thời tiết chưa được cài đặt.")
+             st.error("Module thời tiết chưa được cài đặt.")
              return
 
         if not ROUTING_AVAILABLE or geocode is None:
-             st.error("❌ Không thể tìm kiếm địa điểm (Module Routing/Geocoding thiếu hoặc bị lỗi).")
+             st.error("Không thể tìm kiếm địa điểm (Module Routing/Geocoding thiếu hoặc bị lỗi).")
              return
 
-        with st.spinner(f"🔍 Đang tìm kiếm '{location}'..."):
+        with st.spinner(f"Đang tìm kiếm '{location}'..."):
             geo = geocode(location)
         
         if not geo:
-            st.error("❌ Không tìm thấy địa điểm. Vui lòng thử lại.")
+            st.error("Không tìm thấy địa điểm. Vui lòng thử lại.")
         else:
             lat, lon, name = geo
-            st.success(f"📍 Đã tìm thấy: **{name}**")
+            st.success(f"Đã tìm thấy: **{name}**")
             
-            with st.spinner("🌤️ Đang lấy dữ liệu thời tiết..."):
+            with st.spinner("Đang lấy dữ liệu thời tiết..."):
                 weather = get_weather(lat, lon)
             
             if not weather:
-                st.warning("⚠️ Không thể lấy dữ liệu thời tiết. Vui lòng thử lại sau.")
-                # st.info("💡 Bạn cần cấu hình `OPENWEATHER_API_KEY` trong `config.py`.")
+                st.warning("Không thể lấy dữ liệu thời tiết. Vui lòng thử lại sau.")
+                # st.info("Bạn cần cấu hình `OPENWEATHER_API_KEY` trong `config.py`.")
             else:
-                # Helper to get emoji
-                def get_weather_emoji(desc):
-                    desc = desc.lower()
-                    if "mưa" in desc or "rain" in desc: return "🌧️"
-                    if "mây" in desc or "cloud" in desc or "âm u" in desc: return "☁️"
-                    if "nắng" in desc or "sun" in desc or "quang" in desc: return "☀️"
-                    if "bão" in desc or "storm" in desc or "dông" in desc: return "⛈️"
-                    if "tuyết" in desc or "snow" in desc: return "❄️"
-                    if "sương" in desc or "fog" in desc: return "🌫️"
-                    return "🌤️"
-
                 # CSS for Weather UI
                 st.markdown("""
                 <style>
@@ -940,10 +930,6 @@ def render_bao_thoi_tiet():
                         color: #6b7280;
                         font-weight: 600;
                     }
-                    .forecast-icon {
-                        font-size: 32px;
-                        margin: 10px 0;
-                    }
                     .forecast-temp-range {
                         font-weight: bold;
                         color: #111827;
@@ -958,19 +944,18 @@ def render_bao_thoi_tiet():
                 """, unsafe_allow_html=True)
 
                 # Current Weather Display
-                emoji = get_weather_emoji(weather['description'])
                 st.markdown(f"""
                 <div class="weather-card-main">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <div class="weather-desc-big">{emoji} {weather['description']}</div>
+                            <div class="weather-desc-big">{weather['description']}</div>
                             <div class="weather-temp-big">{weather['temp']:.1f}°C</div>
                             <div>Cảm giác như: {weather['feels_like']:.1f}°C</div>
                         </div>
                         <div style="text-align: right;">
                             <div class="weather-detail-row">
-                                <div>💧 Độ ẩm<br><b>{weather['humidity']}%</b></div>
-                                <div>💨 Gió<br><b>{weather['wind_speed']} m/s</b></div>
+                                <div>Độ ẩm<br><b>{weather['humidity']}%</b></div>
+                                <div>Gió<br><b>{weather['wind_speed']} m/s</b></div>
                             </div>
                         </div>
                     </div>
@@ -979,56 +964,54 @@ def render_bao_thoi_tiet():
 
                 # Forecast Display
                 if "forecast" in weather and weather["forecast"]:
-                    st.markdown("#### 📅 Dự báo 3 ngày tới")
+                    st.markdown("#### Dự báo 3 ngày tới")
                     cols = st.columns(len(weather["forecast"]))
                     
                     for idx, day in enumerate(weather["forecast"]):
                         with cols[idx]:
-                            day_emoji = get_weather_emoji(day['description'])
                             st.markdown(f"""
                             <div class="forecast-card">
                                 <div class="forecast-date">{day['date']}</div>
-                                <div class="forecast-icon">{day_emoji}</div>
                                 <div class="forecast-temp-range">{day['min_temp']}° - {day['max_temp']}°C</div>
                                 <div class="forecast-desc-small">{day['description']}</div>
                                 <div style="font-size: 12px; color: #9ca3af; margin-top: 4px;">UV: {day.get('uv', 0)}</div>
                             </div>
                             """, unsafe_allow_html=True)
     else:
-        st.caption("⏳ Nhập vị trí và bấm nút để xem thời tiết.")
+        st.caption("Nhập vị trí và bấm nút để xem thời tiết.")
 
 
 def render_goi_y_dia_diem():
     """Render phần Gợi ý địa điểm - Recommendation: Chỉ gợi ý danh sách địa điểm"""
-    st.markdown("### 📍 Gợi ý địa điểm")
+    st.markdown("### Gợi ý địa điểm")
     st.markdown(
-        "<p class='feature-muted'>🎯 Chọn sở thích của bạn để nhận danh sách địa điểm phù hợp.</p>",
+        "<p class='feature-muted'>Chọn sở thích của bạn để nhận danh sách địa điểm phù hợp.</p>",
         unsafe_allow_html=True,
     )
     
     # Form nhập liệu
-    st.markdown("#### 📝 Sở thích của bạn")
+    st.markdown("#### Sở thích của bạn")
     with st.form("suggest_poi_form"):
         # Chọn sở thích
         st.markdown("**Chọn loại địa điểm bạn quan tâm:**")
         col_pref1, col_pref2 = st.columns(2)
         with col_pref1:
-            pref_history = st.checkbox("🏛️ Lịch sử / Di tích", value=True)
-            pref_food = st.checkbox("🍜 Ẩm thực", value=True)
-            pref_shopping = st.checkbox("🛍️ Mua sắm", value=False)
-            pref_nature = st.checkbox("🌳 Thiên nhiên", value=False)
+            pref_history = st.checkbox("Lịch sử / Di tích", value=True)
+            pref_food = st.checkbox("Ẩm thực", value=True)
+            pref_shopping = st.checkbox("Mua sắm", value=False)
+            pref_nature = st.checkbox("Thiên nhiên", value=False)
         with col_pref2:
-            pref_modern = st.checkbox("🏙️ Hiện đại", value=False)
-            pref_culture = st.checkbox("🎭 Văn hóa", value=False)
-            pref_nightlife = st.checkbox("🌃 Giải trí", value=False)
-            pref_religious = st.checkbox("🙏 Tôn giáo", value=False)
+            pref_modern = st.checkbox("Hiện đại", value=False)
+            pref_culture = st.checkbox("Văn hóa", value=False)
+            pref_nightlife = st.checkbox("Giải trí", value=False)
+            pref_religious = st.checkbox("Tôn giáo", value=False)
         
         num_results = st.slider("Số lượng địa điểm gợi ý", min_value=5, max_value=50, value=20, step=5)
         
-        submitted = st.form_submit_button("🔍 Tìm địa điểm", width='stretch')
+        submitted = st.form_submit_button("Tìm địa điểm", width='stretch')
 
     if not submitted:
-        st.caption("⏳ Chọn sở thích và bấm nút để nhận gợi ý địa điểm.")
+        st.caption("Chọn sở thích và bấm nút để nhận gợi ý địa điểm.")
     else:
         # Thu thập sở thích
         user_prefs = []
@@ -1042,11 +1025,11 @@ def render_goi_y_dia_diem():
         if pref_religious: user_prefs.extend(["religious", "architecture"])
         
         if not user_prefs:
-            st.warning("⚠️ Vui lòng chọn ít nhất 1 sở thích!")
+            st.warning("Vui lòng chọn ít nhất 1 sở thích!")
         else:
             # Load và filter POIs
             if RECOMMENDATION_AVAILABLE:
-                with st.spinner("🔍 Đang tìm kiếm địa điểm phù hợp..."):
+                with st.spinner("Đang tìm kiếm địa điểm phù hợp..."):
                     try:
                         csv_path = os.path.join(os.path.dirname(__file__), "..", "data", "pois_hcm_large.csv")
                         
@@ -1060,16 +1043,16 @@ def render_goi_y_dia_diem():
                         )
                         
                         if not pois_sorted:
-                            st.error("❌ Không tìm thấy địa điểm nào phù hợp với sở thích của bạn.")
+                            st.error("Không tìm thấy địa điểm nào phù hợp với sở thích của bạn.")
                         else:
                             
-                            st.success(f"✅ Tìm thấy **{len(pois_sorted)}** địa điểm phù hợp!")
+                            st.success(f"Tìm thấy **{len(pois_sorted)}** địa điểm phù hợp!")
                             
                             # Hiển thị danh sách
                             col_list, col_map = st.columns([1, 1], gap="large")
                             
                             with col_list:
-                                st.markdown("#### 📋 Danh sách địa điểm")
+                                st.markdown("#### Danh sách địa điểm")
                                 for i, poi in enumerate(pois_sorted, 1):
                                     rating = poi.get('rating', 0)
                                     name = poi.get('name', 'Không tên')
@@ -1077,18 +1060,18 @@ def render_goi_y_dia_diem():
                                     lat = poi.get('lat', 0)
                                     lon = poi.get('lon', 0)
                                     
-                                    with st.expander(f"{i}. {name} ⭐ {rating:.1f}", expanded=(i <= 3)):
+                                    with st.expander(f"{i}. {name} · {rating:.1f}/5", expanded=(i <= 3)):
                                         st.write(f"**Tên:** {name}")
-                                        st.write(f"**Đánh giá:** ⭐ {rating:.1f}/5.0")
+                                        st.write(f"**Đánh giá:** {rating:.1f}/5.0")
                                         if tags:
                                             st.write(f"**Loại:** {', '.join(tags[:5])}")
                                         if lat != 0 and lon != 0:
                                             st.write(f"**Tọa độ:** {lat:.4f}, {lon:.4f}")
                                             maps_link = f"https://www.google.com/maps/search/?api=1&query={lat},{lon}"
-                                            st.markdown(f"[🗺️ Xem trên Google Maps]({maps_link})")
+                                            st.markdown(f"[Xem trên Google Maps]({maps_link})")
                             
                             with col_map:
-                                st.markdown("#### 🗺️ Bản đồ")
+                                st.markdown("#### Bản đồ")
                                 if pois_sorted:
                                     all_lats = [p.get('lat', 0) for p in pois_sorted if p.get('lat', 0) != 0]
                                     all_lons = [p.get('lon', 0) for p in pois_sorted if p.get('lon', 0) != 0]
@@ -1112,7 +1095,7 @@ def render_goi_y_dia_diem():
                                                 iconSize: [28, 28],
                                                 iconAnchor: [14, 14]
                                             }})
-                                        }}).bindPopup('<b>{idx}. {name}</b><br>⭐ {rating:.1f}').addTo(map);
+                                        }}).bindPopup('<b>{idx}. {name}</b><br>Đánh giá: {rating:.1f}/5').addTo(map);
                                         """
                                         
                                         map_html = f"""
@@ -1150,4 +1133,4 @@ def render_goi_y_dia_diem():
                                         
                                         components.html(map_html, height=500)
                     except Exception as e:
-                        st.error(f"❌ Lỗi: {str(e)}")
+                        st.error(f"Lỗi: {str(e)}")

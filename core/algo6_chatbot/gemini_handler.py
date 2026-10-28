@@ -61,10 +61,12 @@ class GeminiHandler:
 
     def generate_response(self, prompt):
         if not self.model:
-            return "Xin lỗi, tôi chưa được cấu hình để sử dụng Gemini API."
+            return None
         
         try:
             response = self.chat.send_message(prompt)
             return response.text
-        except Exception as e:
-            return f"Có lỗi xảy ra khi gọi Gemini API: {str(e)}"
+        except Exception:
+            # Keep the assistant usable when the external API is unavailable.
+            self.model = None
+            return None
