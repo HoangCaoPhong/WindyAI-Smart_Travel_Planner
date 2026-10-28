@@ -13,7 +13,9 @@ class ChatbotEngine:
     def process_message(self, message):
         # Ưu tiên sử dụng Gemini nếu đã cấu hình
         if self.gemini.model:
-            return self.gemini.generate_response(message)
+            response = self.gemini.generate_response(message)
+            if response:
+                return response
             
         # Fallback về logic cũ nếu không có Gemini
         intent = self.classifier.predict(message)

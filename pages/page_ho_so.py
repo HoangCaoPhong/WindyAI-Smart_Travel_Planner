@@ -87,17 +87,18 @@ def page_ho_so():
                                 show_schedule_details(schedule, user_id)
 
         st.markdown("---")
-        if st.button("Đăng xuất (Log out)"):
+        if st.button("Đăng xuất"):
             # Delete cookie
             if 'cookie_manager' in st.session_state:
                 st.session_state.cookie_manager.delete("user_email", key="delete_logout_cookie")
                 
             st.session_state["current_user"] = None
             st.session_state["user_id"] = None
+            st.session_state["current_page"] = "Trang chủ"
             
             # Wait for cookie deletion to propagate
             time.sleep(1)
             st.rerun()
     else:
         st.error("Bạn cần đăng nhập để xem trang này.")
-        st.info("Vui lòng chọn **Sign in / Sign up** từ thanh menu để đăng nhập.")
+        st.info("Vui lòng chọn **Đăng nhập** từ thanh menu để đăng nhập.")

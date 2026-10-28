@@ -231,3 +231,23 @@ def migrate_from_json(json_file="database.json"):
     except Exception as e:
         return False, f"Migration error: {str(e)}"
 
+
+# Local development fallback: retain the existing SQLite implementation when
+# Supabase credentials have not been supplied. The public function API is shared.
+if supabase is None:
+    from . import db_sqlite_backup as _sqlite
+
+    init_database = _sqlite.init_database
+    add_user = _sqlite.add_user
+    get_user = _sqlite.get_user
+    verify_user = _sqlite.verify_user
+    def add_schedule(user_id, destination, budget, start_time, end_time, timeline):
+        schedule_id = _sqlite.add_schedule(
+            user_id, destination, budget, start_time, end_time, timeline
+        )
+        if schedule_id is None:
+            return False, "Không thể lưu lịch trình vào SQLite"
+        return True, schedule_id
+    get_user_schedules = _sqlite.get_user_schedules
+    delete_schedule = _sqlite.delete_schedule
+    migrate_from_json = _sqlite.migrate_from_json

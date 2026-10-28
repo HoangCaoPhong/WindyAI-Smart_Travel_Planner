@@ -26,14 +26,14 @@ def predict_pil_image(image):
 
 def render_nhan_dien_anh():
     """Render phần Tìm vị trí ảnh - Layout Cân Đối & Bản đồ Style Mới"""
-    st.markdown("### 📷 Tìm vị trí ảnh")
+    st.markdown("### Tìm vị trí ảnh")
     st.markdown(
         "<p class='feature-muted'>Tải lên ảnh địa điểm, hệ thống sẽ nhận diện và hiển thị bản đồ.</p>",
         unsafe_allow_html=True,
     )
 
     if not IMAGE_RECOGNITION_AVAILABLE:
-        st.error("❌ Module nhận diện ảnh chưa được cài đặt hoặc bị lỗi.")
+        st.error("Module nhận diện ảnh chưa được cài đặt hoặc bị lỗi.")
         return
 
     img_file = st.file_uploader("Tải ảnh địa điểm (JPG/PNG)", type=["jpg", "jpeg", "png"])
@@ -41,8 +41,8 @@ def render_nhan_dien_anh():
         image = Image.open(img_file)
         
     
-        if st.button("🔍 Nhận diện & Tìm vị trí", type="primary", use_container_width=True):
-            with st.spinner("🤖 Đang phân tích ảnh & tìm tọa độ..."):
+        if st.button("Nhận diện và tìm vị trí", type="primary", use_container_width=True):
+            with st.spinner("Đang phân tích ảnh và tìm tọa độ..."):
                 try:
             
                 
@@ -69,19 +69,19 @@ def render_nhan_dien_anh():
                         st.image(image, caption="Ảnh bạn tải lên", use_container_width=True)
                     
                     with col_info:
-                        st.success(f"📍 AI Dự đoán: **{location_name}**")
+                        st.success(f"Địa điểm dự đoán: **{location_name}**")
                         st.progress(confidence, text=f"Độ tin cậy: {confidence*100:.1f}%")
                         
                         if has_coords:
-                            st.info(f"🏠 **Địa chỉ tìm thấy:**\n\n{formatted_name}")
+                            st.info(f"**Địa chỉ tìm thấy:**\n\n{formatted_name}")
                         else:
-                            st.warning(f"⚠️ Không tìm thấy tọa độ chính xác cho địa điểm này.")
+                            st.warning(f"Không tìm thấy tọa độ chính xác cho địa điểm này.")
 
                 
                     
                     if has_coords:
                         st.markdown("---")
-                        st.markdown("### 🗺️ Vị trí trên bản đồ")
+                        st.markdown("### Vị trí trên bản đồ")
                         
                    
                         
@@ -152,7 +152,7 @@ def render_nhan_dien_anh():
                         st.markdown("---")
                         query = urllib.parse.quote(f"{location_name} TP Hồ Chí Minh")
                         map_url = f"https://www.google.com/maps/search/?api=1&query={query}"
-                        st.link_button("↗️ Mở Google Maps (Tab mới)", map_url)
+                        st.link_button("Mở Google Maps", map_url)
                         
                 except Exception as e:
                     st.error(f"Lỗi hệ thống: {str(e)}")

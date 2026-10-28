@@ -5,6 +5,7 @@ extra-streamlit-components==0.1.60
 # ========= DATA PROCESSING =========
 pandas==2.2.2
 numpy==1.26.4
+pyarrow==19.0.1  # Compatible with NumPy 1.26 and Streamlit components
 
 # ========= AUTH & SECURITY =========
 bcrypt>=4.0.0

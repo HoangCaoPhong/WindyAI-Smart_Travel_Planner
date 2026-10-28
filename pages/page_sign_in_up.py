@@ -12,18 +12,18 @@ def page_sign_in_up():
         unsafe_allow_html=True,
     )
 
-    tab_signin, tab_signup = st.tabs(["Sign in", "Sign up"])
+    tab_signin, tab_signup = st.tabs(["Đăng nhập", "Đăng ký"])
 
     # SIGN IN
     with tab_signin:
         with st.form("signin_form"):
             email_in = st.text_input("Email", key="signin_email")
-            password_in = st.text_input("Password", type="password", key="signin_pass")
-            submitted_in = st.form_submit_button("Sign in")
+            password_in = st.text_input("Mật khẩu", type="password", key="signin_pass")
+            submitted_in = st.form_submit_button("Đăng nhập", use_container_width=True)
 
         if submitted_in:
             if not email_in or not password_in:
-                st.error("Vui lòng nhập đầy đủ Email và Password.")
+                st.error("Vui lòng nhập đầy đủ email và mật khẩu.")
             else:
                 # Verify using SQLite
                 success, user_id = db_utils.verify_user(email_in, password_in)
@@ -47,17 +47,17 @@ def page_sign_in_up():
     with tab_signup:
         with st.form("signup_form"):
             email_up = st.text_input("Email", key="signup_email")
-            password_up = st.text_input("Password", type="password", key="signup_pass")
-            confirm_up = st.text_input("Confirm password", type="password", key="signup_confirm")
-            submitted_up = st.form_submit_button("Sign up")
+            password_up = st.text_input("Mật khẩu", type="password", key="signup_pass")
+            confirm_up = st.text_input("Xác nhận mật khẩu", type="password", key="signup_confirm")
+            submitted_up = st.form_submit_button("Tạo tài khoản", use_container_width=True)
 
         if submitted_up:
             if not email_up or not password_up or not confirm_up:
-                st.error("Vui lòng nhập đầy đủ Email và Password.")
+                st.error("Vui lòng nhập đầy đủ email và mật khẩu.")
             elif "@" not in email_up:
                 st.error("Email không hợp lệ.")
             elif password_up != confirm_up:
-                st.error("Password nhập lại không khớp.")
+                st.error("Mật khẩu nhập lại không khớp.")
             else:
                 # Add user using Supabase
                 success, result = db_utils.add_user(email_up, password_up)

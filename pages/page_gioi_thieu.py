@@ -62,25 +62,27 @@ def get_logo_img():
 def inject_custom_css():
     st.markdown("""
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        /* html, body, [class*="css"] { font-family: 'Inter', sans-serif; } */
-
         .main-header {
-            background: linear-gradient(90deg, #1E3A8A 0%, #3B82F6 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            font-weight: 800; font-size: 3.5rem; letter-spacing: -1px;
+            color: #11263e; font-family: 'Plus Jakarta Sans','Be Vietnam Pro',sans-serif;
+            font-weight: 800; font-size: clamp(2.1rem, 4vw, 3.25rem);
+            line-height: 1.2; letter-spacing: -.04em; margin: .3rem 0 .5rem;
         }
-        .sub-header { color: #64748B; font-size: 1.3rem; margin-bottom: 2rem; }
+        .sub-header { color: #344d68; font-size: 1.05rem; line-height: 1.65; margin-bottom: 1rem; }
 
         .feature-card {
-            background: white; border-radius: 16px; padding: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #E2E8F0;
-            height: 100%; transition: all 0.3s ease;
+            background: white; border-radius: 16px; padding: 28px;
+            box-shadow: 0 10px 26px rgba(12,42,76,.06); border: 1px solid #ccdaea;
+            min-height: 240px; height: 100%; transition: all 0.2s ease;
         }
         .feature-card:hover {
-            transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); border-color: #3B82F6;
+            transform: translateY(-3px); box-shadow: 0 18px 34px rgba(12,42,76,.12); border-color: #80ade7;
         }
-        .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .feature-index { display:inline-flex; padding:.3rem .5rem; border-radius:6px; background:#eaf4ff; color:#0754b1; font-size:.76rem; font-weight:800; letter-spacing:.08em; margin-bottom:1.3rem; }
+        .feature-card h4 { color:#11263e; margin:0 0 .8rem; font-family:'Plus Jakarta Sans','Be Vietnam Pro',sans-serif; font-size:1.28rem; font-weight:700; line-height:1.35; }
+        .feature-card p { color:#52677f; margin:0; font-size:.95rem; line-height:1.7; }
+        .tech-badge { text-align:center; border:1px solid #ccdaea; background:#fff; padding:12px 8px; border-radius:10px; color:#173756; font-size:.9rem; font-weight:700; }
+        .tech-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+        @media(max-width:600px) { .tech-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 
         .member-card-container {
             background-color: white; border: 1px solid #E2E8F0; border-radius: 20px 20px 0 0;
@@ -93,7 +95,7 @@ def inject_custom_css():
             position: relative; z-index: 10; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         .member-name { font-weight: 700; color: #1E293B; font-size: 1.15rem; margin-top: 5px; }
-        .member-mssv { font-family: 'Courier New', monospace; color: #94A3B8; font-size: 0.9rem; margin-bottom: 8px; }
+        .member-mssv { color: #465d74; font-size: 0.9rem; margin-bottom: 8px; }
 
         /* Badge chức vụ – làm nổi bật hơn */
         .role-badge {
@@ -127,16 +129,9 @@ def inject_custom_css():
             margin-bottom: 2px;
         }
 
-        div.stButton > button {
-            width: 100%; border-radius: 0 0 20px 20px; border: 1px solid #E2E8F0;
-            border-top: none; background-color: #F1F5F9; color: #334155; font-weight: 600;
-            padding: 12px 0; transition: all 0.2s;
-        }
-        div.stButton > button:hover { background-color: #DBEAFE; color: #1D4ED8; border-color: #93C5FD; }
-
-        .contact-info-box { padding: 15px; background: #F8FAFC; border-radius: 12px; border: 1px solid #E2E8F0; margin-bottom: 10px; }
+        .contact-info-box { padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #ccdaea; margin-bottom: 10px; }
         .contact-label { font-weight: 600; color: #1E293B; font-size: 0.9rem; }
-        .contact-value { color: #475569; font-size: 0.95rem; }
+        .contact-value { color: #465d74; font-size: 0.95rem; }
 
         .skill-tag {
             background: #EFF6FF; color: #1D4ED8; padding: 5px 10px; border-radius: 8px;
@@ -224,7 +219,7 @@ def create_member_card_html(member):
             "box-shadow: 0 10px 20px -5px rgba(37,99,235,0.55);"
             "border: 1px solid rgba(191,219,254,0.9);"
         )
-        role_label = f"⭐ {role.upper()}"
+        role_label = f"{role.upper()}"
     elif "Secretary" in role:
         badge_css = "background: #FCE7F3; color: #BE185D;"
         role_label = role.upper()
@@ -272,10 +267,10 @@ def show_member_modal():
             f"### 🎯 Vai trò: <span style='color:#2563EB'>{member['role']}</span>",
             unsafe_allow_html=True
         )
-        st.success(f"🛠️ Chuyên môn: {member['tech_role']}")
+        st.success(f"Chuyên môn: {member['tech_role']}")
         st.markdown("---")
-        st.markdown(f"**📧 Email:** `{member['email']}`")
-        st.markdown(f"**❤️ Sở thích:** {member.get('hobby', 'Đang cập nhật')}")
+        st.markdown(f"**Email:** `{member['email']}`")
+        st.markdown(f"**Sở thích:** {member.get('hobby', 'Đang cập nhật')}")
     st.markdown("---")
     col_prev, col_close, col_next = st.columns([1, 1, 1])
 
@@ -300,29 +295,29 @@ def show_member_modal():
 
 
 def render_contact_section():
-    st.markdown("### 📬 Liên hệ & Góp ý")
+    st.markdown("### Liên hệ & Góp ý")
     col_info, col_form = st.columns([1, 1.5], gap="large")
 
     with col_info:
         info = PROJECT_INFO['contact']
         st.markdown(f"""
         <div class="contact-info-box">
-            <div class="contact-label">📍 Địa chỉ</div>
+            <div class="contact-label">Địa chỉ</div>
             <div class="contact-value">{info['address']}</div>
         </div>
         <div class="contact-info-box">
-            <div class="contact-label">📧 Email</div>
+            <div class="contact-label">Email</div>
             <div class="contact-value">{info['email']}</div>
         </div>
         <div class="contact-info-box">
-            <div class="contact-label">☎️ Hotline</div>
+            <div class="contact-label">Hotline</div>
             <div class="contact-value">{info['phone']}</div>
         </div>
         """, unsafe_allow_html=True)
 
     with col_form:
         with st.container(border=True):
-            st.markdown("##### 📝 Gửi tin nhắn cho chúng tôi")
+            st.markdown("##### Gửi tin nhắn cho chúng tôi")
             with st.form("contact_form", clear_on_submit=True):
                 c_name, c_email = st.columns(2)
                 with c_name:
@@ -332,19 +327,20 @@ def render_contact_section():
                 type_msg = st.selectbox("Chủ đề", ["Góp ý tính năng", "Báo lỗi", "Hợp tác", "Khác"])
                 message = st.text_area("Nội dung", placeholder="Nhập tin nhắn...", height=100)
 
-                if st.form_submit_button("🚀 Gửi tin nhắn"):
+                if st.form_submit_button("Gửi tin nhắn"):
                     if not name or not message:
                         st.error("Vui lòng nhập Tên và Nội dung!")
                     else:
                         with st.spinner("Đang lưu dữ liệu..."):
-                            add_feedback(name, email, type_msg, message)
-                            time.sleep(0.5)
+                            saved = add_feedback(name, email, type_msg, message)
 
-                        if "show_member_modal" in st.session_state:
-                            st.session_state.show_member_modal = False
-
-                        st.success(f"Cảm ơn {name}! Gửi feedback thành công.")
-                        st.balloons()
+                        if saved:
+                            if "show_member_modal" in st.session_state:
+                                st.session_state.show_member_modal = False
+                            st.success(f"Cảm ơn {name}! Góp ý đã được lưu.")
+                            st.balloons()
+                        else:
+                            st.error("Chưa thể lưu góp ý. Vui lòng thử lại sau.")
 
 
 
@@ -367,51 +363,42 @@ def page_gioi_thieu():
     if "current_member_idx" not in st.session_state:
         st.session_state.current_member_idx = 0
 
-    # HEADER
-    c_logo, c_title = st.columns([1, 6], gap="medium")
-    with c_logo:
-        st.image(get_logo_img(), width=110)
-    with c_title:
-        st.markdown(f'<h1 class="main-header">{PROJECT_INFO["name"]}</h1>', unsafe_allow_html=True)
-        st.markdown(f'<div class="sub-header">{PROJECT_INFO["slogan"]}</div>', unsafe_allow_html=True)
-
-    st.divider()
+    # The primary navigation already carries the logo; this page starts with a clear title.
+    st.markdown(
+        f'<div class="about-header"><span class="overline">VỀ DỰ ÁN</span><h1 class="main-header">{PROJECT_INFO["name"]}</h1>'
+        f'<div class="sub-header">{PROJECT_INFO["slogan"]}</div></div>',
+        unsafe_allow_html=True,
+    )
 
     # FEATURES
-    st.markdown("### 🌟 Tính năng nổi bật")
+    st.markdown('<div class="section-heading"><div><span class="overline">GIẢI PHÁP</span><h2>Tính năng <span class="title-accent">nổi bật</span></h2><p>Những công cụ hỗ trợ bạn chuẩn bị và tận hưởng chuyến đi.</p></div></div>', unsafe_allow_html=True)
     f1, f2, f3 = st.columns(3, gap="medium")
     features = [
-        ("🚀", "AI Optimization", "Bạn chỉ cần chọn điểm đến, AI sẽ tự sắp xếp lộ trình đi lại hợp lý và tiết kiệm nhất."),
-        ("📍", "Smart Suggestion", "Không biết đi đâu? Hệ thống sẽ chỉ cho bạn những chỗ ăn, chỗ chơi đúng sở thích."),
-        ("🗺️", "Interactive Map", "Nhìn thấy toàn bộ đường đi trên bản đồ để dễ dàng hình dung chuyến đi sắp tới.")
+        ("Tối ưu lịch trình", "Bạn chỉ cần chọn điểm đến, AI sẽ tự sắp xếp lộ trình đi lại hợp lý và tiết kiệm nhất."),
+        ("Gợi ý phù hợp", "Không biết đi đâu? Hệ thống sẽ chỉ cho bạn những chỗ ăn, chỗ chơi đúng sở thích."),
+        ("Bản đồ trực quan", "Nhìn thấy toàn bộ đường đi trên bản đồ để dễ dàng hình dung chuyến đi sắp tới.")
     ]
-    for col, (icon, title, desc) in zip([f1, f2, f3], features):
+    for i, (col, (title, desc)) in enumerate(zip([f1, f2, f3], features), start=1):
         with col:
             st.markdown(
                 f"""<div class="feature-card">
-                        <div class="feature-icon">{icon}</div>
-                        <h4 style="margin:0; color:#1E293B">{title}</h4>
-                        <p style="color:#64748B; margin-top:5px">{desc}</p>
+                        <div class="feature-index">{i:02d} / 03</div>
+                        <h4>{title}</h4>
+                        <p>{desc}</p>
                     </div>""",
                 unsafe_allow_html=True
             )
 
-    st.write("")
-    st.markdown("### 🛠️ Công nghệ")
-    cols = st.columns(len(PROJECT_INFO["tech_stack"]))
-    for i, tech in enumerate(PROJECT_INFO["tech_stack"]):
-        with cols[i]:
-            st.markdown(
-                f"<div style='text-align:center; border:1px solid #E2E8F0; padding:8px; border-radius:8px;'><b>{tech}</b></div>",
-                unsafe_allow_html=True
-            )
-
-    st.divider()
+    st.markdown('<div class="section-heading"><div><span class="overline">NỀN TẢNG</span><h2>Công nghệ</h2></div></div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="tech-grid">' + ''.join(f'<div class="tech-badge">{tech}</div>' for tech in PROJECT_INFO["tech_stack"]) + '</div>',
+        unsafe_allow_html=True,
+    )
 
     # DEMO VIDEO
-    st.markdown("### 🎥 Demo Website")
+    st.markdown('<div class="section-heading"><div><span class="overline">TRẢI NGHIỆM</span><h2>Demo Website</h2></div></div>', unsafe_allow_html=True)
     st.markdown("""
-        <div style="max-width: 80%; margin: 0 auto 2rem auto;">
+        <div style="max-width: 960px; width:100%; margin: 0 auto 2rem auto;">
             <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; width: 100%; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #E2E8F0;">
                 <iframe src="https://www.youtube.com/embed/LPOv2afp0iU" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
             </div>
@@ -419,7 +406,7 @@ def page_gioi_thieu():
     """, unsafe_allow_html=True)
 
     # TEAM LIST
-    st.markdown("### 👥 Đội ngũ phát triển")
+    st.markdown('<div class="section-heading"><div><span class="overline">CON NGƯỜI</span><h2>Đội ngũ phát triển</h2></div></div>', unsafe_allow_html=True)
     row1 = st.columns(3, gap="medium")
     for i in range(3):
         with row1[i]:

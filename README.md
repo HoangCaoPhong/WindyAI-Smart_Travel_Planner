@@ -48,8 +48,9 @@ Follow these steps to run the project's Small Simulation locally:
     ```
 3.  **Run Local Simulation:** Launch the interactive demonstration interface.
     ```bash
-    python -m streamlit run .\app\main.py  # Or specify the main application file
+    python -m streamlit run app/main.py
     ```
+    Without Supabase credentials, accounts, saved schedules, and feedback use a local `windyai.db` file. Set `SUPABASE_URL` and `SUPABASE_KEY` to use Supabase; set `GEMINI_API_KEY` to enable Gemini chat.
 
 ---
 
@@ -109,8 +110,9 @@ Thực hiện các bước sau để chạy Mô phỏng Nhỏ (Small Simulation)
     ```
 3.  **Chạy Mô phỏng Local:** Khởi chạy giao diện trình diễn tương tác.
     ```bash
-    streamlit run app.py  # Hoặc chỉ định file ứng dụng chính
+    python -m streamlit run app/main.py
     ```
+    Nếu chưa cấu hình Supabase, tài khoản, lịch trình đã lưu và góp ý được lưu vào `windyai.db` trên máy. Đặt `SUPABASE_URL` và `SUPABASE_KEY` để dùng Supabase; đặt `GEMINI_API_KEY` để bật trò chuyện Gemini.
 
 ---
 
